@@ -154,15 +154,6 @@
   </div>
 </div>
 
-<!-- SAVE BANNER — tap to download the file from within the preview -->
-<div id="saveBanner" style="
-  background:#1a3a1e; border-bottom:2px solid var(--green);
-  padding:12px 24px; display:flex; align-items:center;
-  justify-content:space-between; gap:12px; flex-wrap:wrap;">
-  <div style="font-family:var(--mono);font-size:13px;color:var(--green);">
-    📥 <strong>Seeing this in a preview?</strong>
-    <span style="color:var(--text2);margin-left:6px;">Tap the button to save the dashboard file to your device.</span>
-  </div>
   <button onclick="saveDashboard()" style="
     background:var(--green); color:#000; border:none;
     padding:10px 22px; border-radius:6px;
@@ -260,6 +251,40 @@
   </div>
 
   <!-- RATIO HISTORY CHARTS -->
+  <!-- ETH HOLDINGS HISTORY -->
+  <div class="stitle">BMNR ETH Holdings — Accumulation <span class="sub">— seeded from 8-K filings · goal: 6,035,000 ETH (5% of supply)</span></div>
+  <div class="card">
+    <div class="ch">
+      <span class="ct">ETH Accumulated Over Time</span>
+      <span class="bg bl">82% to goal · 1.06M ETH remaining</span>
+    </div>
+    <div class="cb">
+      <div class="mr"><span class="ml">Current holdings</span><span class="mv g">4,976,485 ETH (4.12% of supply)</span></div>
+      <div class="mr"><span class="ml">5% goal</span><span class="mv">6,035,000 ETH · ~1,058,515 to go</span></div>
+      <div style="position:relative;height:180px;margin-top:12px;">
+        <canvas id="ethHeldChart" role="img" aria-label="BMNR ETH holdings accumulation over time">Holdings growing from 4.4M to 4.98M ETH.</canvas>
+      </div>
+      <div class="pts" style="margin-top:8px;"><div class="pdot" id="ethHeldD"></div><span id="ethHeldTs">Seeded from 8-K filings</span></div>
+    </div>
+  </div>
+
+  <!-- BMNR MULTIPLES HISTORY -->
+  <div class="stitle">BMNR Multiples to 2030 Targets <span class="sub">— live calc · updates every 60s from current BMNR price</span></div>
+  <div class="card">
+    <div class="ch"><span class="ct">Current × to 2030 Scenarios</span><span class="bg ba">live calc from BMNR price</span></div>
+    <div class="cb">
+      <div class="g3" style="margin-bottom:12px;">
+        <div style="text-align:center"><div class="psub">EV 2030 ($851)</div><div class="pval a" id="evMult2" style="font-size:24px;">38.4x</div></div>
+        <div style="text-align:center"><div class="psub">Base 2030 ($715)</div><div class="pval" id="baseMult2" style="font-size:24px;color:var(--green);">32.3x</div></div>
+        <div style="text-align:center"><div class="psub">Bear 2030 ($275)</div><div class="pval" id="bearMult2" style="font-size:24px;color:var(--red);">12.4x</div></div>
+      </div>
+      <div style="position:relative;height:180px;">
+        <canvas id="multChart" role="img" aria-label="BMNR multiples to 2030 EV, Base, and Bear targets over time">EV 2030 38x, Base 32x, Bear 12x from current price.</canvas>
+      </div>
+      <div class="pts" style="margin-top:8px;"><div class="pdot" id="multD"></div><span id="multTs">Seeded from weekly data</span></div>
+    </div>
+  </div>
+
   <div class="stitle">Ratio History <span class="sub">— ETH/BTC and ETH/Gold over 30 days · seed data from BMNR weekly disclosures</span></div>
   <div class="g2" style="margin-bottom:4px;">
     <div class="card">
@@ -780,7 +805,7 @@ function showDash(){
   if(md) md.style.display='block';
   refreshKeyDisplay();
   updateEarnings();
-  setTimeout(()=>{ initHistCharts(); updateHistCharts(); initMnavChart(); updateMnavChart(); }, 200);
+  setTimeout(()=>{ initHistCharts(); updateHistCharts(); initMnavChart(); updateMnavChart(); initEthHeldChart(); updateEthHeldChart(); initMultChart(); updateMultChart(); }, 200);
 }
 function showSetup(){ /* setup panel retired — key is baked in */ showDash(); }
 
@@ -795,6 +820,23 @@ async function fhQuote(symbol){
     // d.c = current price, d.pc = previous close, d.d = change, d.dp = change %
     if(!d.c||d.c===0) return null;
     return {price:d.c, prevClose:d.pc, change:d.d||0, changePct:d.dp||0, time:new Date()};
+  }catch(e){return null;}
+}
+
+
+// ── ETH via CoinGecko (reliable, no API key needed) ──────────────────
+async function fetchCoinGecko(coinId){
+  try{
+    const cb='?_='+Date.now();
+    const url=`https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd&include_24hr_change=true`+cb;
+    const r=await fetch(url,{signal:AbortSignal.timeout(10000),cache:'no-store'});
+    if(!r.ok) return null;
+    const d=await r.json();
+    const price=d?.[coinId]?.usd;
+    const chgPct=d?.[coinId]?.usd_24h_change;
+    if(!price||price<=0) return null;
+    const prev=price/(1+(chgPct||0)/100);
+    return {price, prevClose:prev, change:price-prev, changePct:chgPct||0, time:new Date()};
   }catch(e){return null;}
 }
 
@@ -873,7 +915,7 @@ function render(){
     s('ethP',  fmtP(eth.price));
     const ethDollar = eth.change != null ? (eth.change>=0?'+':'')+fmtP(Math.abs(eth.change))+' · ' : '';
     s('ethC',  ethDollar+fmtC(eth.changePct)+' (24h)'); sc('ethC',clsC(eth.changePct));
-    s('ethTs', eth.seed ? 'Apr 20 seed · fetching live…' : fmtTs(eth.time)+' · Finnhub/Binance');
+    s('ethTs', eth.seed ? 'Apr 26 seed · fetching live…' : fmtTs(eth.time)+' · CoinGecko');
     setDot('ethD', !eth.seed);
   }
   // BTC
@@ -925,7 +967,13 @@ function render(){
 
     s('mnavTs', fmtTs(bmnr.time||eth.time)+' · live calc');
     setDot('mnavD',true);
-    s('evMult',(858/mp).toFixed(1)+'x');
+    s('evMult',(851/mp).toFixed(1)+'x');
+    s('evMult2',(851/mp).toFixed(1)+'x');
+    s('baseMult',(715/mp).toFixed(1)+'x');
+    s('baseMult2',(715/mp).toFixed(1)+'x');
+    s('bearMult2030',(275/mp).toFixed(1)+'x');
+    s('bearMult2',(275/mp).toFixed(1)+'x');
+    pushMultPoint();
     // Bear 2030 multiple
     const bearEl = document.getElementById('bearMult');
     if(bearEl) bearEl.textContent = (275/mp).toFixed(1)+'x';
@@ -989,7 +1037,7 @@ function updateEarnings(){
 let cycleCount=0;
 async function fetchCycle(){
   const [ethR,btcR,bmnrR,goldR]=await Promise.allSettled([
-    fhQuote('BINANCE:ETHUSDT'),
+    fetchCoinGecko('ethereum'),
     fhQuote('BINANCE:BTCUSDT'),
     fhQuote('BMNR'),
     fetchGold()
@@ -1189,6 +1237,111 @@ function updateNavPie(ethVal, btcVal, orbsVal, beastVal, cashVal){
 }
 
 
+
+// ── ETH HOLDINGS CHART ────────────────────────────────────────────────
+let ethHeldChartInst = null;
+function initEthHeldChart(){
+  const ctx = document.getElementById('ethHeldChart')?.getContext('2d');
+  if(!ctx || ethHeldChartInst) return;
+  const labels = HIST_SEED.labels;
+  const data   = HIST_SEED.eth_held.map(v => v ? +(v/1e6).toFixed(3) : null);
+  ethHeldChartInst = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels,
+      datasets:[{
+        label:'ETH Held (M)',
+        data, borderColor:'#3fb950', backgroundColor:'#3fb95022',
+        borderWidth:2, pointRadius:3, tension:0.3, fill:true,
+        spanGaps:true
+      },{
+        label:'5% Goal (6.035M)',
+        data: labels.map(()=>6.035),
+        borderColor:'#f85149', borderWidth:1, borderDash:[4,4],
+        pointRadius:0, fill:false
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      scales:{
+        x:{ticks:{color:'#8b949e',font:{size:10}},grid:{color:'#21262d'}},
+        y:{ticks:{color:'#8b949e',font:{size:10},callback:v=>v+'M'},grid:{color:'#21262d'},min:4.3,max:6.2}
+      },
+      plugins:{legend:{labels:{color:'#8b949e',font:{size:11},boxWidth:10}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+'M ETH'}}}
+    }
+  });
+}
+
+function updateEthHeldChart(){
+  if(!ethHeldChartInst) return;
+  const allLabels = [...HIST_SEED.labels, ...SESSION_DATA.labels];
+  const seedVals  = HIST_SEED.eth_held.map(v => v ? +(v/1e6).toFixed(3) : null);
+  // Session data: use latest known eth_held (4,976,485)
+  const sessVals  = SESSION_DATA.labels.map(()=>+(4976485/1e6).toFixed(3));
+  ethHeldChartInst.data.labels = allLabels;
+  ethHeldChartInst.data.datasets[0].data = [...seedVals, ...sessVals];
+  ethHeldChartInst.data.datasets[1].data = allLabels.map(()=>6.035);
+  ethHeldChartInst.update('none');
+  s('ethHeldTs', 'Source: BMNR 8-K filings · live session extends right');
+  setDot('ethHeldD', true);
+}
+
+// ── BMNR MULTIPLES CHART ──────────────────────────────────────────────
+let multChartInst = null;
+function initMultChart(){
+  const ctx = document.getElementById('multChart')?.getContext('2d');
+  if(!ctx || multChartInst) return;
+  multChartInst = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels: HIST_SEED.labels,
+      datasets:[
+        {label:'EV 2030 ($851)',   data:HIST_SEED.ev2030,   borderColor:'#d29922', backgroundColor:'#d2992211', borderWidth:2, pointRadius:2, tension:0.3, fill:false, spanGaps:true},
+        {label:'Base 2030 ($715)', data:HIST_SEED.base2030, borderColor:'#3fb950', backgroundColor:'#3fb95011', borderWidth:2, pointRadius:2, tension:0.3, fill:false, spanGaps:true},
+        {label:'Bear 2030 ($275)', data:HIST_SEED.bear2030, borderColor:'#f85149', backgroundColor:'#f8514911', borderWidth:2, pointRadius:2, tension:0.3, fill:false, spanGaps:true},
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      scales:{
+        x:{ticks:{color:'#8b949e',font:{size:10}},grid:{color:'#21262d'}},
+        y:{ticks:{color:'#8b949e',font:{size:10},callback:v=>v+'x'},grid:{color:'#21262d'}}
+      },
+      plugins:{legend:{labels:{color:'#8b949e',font:{size:11},boxWidth:10}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+'x'}}}
+    }
+  });
+}
+
+// Session multiples tracker
+const MULT_SESSION = {labels:[], ev:[], base:[], bear:[]};
+let lastMultPush = 0;
+
+function pushMultPoint(){
+  const now = Date.now();
+  if(now - lastMultPush < 55000) return;
+  if(!P.bmnr) return;
+  const mp = P.bmnr.price;
+  const t  = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  MULT_SESSION.labels.push(t);
+  MULT_SESSION.ev.push(+(851/mp).toFixed(1));
+  MULT_SESSION.base.push(+(715/mp).toFixed(1));
+  MULT_SESSION.bear.push(+(275/mp).toFixed(1));
+  lastMultPush = now;
+  updateMultChart();
+}
+
+function updateMultChart(){
+  if(!multChartInst) return;
+  const allLabels = [...HIST_SEED.labels, ...MULT_SESSION.labels];
+  multChartInst.data.labels = allLabels;
+  multChartInst.data.datasets[0].data = [...HIST_SEED.ev2030,   ...MULT_SESSION.ev];
+  multChartInst.data.datasets[1].data = [...HIST_SEED.base2030, ...MULT_SESSION.base];
+  multChartInst.data.datasets[2].data = [...HIST_SEED.bear2030, ...MULT_SESSION.bear];
+  multChartInst.update('none');
+  s('multTs', 'Live calc from BMNR price · updates every 60s');
+  setDot('multD', true);
+}
+
 // ── HISTORICAL CHART DATA ─────────────────────────────────────────────
 // Seed: verified data points from BMNR weekly press releases + market data
 // Dates are weekly anchors; prices verified from press releases and searches
@@ -1196,22 +1349,29 @@ const HIST_SEED = {
   // [date_label, eth, bmnr, btc, gold]
   // Sources: BMNR 8-K press releases, Yahoo Finance, Fortune.com
   data: [
-    ['Mar 17', 1995, 7.20,  81200, 3010],
-    ['Mar 24', 2060, 9.80,  85000, 3085],
-    ['Mar 31', 2133, 12.40, 82500, 3115],
-    ['Apr 5',  2123, 13.50, 83000, 3140],
-    ['Apr 8',  2254, 18.20, 80000, 3080],
-    ['Apr 10', 2196, 21.00, 71000, 3230],
-    ['Apr 13', 2206, 21.48, 74543, 3230],
-    ['Apr 15', 2369, 22.34, 74954, 4792], // live anchor
+    // [date, eth_price, bmnr, btc, gold, eth_held, bmnr_ev2030, bmnr_base2030, bmnr_bear2030]
+    ['Mar 17', 1995, 7.20,  81200, 3010, 4422659,  null, null, null],
+    ['Mar 24', 2060, 9.80,  85000, 3085, 4550000,  null, null, null],
+    ['Mar 31', 2133, 12.40, 82500, 3115, 4660903,  null, null, null],
+    ['Apr 5',  2123, 13.50, 83000, 3140, 4732082,  null, null, null],
+    ['Apr 8',  2254, 18.20, 80000, 3080, 4803334,  null, null, null],
+    ['Apr 10', 2196, 21.00, 71000, 3230, 4803334,  null, null, null],
+    ['Apr 13', 2206, 21.48, 74543, 3230, 4874858,  null, null, null],
+    ['Apr 15', 2369, 22.34, 74954, 4792, 4874858,  null, null, null],
+    ['Apr 20', 2311, 22.53, 75749, 4792, 4976485,  851/22.53, 715/22.53, 275/22.53],
+    ['Apr 26', 2398, 22.14, 79409, 4686, 4976485,  851/22.14, 715/22.14, 275/22.14], // live anchor
   ],
   get labels(){ return this.data.map(d=>d[0]); },
   get eth()   { return this.data.map(d=>d[1]); },
   get bmnr()  { return this.data.map(d=>d[2]); },
   get btc()   { return this.data.map(d=>d[3]); },
   get gold()  { return this.data.map(d=>d[4]); },
-  get eb()    { return this.data.map(d=>+(d[1]/d[3]).toFixed(4)); },
-  get eg()    { return this.data.map(d=>+(d[1]/(d[4]*31.1035)).toFixed(4)); },
+  get eb()      { return this.data.map(d=>+(d[1]/d[3]).toFixed(4)); },
+  get eg()      { return this.data.map(d=>+(d[1]/(d[4]*31.1035)).toFixed(4)); },
+  get eth_held(){ return this.data.map(d=>d[5]||null); },
+  get ev2030()  { return this.data.map(d=>d[6]?+d[6].toFixed(1):null); },
+  get base2030(){ return this.data.map(d=>d[7]?+d[7].toFixed(1):null); },
+  get bear2030(){ return this.data.map(d=>d[8]?+d[8].toFixed(1):null); },
 };
 
 // Session data accumulator — adds a point every 60 seconds
