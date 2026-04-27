@@ -355,7 +355,7 @@
   </div>
 
   <!-- BMNR POSITION -->
-  <div class="stitle">BMNR Position <span class="sub">— all holdings from 8-K Apr 13, 2026 · prices update live every 5s</span></div>
+  <div class="stitle">BMNR Position <span class="sub">— all holdings from 8-K Apr 20, 2026 · prices update live every 5s</span></div>
 
   <!-- mNAV card — full width -->
   <div class="card" style="margin-bottom:12px;">
@@ -422,15 +422,15 @@
     <div class="card">
       <div class="ch"><span class="ct">Ethereum (ETH)</span><span class="bg bl">LIVE VALUE</span></div>
       <div class="cb">
-        <div class="mr"><span class="ml">Total ETH held</span><span class="mv g">4,874,858 ETH</span></div>
-        <div class="mr"><span class="ml">ETH staked via MAVAN</span><span class="mv">3,334,637 (68.4%)</span></div>
-        <div class="mr"><span class="ml">% of ETH total supply</span><span class="mv b">4.04% of 120.7M</span></div>
-        <div class="mr"><span class="ml">5% "Alchemy" goal</span><span class="mv">80.7% there · 1.16M left</span></div>
-        <div class="ebar" style="margin:4px 0 8px;"><div class="efil" style="width:80.7%"></div></div>
+        <div class="mr"><span class="ml">Total ETH held</span><span class="mv g" id="ethHeldAmt">4,976,485 ETH</span></div>
+        <div class="mr"><span class="ml">ETH staked via MAVAN</span><span class="mv">" id="ethStakedAmt">3,334,637 (67%)</span></div>
+        <div class="mr"><span class="ml">% of ETH total supply</span><span class="mv b">4.12% of 120.7M</span></div>
+        <div class="mr"><span class="ml">5% "Alchemy" goal</span><span class="mv">82.4% there · 1.06M left</span></div>
+        <div class="ebar" style="margin:4px 0 8px;"><div class="efil" style="width:82.4%"></div></div>
         <div class="mr"><span class="ml">ETH value at live price</span><span class="mv g" id="ethHVal">—</span></div>
-        <div class="mr"><span class="ml">Annualised staking yield</span><span class="mv g">$212M @ 2.89% APY</span></div>
-        <div class="mr"><span class="ml">Projected (fully staked)</span><span class="mv">$310M / yr</span></div>
-        <div class="mr"><span class="ml">CESR benchmark</span><span class="mv">2.73% (BMNR: 2.89%)</span></div>
+        <div class="mr"><span class="ml">Annualised staking yield</span><span class="mv g">$221M @ 2.88% APY</span></div>
+        <div class="mr"><span class="ml">Projected (fully staked)</span><span class="mv">$330M / yr</span></div>
+        <div class="mr"><span class="ml">CESR benchmark</span><span class="mv">2.76% (BMNR: 2.88%)</span></div>
         <div class="pts" style="margin-top:8px;"><div class="pdot" id="holdD"></div><span id="holdTs">Connecting…</span></div>
       </div>
     </div>
@@ -592,7 +592,7 @@
             <ul style="margin:6px 0 0 16px;line-height:2;">
               <li>CLARITY Act signed into law — digital asset regulatory clarity established</li>
               <li>RWA tokenization: $100B on ETH by end-2027 (currently $29.1B, +7.5%/mo)</li>
-              <li>MAVAN staking revenue scales: $212M current → $530M at ETH $10,000</li>
+              <li>MAVAN staking revenue scales: $221M current → $530M at ETH $10,000</li>
               <li>Moderate SWF allocation ($20–40B) to ETH as reserve asset</li>
               <li>ETH/BTC ratio recovers to 0.040–0.050 as ETH outperformance resumes</li>
               <li>BTC cycle beta: ETH rides broader crypto bull market 2026–2027</li>
@@ -743,6 +743,9 @@
 <script>
 // ── BALANCE SHEET CONSTANTS (8-K April 20, 2026) ────────────────────
 const ETH_HELD=4976485, BTC_HELD=199, ORBS=107e6, BEAST=200e6, CASH=1120e6, SHARES=455e6;
+// ── 8-K Apr 20, 2026 — single source of truth ────────────────────────
+const ETH_STAKED=3334637, ETH_SUPPLY=120.7e6, ETH_GOAL=ETH_SUPPLY*0.05;
+const STAKING_REV=221e6, STAKING_YIELD=2.88, CESR=2.76, STAKING_PROJ=330e6;
 const KEY_NAME='finnhub_key';
 
 // Key pre-loaded via BAKED_KEY fallback in getKey()
@@ -908,10 +911,30 @@ function sc(id,cls){const e=document.getElementById(id);if(!e)return;e.className
 function ss(id,p,v){const e=document.getElementById(id);if(e)e.style[p]=v;}
 function setDot(id,ok){ss(id,'background',ok?'var(--green)':'var(--red)');}
 
+// ── ETH CARD — single source of truth from constants ─────────────────
+function renderEthCard(ethPrice){
+  const pct      = (ETH_HELD / ETH_SUPPLY * 100).toFixed(2);
+  const goalPct  = (ETH_HELD / ETH_GOAL * 100).toFixed(1);
+  const left     = ((ETH_GOAL - ETH_HELD)/1e6).toFixed(2);
+  const stakedPct= (ETH_STAKED / ETH_HELD * 100).toFixed(1);
+  const revM     = (STAKING_REV/1e6).toFixed(0);
+  const projM    = (STAKING_PROJ/1e6).toFixed(0);
+  s('ethHeldAmt',  ETH_HELD.toLocaleString()+' ETH');
+  s('ethStakedAmt',ETH_STAKED.toLocaleString()+' ('+stakedPct+'%)');
+  s('ethSupplyPct',pct+'% of 120.7M');
+  s('alchemyGoal', goalPct+'% there · '+left+'M left');
+  ss('alchemyBar','width',goalPct+'%');
+  s('stakingRev',  '$'+revM+'M @ '+STAKING_YIELD+'% APY');
+  s('stakingProj', '$'+projM+'M / yr');
+  s('cesrBench',   CESR+'% (BMNR: '+STAKING_YIELD+'%)');
+  if(ethPrice) s('ethHVal', fmtB(ETH_HELD*ethPrice));
+}
+
 // ── RENDER ───────────────────────────────────────────────────────────
 function render(){
   const {eth,btc,gold,bmnr}=P;
   const now=new Date();
+  renderEthCard(eth?.price);
 
   // ETH
   if(eth){
