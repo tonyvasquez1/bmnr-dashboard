@@ -359,7 +359,7 @@
 
   <!-- mNAV card — full width -->
   <div class="card" style="margin-bottom:12px;">
-    <div class="ch"><span class="ct">mNAV — Two Methods Explained</span><span class="bg bm">8-K APR 13 · LIVE PRICES</span></div>
+    <div class="ch"><span class="ct">mNAV — Two Methods Explained</span><span class="bg bm">8-K APR 20 · LIVE PRICES</span></div>
     <div class="cb">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;flex-wrap:wrap;">
         <!-- Method 1: Our calculation -->
@@ -486,7 +486,7 @@
         <div class="cstep"><span>⏳</span> Banking Committee markup — <strong>NOT YET SCHEDULED</strong></div>
         <div class="cstep"><span>○</span> Full Senate vote (60 votes needed)</div>
         <div class="cstep"><span>○</span> House reconciliation → Presidential signature</div>
-        <div class="cnote">Senate returned Apr 13. Tim Scott has not set a date. Hagerty + Lummis targeting late April. Moreno: if not on Senate floor by May, risks post-midterm freeze.</div>
+        <div class="cnote">Senator Tillis confirmed no April markup — pushed to mid-May. 120+ firms (Coinbase, Ripple, a16z, Kraken) issued May ultimatum. Galaxy CEO Novogratz: "done in May." Galaxy Research Thorn: "50-50, possibly lower." Watch: Senate Banking Committee first week of May.</div>
       </div>
     </div>
     <div class="card">
@@ -551,13 +551,13 @@
               <td class="bl1">$11,175</td><td>$226</td>
               <td class="bl1">$19,750</td><td>$403</td>
               <td class="bl1">$26,400</td><td id="ev29">$611</td>
-              <td class="bl1">$32,950</td><td id="ev30">$858</td>
+              <td class="bl1">$32,950</td><td id="ev30">$851</td>
             </tr>
           </tbody>
         </table>
       </div>
       <div class="kpi3">
-        <div class="kpi"><div class="kpi-lbl">Current BMNR → 2030 weighted avg ($858)</div><div class="kpi-val" style="color:var(--amber);" id="evMult">—</div></div>
+        <div class="kpi"><div class="kpi-lbl">Current BMNR → 2030 weighted avg ($851)</div><div class="kpi-val" style="color:var(--amber);" id="evMult">—</div></div>
         <div class="kpi"><div class="kpi-lbl">Median 2030 = Base case = $715</div><div class="kpi-val" style="color:var(--green);">33x</div></div>
         <div class="kpi"><div class="kpi-lbl">Bear case 2030 — ETH $22,000 · BMNR $275</div><div class="kpi-val" style="color:var(--red);" id="bearMult">12x</div></div>
       </div>
@@ -641,34 +641,6 @@
     </div>
   </div>
 
-  <!-- CLAUDE UPDATE SNIPPET -->
-  <div class="stitle">Claude Update Snippet</div>
-  <div class="card">
-    <div class="ch"><span class="ct">Auto-Generated Update Command</span><span class="bg bl">USES LIVE PRICES + LIVE CONSTANTS</span></div>
-    <div class="cb">
-      <div style="font-size:12px;color:var(--text2);margin-bottom:12px;">
-        Tap the button below to copy the full update command to your clipboard, then paste it into Claude.
-        <strong style="color:var(--text);">Before sending, check the BMNR website for a new 8-K</strong> and fill in the bracketed fields.
-      </div>
-      <!-- Large tap target for iPad -->
-      <button onclick="copySnip()" id="copyBtn" style="
-        width:100%; padding:18px; border-radius:8px;
-        background:var(--green); color:#000; border:none;
-        font-family:var(--mono); font-size:16px; font-weight:700;
-        cursor:pointer; letter-spacing:.05em; margin-bottom:12px;
-        -webkit-tap-highlight-color:transparent;
-      ">⎘ TAP TO COPY UPDATE COMMAND</button>
-      <div id="copyConfirm" style="display:none;text-align:center;font-family:var(--mono);font-size:14px;color:var(--green);padding:8px;">✓ Copied — paste into Claude</div>
-      <!-- Snippet text also shown so you can read / manually select if needed -->
-      <div class="snip" style="margin-top:8px;">
-        <div class="slbl">Command text (tap button above to copy — or select manually)</div>
-        <div class="stxt" id="snipTxt" style="user-select:text;-webkit-user-select:text;">Loading…</div>
-      </div>
-      <!-- Hidden textarea for iOS copy fallback -->
-      <textarea id="snipTA" style="position:absolute;left:-9999px;top:-9999px;opacity:0;" readonly></textarea>
-    </div>
-  </div>
-
   <!-- DOCUMENT DOWNLOAD -->
   <div class="stitle">Document Download</div>
   <div class="card">
@@ -724,7 +696,7 @@
           <tr><td>mNAV — Method 2 (530M predicted)</td><td class="surl">Calculated live: BMNR price ÷ (Total NAV ÷ 530M). Share count predicted by bmnr.rocks via ATM equity issuance tracking. See bmnr.rocks/blog/how-predicted-mnav-works</td><td>Derived from live prices</td><td>Every 5s</td></tr>
           <tr><td>BMNR NAV composition</td><td class="surl">ETH value (live) + BTC value (live) + ORBS $107M (book) + Beast $200M (book) + Cash $1,120M (static). Static values from 8-K April 20, 2026.</td><td>Partly live, partly static</td><td>Every 5s</td></tr>
           <tr><td>Historical price seed data</td><td class="surl">Weekly anchor prices from BMNR press releases (8-K filings via SEC EDGAR) and contemporaneous sources (Fortune.com, Yahoo Finance, 24/7 Wall St.)</td><td>Verified historical</td><td>Static</td></tr>
-          <tr><td>BMNR balance sheet</td><td class="surl">sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=BMNR&type=8-K — paste 8-K press release text to Claude after each filing</td><td>Free / manual</td><td>After 8-K</td></tr>
+          <tr><td>BMNR balance sheet</td><td class="surl">PRNewswire + SEC EDGAR — Claude searches automatically each weekly update and pulls latest press release figures. No manual paste needed.</td><td>Auto via Claude</td><td>Weekly / after 8-K</td></tr>
           <tr><td>RWA on-chain data</td><td class="surl">app.rwa.xyz (dashboard) · api.rwa.xyz (free tier API)</td><td>Free account</td><td>Weekly</td></tr>
           <tr><td>ETH issuance + blob utilisation</td><td class="surl">ultrasound.money</td><td>Public</td><td>Monthly</td></tr>
           <tr><td>EigenLayer TVL</td><td class="surl">defillama.com/protocol/eigenlayer</td><td>Free</td><td>Monthly</td></tr>
@@ -736,7 +708,7 @@
   </div>
 
   <div class="footnote">
-    Dashboard v30 · Real-time prices: ETH, BTC, BMNR via Finnhub free API · Gold via CoinGecko PAXG → gold-api.com → Frankfurter/ECB (three-source waterfall, no key needed). Updates every 5 seconds. BMNR balance sheet from 8-K April 20, 2026 (data as of April 19, 2026 4pm ET). Next earnings: April 29, 2026. Not investment advice.
+    Dashboard v31 · ETH price: CoinGecko · BTC, BMNR: Finnhub · Gold: CoinGecko PAXG → gold-api.com → Frankfurter/ECB waterfall · Updates every 5s · Balance sheet: 8-K Apr 20, 2026 (data as of Apr 19, 2026 4pm ET) · Claude searches PRNewswire/SEC automatically each update · Next earnings: Apr 29, 2026 · Not investment advice.
   </div>
 </div><!-- end mainDash -->
 
@@ -1043,8 +1015,7 @@ function render(){
 
   // Snippet
   const ds=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-    renderSnippet();
-  pushSessionPoint();
+    pushSessionPoint();
   pushMnavPoint();
 }
 
@@ -1125,96 +1096,10 @@ function saveDashboard(){
   setTimeout(()=> URL.revokeObjectURL(url), 5000);
 }
 
-function copySnip(){
-  const text = document.getElementById('snipTxt')?.textContent || '';
-  const btn  = document.getElementById('copyBtn');
-  const conf = document.getElementById('copyConfirm');
-
-  // Method 1: Modern clipboard API (works in Safari 13.1+ with user gesture)
-  if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(text)
-      .then(()=>{ showCopySuccess(btn, conf); })
-      .catch(()=>{ iosTextareaCopy(text, btn, conf); });
-    return;
-  }
-  // Method 2: iOS textarea select fallback
-  iosTextareaCopy(text, btn, conf);
-}
-
-function iosTextareaCopy(text, btn, conf){
-  const ta = document.getElementById('snipTA');
-  if(!ta) return;
-  ta.style.position = 'fixed';
-  ta.style.top = '0';
-  ta.style.left = '0';
-  ta.style.opacity = '0';
-  ta.value = text;
-  ta.focus();
-  ta.select();
-  // iOS requires setSelectionRange
-  ta.setSelectionRange(0, 99999);
-  try{
-    const ok = document.execCommand('copy');
-    if(ok){ showCopySuccess(btn, conf); }
-    else  { showCopyFail(btn); }
-  } catch(e){ showCopyFail(btn); }
-  ta.style.position = 'absolute';
-  ta.style.left = '-9999px';
-}
-
-function showCopySuccess(btn, conf){
-  if(btn){ btn.style.background='var(--teal)'; btn.textContent='✓ COPIED — PASTE INTO CLAUDE'; }
-  if(conf){ conf.style.display='block'; }
-  setTimeout(()=>{
-    if(btn){ btn.style.background='var(--green)'; btn.textContent='⎘ TAP TO COPY UPDATE COMMAND'; }
-    if(conf){ conf.style.display='none'; }
-  }, 4000);
-}
-
-function showCopyFail(btn){
-  if(btn){ btn.style.background='var(--amber)'; btn.textContent='SELECT TEXT MANUALLY — TAP & HOLD BELOW'; }
-  setTimeout(()=>{
-    if(btn){ btn.style.background='var(--green)'; btn.textContent='⎘ TAP TO COPY UPDATE COMMAND'; }
-  }, 5000);
-}
 function showBnr(t,msg){hideBnrs();document.getElementById(t==='err'?'errTxt':'okTxt').textContent=msg;document.getElementById(t==='err'?'errBnr':'okBnr').classList.add('show');setTimeout(hideBnrs,7000);}
 function hideBnrs(){['errBnr','okBnr'].forEach(id=>document.getElementById(id).classList.remove('show'));}
 
 // ── BOOT ──────────────────────────────────────────────────────────────
-function renderSnippet(){
-  const ep  = P.eth?.price  || 2311;
-  const bp  = P.btc?.price  || 75749;
-  const gp  = P.gold?.price || 4792;
-  const mp  = P.bmnr?.price || 22.53;
-  const ds  = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-
-  // Pull balance sheet from live constants so snippet always reflects latest 8-K load
-  const ethHeldFmt  = ETH_HELD.toLocaleString();
-  const cashFmt     = (CASH >= 1e9)
-    ? '$' + (CASH/1e9).toFixed(2) + 'B'
-    : '$' + Math.round(CASH/1e6) + 'M';
-  const orbsFmt     = '$' + Math.round(ORBS/1e6) + 'M';
-  const btcHeldFmt  = BTC_HELD;
-
-  s('snipTxt',
-`STEP 1 — Before updating, check the latest BMNR press release:
-  https://www.bitminetech.io/investor-relations#press-releases
-  (Use web search "Bitmine BMNR press release holdings" if the site is blocked)
-  Pull the latest 8-K figures for: ETH held, BTC held, ORBS book value, cash, staking revenue, yield %.
-
-STEP 2 — Paste this full block into Claude:
-
-Update BMNR document from latest version:
-
-ETH: $${Math.round(ep).toLocaleString()} | BMNR: $${mp.toFixed(2)} | BTC: $${Math.round(bp).toLocaleString()} | Gold: $${Math.round(gp).toLocaleString()}/oz
-CLARITY Polymarket: [check polymarket.com] | Banking Committee markup: [check news]
-RWA on-chain: [check rwa.xyz] | EigenLayer TVL: [check defillama.com]
-BMNR latest 8-K: ${ethHeldFmt} ETH | ${btcHeldFmt} BTC | ${orbsFmt} ORBS | ${cashFmt} cash | [staking rev from 8-K] | [yield % from 8-K]
-Date: ${ds}
-
-Recalculate mNAV (both 455M and 530M methods), update Section 1 and Section 17 balance sheet,
-update all holdings cards, flag any scenario probability changes, update historical price table.`);
-}
 
 // ── NAV PIE CHART ────────────────────────────────────────────────────
 let navPieInstance = null;
@@ -1593,7 +1478,6 @@ function boot(){
   showDash();
   // Render immediately from seed data so dashboard is never blank
   render();
-  renderSnippet();
   s('lStat','Seeded · Connecting live…');
   startTicker();
 }
