@@ -691,7 +691,7 @@
           <tr><td>ETH price + 24h change</td><td class="surl">finnhub.io/api/v1/quote?symbol=BINANCE:ETHUSDT — Binance spot price via Finnhub</td><td>Free API key — finnhub.io/register</td><td>Every 5s</td></tr>
           <tr><td>BTC price + 24h change</td><td class="surl">finnhub.io/api/v1/quote?symbol=BINANCE:BTCUSDT — Binance spot price via Finnhub</td><td>Free API key</td><td>Every 5s</td></tr>
           <tr><td>BMNR stock price + 24h change</td><td class="surl">finnhub.io/api/v1/quote?symbol=BMNR — NYSE real-time quote via Finnhub</td><td>Free API key</td><td>Every 5s</td></tr>
-          <tr><td>Gold spot price (XAU/USD)</td><td class="surl">Three-source waterfall — (1) api.coingecko.com PAXG (1:1 gold token, no key) → (2) gold-api.com/price/XAU (free, no key) → (3) api.frankfurter.app/latest?from=XAU&to=USD (ECB open data, no key). First successful source wins each cycle.</td><td>Free, no key needed</td><td>Every 5s</td></tr>
+          <tr><td>Gold spot price (XAU/USD)</td><td class="surl">Three-source waterfall — (1) gold-api.com/price/XAU (real-time spot, primary) → (2) api.coingecko.com PAXG (1:1 gold token, fallback) → (3) api.frankfurter.app XAU/USD (ECB, last resort). First successful source wins each cycle.</td><td>Free, no key needed</td><td>Every 5s</td></tr>
           <tr><td>mNAV — Method 1 (455M shares)</td><td class="surl">Calculated live: BMNR price ÷ (Total NAV ÷ 455M). Share count from press coverage (IBTimes Apr 14, 2026). Lower bound.</td><td>Derived from live prices</td><td>Every 5s</td></tr>
           <tr><td>mNAV — Method 2 (530M predicted)</td><td class="surl">Calculated live: BMNR price ÷ (Total NAV ÷ 530M). Share count predicted by bmnr.rocks via ATM equity issuance tracking. See bmnr.rocks/blog/how-predicted-mnav-works</td><td>Derived from live prices</td><td>Every 5s</td></tr>
           <tr><td>BMNR NAV composition</td><td class="surl">ETH value (live) + BTC value (live) + ORBS $107M (book) + Beast $200M (book) + Cash $1,120M (static). Static values from 8-K April 20, 2026.</td><td>Partly live, partly static</td><td>Every 5s</td></tr>
@@ -818,16 +818,28 @@ async function fetchCoinGecko(coinId){
   }catch(e){return null;}
 }
 
-// ── GOLD via CoinGecko PAXG ──────────────────────────────────────────
-// PAX Gold (PAXG) is a 1:1 gold-backed ERC-20 token.
-// 1 PAXG = 1 troy oz of gold. Price tracks gold spot within ~0.1%.
-// Same CoinGecko endpoint already working for ETH/BTC — no key, no CORS issues.
-const GOLD_SEED = {price:4795, prevClose:4767, change:28, changePct:0.59, time:new Date('2026-04-15T12:00:00'), seed:true};
+// ── GOLD price waterfall ─────────────────────────────────────────────
+// 1. gold-api.com (real-time spot, no key, most accurate)
+// 2. CoinGecko PAXG (1:1 gold-backed token, slight lag)
+// 3. Frankfurter/ECB (fallback)
+const GOLD_SEED = {price:4727, prevClose:4686, change:41, changePct:0.87, time:new Date('2026-04-26'), seed:true};
 
 async function fetchGold(){
-  const cb = '?_='+Date.now(); // cache-bust every call
+  const cb = '?_='+Date.now();
 
-  // Attempt 1: CoinGecko PAXG (1:1 gold-backed token)
+  // Attempt 1: gold-api.com — real-time spot gold, no key, CORS allowed
+  try{
+    const r=await fetch('https://gold-api.com/price/XAU'+cb,{signal:AbortSignal.timeout(10000),cache:'no-store'});
+    if(r.ok){
+      const d=await r.json();
+      if(d?.price&&d.price>500){
+        const chg=d.ch||0, chgP=d.chp||0;
+        return {price:d.price, prevClose:d.prev_close_price||d.price, change:chg, changePct:chgP, time:new Date(), seed:false, src:'gold-api.com'};
+      }
+    }
+  }catch(e){}
+
+  // Attempt 2: CoinGecko PAXG (1:1 gold-backed token)
   try{
     const url='https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd&include_24hr_change=true'+cb;
     const r=await fetch(url,{signal:AbortSignal.timeout(10000),cache:'no-store'});
@@ -838,19 +850,6 @@ async function fetchGold(){
       if(price&&price>500){
         const prev=price/(1+(chgPct||0)/100);
         return {price, prevClose:prev, change:price-prev, changePct:chgPct||0, time:new Date(), seed:false, src:'CoinGecko/PAXG'};
-      }
-    }
-  }catch(e){}
-
-  // Attempt 2: gold-api.com free endpoint (no key, CORS allowed)
-  try{
-    const r=await fetch('https://gold-api.com/price/XAU'+cb,{signal:AbortSignal.timeout(10000),cache:'no-store'});
-    if(r.ok){
-      const d=await r.json();
-      // Response: {price, prev_close_price, ch, chp, timestamp}
-      if(d?.price&&d.price>500){
-        const chg=d.ch||0, chgP=d.chp||0;
-        return {price:d.price, prevClose:d.prev_close_price||d.price, change:chg, changePct:chgP, time:new Date(), seed:false, src:'gold-api.com'};
       }
     }
   }catch(e){}
