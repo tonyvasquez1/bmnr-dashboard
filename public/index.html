@@ -13,7 +13,7 @@
   :root{
     --bg:#0a0c0f;--surface:#0f1318;--surface2:#161b22;
     --border:#21262d;--border2:#30363d;
-    --text:#e6edf3;--text2:#8b949e;--text3:#484f58;
+    --text:#e6edf3;--text2:#a0aab4;--text3:#484f58;
     --green:#3fb950;--green-dim:#1a3a1e;
     --blue:#58a6ff;--blue-dim:#0d2240;
     --amber:#d29922;--amber-dim:#2d2009;
@@ -22,7 +22,7 @@
     --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;min-height:100vh;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.7;min-height:100vh;}
   /* Header */
   .hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
   .logo{font-family:var(--mono);font-size:17px;font-weight:600;letter-spacing:.05em;}
@@ -126,8 +126,8 @@
   .apibox{background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
   .apikey-val{font-family:var(--mono);font-size:13px;color:var(--teal);word-break:break-all;flex:1;}
   /* Section titles */
-  .stitle{font-family:var(--mono);font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);margin:24px 0 12px;display:flex;align-items:center;gap:10px;}
-  .stitle::after{content:'';flex:1;height:1px;background:var(--border);}
+  .stitle{font-family:var(--mono);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--text);margin:28px 0 12px;display:flex;align-items:center;gap:10px;}
+  .stitle::after{content:'';flex:1;height:2px;background:var(--border2);}
   .stitle .sub{font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text2);}
   /* Banners */
   .bnr{border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;display:none;align-items:center;gap:8px;}
@@ -423,7 +423,7 @@
       <div class="ch"><span class="ct">Ethereum (ETH)</span><span class="bg bl">LIVE VALUE</span></div>
       <div class="cb">
         <div class="mr"><span class="ml">Total ETH held</span><span class="mv g" id="ethHeldAmt">5,078,386 ETH</span></div>
-        <div class="mr"><span class="ml">ETH staked via MAVAN</span><span class="mv">" id="ethStakedAmt">3,334,637 (67%)</span></div>
+        <div class="mr"><span class="ml">ETH staked via MAVAN</span><span class="mv" id="ethStakedAmt">3,701,589 (73%)</span></div>
         <div class="mr"><span class="ml">% of ETH total supply</span><span class="mv b">4.12% of 120.7M</span></div>
         <div class="mr"><span class="ml">5% "Alchemy" goal</span><span class="mv">82.4% there · 1.06M left</span></div>
         <div class="ebar" style="margin:4px 0 8px;"><div class="efil" style="width:82.4%"></div></div>
