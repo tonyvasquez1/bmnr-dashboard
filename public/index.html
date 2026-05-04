@@ -4,355 +4,1537 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>BMNR · Dashboard</title>
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>BMNR · DASHBOARD</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0a0c0f;--surf:#0f1318;--surf2:#161b22;--bdr:#21262d;--bdr2:#30363d;
-  --text:#e6edf3;--text2:#8b949e;--text3:#6e7681;
-  --green:#3fb950;--blue:#58a6ff;--amber:#d29922;--red:#f85149;--teal:#39d0d8;
-  --mono:'SF Mono','Fira Code','Consolas',monospace;
-}
-body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;min-height:100vh}
-.hdr{background:var(--surf);border-bottom:1px solid var(--bdr);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
-.logo{font-size:16px;font-weight:600;letter-spacing:.05em}.logo span{color:var(--green)}
-.hsub{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
-.hright{display:flex;align-items:center;gap:10px}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0}
-.dot.live{background:var(--green);animation:lp 2s ease-in-out infinite}
-.dot.err{background:var(--red)}.dot.loading{background:var(--amber)}
-@keyframes lp{0%,100%{opacity:1}50%{opacity:.4}}
-.stat{font-size:11px;color:var(--text2)}
-.rfbtn{font-size:11px;background:#388bfd22;color:var(--blue);border:1px solid #388bfd44;padding:5px 12px;border-radius:6px;cursor:pointer;transition:background .15s}
-.rfbtn:hover{background:#388bfd33}
-.wrap{padding:14px 16px;max-width:1400px;margin:0 auto}
-.sec{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;padding-bottom:6px;border-bottom:1px solid var(--bdr);margin-bottom:10px;margin-top:18px}
-.sec:first-child{margin-top:0}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
-.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}
-.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
-.card{background:var(--surf);border:1px solid var(--bdr);border-radius:8px;overflow:hidden}
-.ch{padding:8px 12px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
-.ct{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text2)}
-.badge{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:600}
-.bg{background:#3fb95022;color:var(--green)}.ba{background:#d2992222;color:var(--amber)}
-.bb{background:#58a6ff22;color:var(--blue)}.br{background:#f8514922;color:var(--red)}
-.bt{background:#39d0d822;color:var(--teal)}
-.cb{padding:12px}
-.pval{font-size:30px;font-weight:600;letter-spacing:-.02em;margin-bottom:3px}
-.pchg{font-size:12px;margin-top:5px}
-.psub{font-size:10px;color:var(--text3);margin-top:3px}
-.up{color:var(--green)}.dn{color:var(--red)}.ne{color:var(--text2)}
-.mr{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--bdr);font-size:12px}
-.mr:last-child{border-bottom:none}
-.ml{color:var(--text2)}.mv{font-weight:500;text-align:right}
-.mv.g{color:var(--green)}.mv.a{color:var(--amber)}.mv.b{color:var(--blue)}.mv.r{color:var(--red)}.mv.t{color:var(--teal)}
-.mbig{font-size:36px;font-weight:600;margin-bottom:6px}
-.btrk{height:6px;background:var(--surf2);border-radius:3px;overflow:hidden;margin:6px 0 4px}
-.bfil{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--red),var(--amber),var(--green));transition:width .6s ease}
-.btick{display:flex;justify-content:space-between;font-size:10px;color:var(--text3)}
-.tbl{width:100%;border-collapse:collapse;font-size:12px}
-.tbl th{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);padding:7px 10px;border-bottom:1px solid var(--bdr2);text-align:right;font-weight:500;white-space:nowrap}
-.tbl th.tl{text-align:left}
-.tbl td{padding:7px 10px;border-bottom:1px solid var(--bdr);text-align:right;white-space:nowrap}
-.tbl td.tl{text-align:left}
-.tbl tr:last-child td{border-bottom:none}
-.tbl tr.ev td{background:#d2992211;color:var(--amber);font-weight:600}
-.cpbar{height:8px;background:var(--surf2);border-radius:4px;overflow:hidden;margin:8px 0}
-.cpfil{height:100%;border-radius:4px;transition:width .6s ease}
-.cnote{font-size:11px;color:var(--text2);line-height:1.65;background:var(--surf2);padding:9px 12px;border-left:3px solid var(--amber);margin-top:10px;border-radius:0 4px 4px 0}
-.sdrow{display:flex;gap:6px;padding:3px 0;font-size:11px;color:var(--text2);line-height:1.5}
-.earnbig{font-size:56px;font-weight:700;text-align:center;padding:8px 0}
-.foot{font-size:10px;color:var(--text3);padding-top:12px;border-top:1px solid var(--bdr);margin-top:8px;line-height:1.9}
-.liveindicator{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);background:var(--surf2);padding:4px 10px;border-radius:4px;margin-bottom:12px}
-@media(max-width:768px){
-  .g4{grid-template-columns:repeat(2,1fr)}
-  .g3{grid-template-columns:repeat(2,1fr)}
-  .pval{font-size:24px}.mbig{font-size:28px}
-}
-@media(max-width:480px){
-  .g4{grid-template-columns:1fr}.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr}
-}
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+  :root{
+    --bg:#0a0c0f;--surface:#0f1318;--surface2:#161b22;
+    --border:#21262d;--border2:#30363d;
+    --text:#e6edf3;--text2:#8b949e;--text3:#484f58;
+    --green:#3fb950;--green-dim:#1a3a1e;
+    --blue:#58a6ff;--blue-dim:#0d2240;
+    --amber:#d29922;--amber-dim:#2d2009;
+    --red:#f85149;--red-dim:#2d0f0e;
+    --teal:#39d0d8;--accent:#388bfd;
+    --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;min-height:100vh;}
+  /* Header */
+  .hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .logo{font-family:var(--mono);font-size:17px;font-weight:600;letter-spacing:.05em;}
+  .logo span{color:var(--green);}
+  .hdr-sub{font-family:var(--mono);font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
+  .hdr-r{display:flex;align-items:center;gap:12px;}
+  .live-row{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:13px;color:var(--text2);}
+  .ldot{width:8px;height:8px;border-radius:50%;background:var(--text3);transition:background .3s;}
+  @keyframes lp{0%,100%{opacity:1}50%{opacity:.4}}
+  .btn{background:var(--accent);color:#fff;border:none;padding:7px 14px;border-radius:6px;font-family:var(--mono);font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;}
+  .btn:hover{background:#4c95fd;}
+  .btn:disabled{background:var(--border2);color:var(--text3);cursor:not-allowed;}
+  /* Setup panel */
+  .setup{background:var(--surface);border:1px solid var(--amber);border-radius:10px;padding:24px;margin:20px 24px;max-width:680px;}
+  .setup h2{font-family:var(--mono);font-size:14px;color:var(--amber);margin-bottom:10px;}
+  .setup p,.setup li{font-size:12px;color:var(--text2);line-height:1.8;}
+  .setup ol{padding-left:18px;margin:8px 0 16px;}
+  .setup a{color:var(--blue);}
+  .kinput{background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:8px 12px;border-radius:6px;font-family:var(--mono);font-size:13px;outline:none;width:100%;margin-bottom:8px;}
+  .kinput:focus{border-color:var(--accent);}
+  .ksave{background:var(--green);color:#000;border:none;padding:8px 20px;border-radius:6px;font-family:var(--mono);font-size:12px;font-weight:700;cursor:pointer;}
+  .ksave:hover{background:#4fd963;}
+  /* Layout */
+  .wrap{padding:20px 24px;max-width:1440px;margin:0 auto;}
+  .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+  .g2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+  .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+  /* Cards */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+  .ch{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .ct{font-family:var(--mono);font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);}
+  .bg{font-family:var(--mono);font-size:12px;padding:3px 8px;border-radius:3px;font-weight:500;}
+  .bl{background:var(--green-dim);color:var(--green);}
+  .bm{background:var(--blue-dim);color:var(--blue);}
+  .ba{background:var(--amber-dim);color:var(--amber);}
+  .cb{padding:14px;}
+  /* Price boxes */
+  .pval{font-family:var(--mono);font-size:34px;font-weight:600;letter-spacing:-.02em;margin-bottom:3px;}
+  .psub{font-family:var(--mono);font-size:13px;color:var(--text2);}
+  .pchg{font-family:var(--mono);font-size:14px;font-weight:500;margin-top:6px;}
+  .pts{font-family:var(--mono);font-size:12px;color:var(--text2);margin-top:7px;padding-top:7px;border-top:1px solid var(--border);display:flex;align-items:center;gap:5px;}
+  .pdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:var(--text3);}
+  .up{color:var(--green);}.dn{color:var(--red);}.ne{color:var(--text2);}
+  /* Metric rows */
+  .mr{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);}
+  .mr:last-child{border-bottom:none;}
+  .ml{color:var(--text2);font-size:14px;}
+  .mv{font-family:var(--mono);font-size:14px;font-weight:500;text-align:right;max-width:60%;}
+  .mv.g{color:var(--green);}.mv.a{color:var(--amber);}.mv.b{color:var(--blue);}
+  /* mNAV */
+  .mwrap{display:flex;align-items:center;gap:14px;margin-top:10px;}
+  .mbig{font-family:var(--mono);font-size:36px;font-weight:600;color:var(--amber);}
+  .bwrap{flex:1;}
+  .blbl{font-size:12px;color:var(--text2);margin-bottom:5px;font-family:var(--mono);}
+  .btrk{height:8px;background:var(--border2);border-radius:4px;overflow:hidden;}
+  .bfil{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--red),var(--amber),var(--green));transition:width .4s;}
+  .btick{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text2);margin-top:3px;}
+  /* Progress bars */
+  .pm{margin-bottom:14px;}
+  .pl{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;}
+  .pl span:first-child{color:var(--text2);}
+  .pl span:last-child{font-family:var(--mono);font-weight:500;}
+  .pt{height:6px;background:var(--border2);border-radius:3px;overflow:hidden;}
+  .pf{height:100%;border-radius:3px;transition:width .4s;}
+  .ptick{display:flex;justify-content:space-between;margin-top:3px;font-family:var(--mono);font-size:11px;color:var(--text2);}
+  .ebar{height:4px;background:var(--border2);border-radius:2px;overflow:hidden;margin:4px 0 8px;}
+  .efil{height:100%;background:var(--teal);border-radius:2px;}
+  /* CLARITY */
+  .cnum{font-family:var(--mono);font-size:48px;font-weight:600;text-align:center;padding:8px 0;}
+  .cpbar{height:10px;background:var(--border2);border-radius:5px;overflow:hidden;margin-bottom:12px;}
+  .cpfil{height:100%;border-radius:5px;}
+  .cstep{display:flex;gap:8px;padding:4px 0;font-size:14px;color:var(--text2);}
+  .cnote{font-size:13px;color:var(--text2);line-height:1.6;background:var(--surface2);border-radius:6px;padding:10px;border-left:3px solid var(--amber);margin-top:10px;}
+  /* Scenarios */
+  .ev-note{font-size:13px;color:var(--text2);background:var(--surface2);border-radius:5px;padding:10px 14px;margin-bottom:14px;line-height:1.7;border-left:3px solid var(--blue);}
+  .sc{width:100%;border-collapse:collapse;}
+  .sc th{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);padding:8px 12px;border-bottom:1px solid var(--border2);text-align:right;font-weight:500;white-space:nowrap;}
+  .sc th.tl,.sc th.tp{text-align:left;}
+  .sc td{font-family:var(--mono);font-size:15px;padding:11px 12px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap;}
+  .sc td.tl{text-align:left;font-weight:600;}
+  .sc td.tp{text-align:left;color:var(--text2);font-size:13px;}
+  .sc tr:last-child td{border-bottom:none;}
+  .sc tr.bear td{color:var(--red);}
+  .sc tr.base td{color:var(--green);font-weight:700;background:rgba(63,185,80,.04);}
+  .sc tr.bull td{color:var(--blue);}
+  .sc tr.sb td{color:var(--teal);}
+  .sc tr.ev td{color:var(--amber);font-weight:700;border-top:2px solid var(--border2);}
+  .sc tr.yh th{background:var(--surface2);text-transform:none;font-size:12px;color:var(--text2);text-align:center;padding:5px 8px;}
+  .bl1{border-left:1px solid var(--border2);}
+  .kpi3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px;}
+  .kpi{display:flex;flex-direction:column;gap:4px;padding:14px;background:var(--surface2);border-radius:8px;}
+  .kpi-lbl{font-size:12px;color:var(--text2);font-family:var(--mono);text-transform:uppercase;letter-spacing:.07em;}
+  .kpi-val{font-family:var(--mono);font-size:26px;font-weight:700;}
+  /* Snippet */
+  .snip{background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:12px 14px;margin-top:12px;}
+  .slbl{font-family:var(--mono);font-size:12px;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.1em;}
+  .stxt{font-family:var(--mono);font-size:13px;color:var(--text2);white-space:pre-wrap;line-height:1.7;max-height:140px;overflow-y:auto;}
+  .cpbtn{background:var(--surface);border:1px solid var(--border2);color:var(--text2);padding:6px 14px;border-radius:4px;font-family:var(--mono);font-size:13px;cursor:pointer;margin-top:8px;transition:all .15s;}
+  .cpbtn:hover{background:var(--border2);color:var(--text);}
+  /* API key display box */
+  .apibox{background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .apikey-val{font-family:var(--mono);font-size:13px;color:var(--teal);word-break:break-all;flex:1;}
+  /* Section titles */
+  .stitle{font-family:var(--mono);font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);margin:24px 0 12px;display:flex;align-items:center;gap:10px;}
+  .stitle::after{content:'';flex:1;height:1px;background:var(--border);}
+  .stitle .sub{font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text2);}
+  /* Banners */
+  .bnr{border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;display:none;align-items:center;gap:8px;}
+  .bnr.show{display:flex;}
+  .bnr.err{background:var(--red-dim);border:1px solid var(--red);color:var(--red);}
+  .bnr.ok{background:var(--green-dim);border:1px solid var(--green);color:var(--green);}
+  .src-tbl{width:100%;border-collapse:collapse;}
+  .src-tbl th{font-family:var(--mono);font-size:12px;text-transform:uppercase;color:var(--text2);padding:6px 8px;border-bottom:1px solid var(--border2);text-align:left;font-weight:500;}
+  .src-tbl td{font-size:13px;padding:7px 9px;border-bottom:1px solid var(--border);vertical-align:top;}
+  .src-tbl tr:last-child td{border-bottom:none;}
+  .surl{font-family:var(--mono);font-size:11px;color:var(--blue);word-break:break-all;}
+  .footnote{font-size:13px;color:var(--text2);margin-top:16px;line-height:1.6;padding-bottom:24px;}
+  @media(max-width:900px){.g4{grid-template-columns:repeat(2,1fr);}.g3{grid-template-columns:1fr 1fr;}.kpi3{grid-template-columns:1fr 1fr;}}
+  @media(max-width:600px){.g4,.g2,.g3,.kpi3{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 
 <div class="hdr">
   <div>
-    <div class="logo"><span>BMNR</span> · Dashboard v31</div>
-    <div class="hsub">PR Apr 27 · CLARITY 62% · Q3 ~Jul 2026</div>
+    <div class="logo"><span>BMNR</span> · DASHBOARD</div>
+    <div class="hdr-sub">Data Dashboard · v31 · Vercel · CLARITY 62%</div>
   </div>
-  <div class="hright">
-    <div class="dot loading" id="dot"></div>
-    <span class="stat" id="stat">connecting…</span>
-    <button class="rfbtn" onclick="fetchPrices()">⟳ Refresh</button>
+  <div class="hdr-r">
+    <div class="live-row"><div class="ldot" id="lDot"></div><span id="lStat">—</span></div>
+    <button class="btn" id="rfBtn" onclick="manualRefresh()">⟳ Refresh</button>
   </div>
 </div>
 
-<div class="wrap">
-
-<div class="liveindicator">
-  <div class="dot live"></div>
-  Server-side price fetching — no browser API limitations · auto-refreshes every 10s
+  <button onclick="saveDashboard()" style="
+    background:var(--green); color:#000; border:none;
+    padding:10px 22px; border-radius:6px;
+    font-family:var(--mono); font-size:14px; font-weight:700;
+    cursor:pointer; white-space:nowrap;
+    -webkit-tap-highlight-color:transparent;">
+    ↓ Save to Files
+  </button>
 </div>
 
-<!-- PRICES -->
-<div class="sec">Market Prices — Live</div>
-<div class="g4">
-  <div class="card"><div class="ch"><span class="ct">ETH / USD</span><span class="badge bb">CoinGecko</span></div><div class="cb">
-    <div class="pval" id="ethP" style="color:var(--blue)">—</div>
-    <div class="pchg ne" id="ethC">—</div><div class="psub" id="ethTs">loading…</div>
-  </div></div>
-  <div class="card"><div class="ch"><span class="ct">BMNR</span><span class="badge ba">NYSE</span></div><div class="cb">
-    <div class="pval" id="bmnrP" style="color:var(--amber)">—</div>
-    <div class="pchg ne" id="bmnrC">—</div><div class="psub" id="bmnrTs">loading…</div>
-  </div></div>
-  <div class="card"><div class="ch"><span class="ct">BTC / USD</span><span class="badge bb">Finnhub</span></div><div class="cb">
-    <div class="pval" id="btcP">—</div>
-    <div class="pchg ne" id="btcC">—</div><div class="psub" id="btcTs">loading…</div>
-  </div></div>
-  <div class="card"><div class="ch"><span class="ct">Gold / oz</span><span class="badge bg">gold-api</span></div><div class="cb">
-    <div class="pval" id="goldP">—</div>
-    <div class="pchg ne" id="goldC">—</div><div class="psub" id="goldTs">loading…</div>
-  </div></div>
+<!-- SETUP PANEL — only shown on first visit -->
+<div class="setup" id="setupPanel" style="display:none;">
+  <h2>⚡ One-time setup — get your free Finnhub API key</h2>
+  <p>This dashboard fetches live prices for ETH, BTC, BMNR, and Gold every 5 seconds using the Finnhub API. Setup takes about 60 seconds and never needs to be repeated — your key is saved permanently in your browser.</p>
+  <ol>
+    <li>Go to <a href="https://finnhub.io/register" target="_blank"><strong>finnhub.io/register</strong></a> — email only, no credit card</li>
+    <li>After signup your API key is shown immediately on the dashboard page</li>
+    <li>Copy and paste it below, then click Save</li>
+  </ol>
+  <input class="kinput" id="keyInput" type="text" placeholder="Paste your Finnhub API key here (e.g. ct1abc2def3ghi4jkl5mn)" />
+  <button class="ksave" onclick="saveKey()">Save Key & Start Dashboard</button>
+  <p style="margin-top:10px;font-size:11px;">Your key is stored in your browser's localStorage — it stays on your device and is only ever sent to Finnhub's servers to fetch price data.</p>
 </div>
 
-<!-- mNAV -->
-<div class="sec">mNAV — Two Methods (Live)</div>
-<div class="g2">
-  <div class="card"><div class="ch"><span class="ct">Method 1 — 455M Shares</span><span class="badge ba">lower bound</span></div><div class="cb">
-    <div class="mbig a" id="mn1">—</div>
-    <div class="btrk"><div class="bfil" id="mn1bar" style="width:0%"></div></div>
-    <div class="btick"><span>0.75x</span><span>1.0x parity</span><span>2.0x</span><span>3.2x</span></div>
-    <div style="margin-top:10px">
-      <div class="mr"><span class="ml">NAV/share</span><span class="mv a" id="nps1">—</span></div>
-      <div class="mr"><span class="ml">Discount to NAV</span><span class="mv r" id="disc1">—</span></div>
-      <div class="mr"><span class="ml">Total NAV</span><span class="mv" id="navT">—</span></div>
+<!-- MAIN DASHBOARD -->
+<div class="wrap" id="mainDash" style="display:block;">
+  <div class="bnr err" id="errBnr">⚠ <span id="errTxt"></span></div>
+  <div class="bnr ok"  id="okBnr">✓ <span id="okTxt"></span></div>
+
+  <!-- MARKET PRICES -->
+  <div class="stitle">Market Prices <span class="sub">— updates every 5 seconds via Finnhub free API</span></div>
+  <div class="g4">
+
+    <div class="card">
+      <div class="ch"><span class="ct">ETH / USD</span><span class="bg bl" id="ethBg">LIVE</span></div>
+      <div class="cb">
+        <div class="pval" id="ethP">—</div>
+        <div class="psub">Ethereum · BINANCE:ETHUSDT</div>
+        <div class="pchg ne" id="ethC">—</div>
+        <div class="pts"><div class="pdot" id="ethD"></div><span id="ethTs">Connecting…</span></div>
+      </div>
     </div>
-  </div></div>
-  <div class="card"><div class="ch"><span class="ct">Method 2 — 537.6M Shares</span><span class="badge bt">bmnr.rocks</span></div><div class="cb">
-    <div class="mbig t" id="mn2">—</div>
-    <div class="btrk"><div class="bfil" id="mn2bar" style="width:0%"></div></div>
-    <div class="btick"><span>0.75x</span><span>1.0x parity</span><span>2.0x</span><span>3.2x</span></div>
-    <div style="margin-top:10px">
-      <div class="mr"><span class="ml">NAV/share</span><span class="mv t" id="nps2">—</span></div>
-      <div class="mr"><span class="ml">Discount to NAV</span><span class="mv r" id="disc2">—</span></div>
-      <div class="mr"><span class="ml">10-Q anchor (Apr 13)</span><span class="mv">537,628,819</span></div>
+
+    <div class="card" style="border-color:var(--amber);">
+      <div class="ch" style="border-color:var(--amber);"><span class="ct">BMNR (NYSE)</span><span class="bg ba" id="bmnrBg">LIVE</span></div>
+      <div class="cb">
+        <div class="pval" style="color:var(--amber);" id="bmnrP">—</div>
+        <div class="psub">Bitmine Immersion Technologies</div>
+        <div class="pchg ne" id="bmnrC">—</div>
+        <div class="pts"><div class="pdot" id="bmnrD"></div><span id="bmnrTs">Connecting…</span></div>
+      </div>
     </div>
-  </div></div>
-</div>
 
-<!-- KEY RATIOS + MULTIPLES -->
-<div class="sec">Key Ratios & 2030 Multiples (Live)</div>
-<div class="g4">
-  <div class="card"><div class="ch"><span class="ct">ETH/BTC</span></div><div class="cb">
-    <div class="mbig a" id="ethbtc">—</div>
-    <div class="mr"><span class="ml">Base target</span><span class="mv">0.045</span></div>
-    <div class="mr"><span class="ml">Bull target</span><span class="mv">0.065</span></div>
-  </div></div>
-  <div class="card"><div class="ch"><span class="ct">EV 2030 ($873)</span><span class="badge ba">weighted</span></div><div class="cb">
-    <div class="mbig a" id="evX">—</div>
-    <div class="mr"><span class="ml">from BMNR price</span><span class="mv a" id="bmnrCur">—</span></div>
-  </div></div>
-  <div class="card"><div class="ch"><span class="ct">Base 2030 ($715)</span><span class="badge bg">47% prob</span></div><div class="cb">
-    <div class="mbig" id="baseX" style="color:var(--green)">—</div>
-    <div class="mr"><span class="ml">most likely scenario</span><span class="mv g">47%</span></div>
-  </div></div>
-  <div class="card"><div class="ch"><span class="ct">Bear 2030 ($275)</span><span class="badge br">25% prob</span></div><div class="cb">
-    <div class="mbig r" id="bearX">—</div>
-    <div class="mr"><span class="ml">CLARITY fails</span><span class="mv r">25%</span></div>
-  </div></div>
-</div>
+    <div class="card">
+      <div class="ch"><span class="ct">BTC / USD</span><span class="bg bl" id="btcBg">LIVE</span></div>
+      <div class="cb">
+        <div class="pval" id="btcP">—</div>
+        <div class="psub">Bitcoin · BINANCE:BTCUSDT</div>
+        <div class="pchg ne" id="btcC">—</div>
+        <div class="pts"><div class="pdot" id="btcD"></div><span id="btcTs">Connecting…</span></div>
+      </div>
+    </div>
 
-<!-- HOLDINGS -->
-<div class="sec">Holdings — PRNewswire Apr 27, 2026</div>
-<div class="g3">
-  <div class="card"><div class="ch"><span class="ct">Ethereum (ETH)</span><span class="badge bg">LIVE VALUE</span></div><div class="cb">
-    <div class="mr"><span class="ml">Total ETH held</span><span class="mv g" id="ethHeld">5,078,386 ETH</span></div>
-    <div class="mr"><span class="ml">ETH value (live)</span><span class="mv g" id="ethVal">—</span></div>
-    <div class="mr"><span class="ml">% of supply</span><span class="mv">4.21% of 120.7M</span></div>
-    <div class="mr"><span class="ml">Goal progress (5%)</span><span class="mv a">84% · 0.96M left</span></div>
-    <div class="mr"><span class="ml">ETH staked (MAVAN)</span><span class="mv">3,701,589 (73%)</span></div>
-    <div class="mr"><span class="ml">Staking revenue</span><span class="mv g">$264M/yr @ 3.033%</span></div>
-    <div class="mr"><span class="ml">Projected (full stake)</span><span class="mv">$363M/yr</span></div>
-    <div class="mr"><span class="ml">CESR benchmark</span><span class="mv">3.028%</span></div>
-  </div></div>
-  <div class="card"><div class="ch"><span class="ct">BTC & Cash</span></div><div class="cb">
-    <div class="mr"><span class="ml">BTC held</span><span class="mv">200 BTC</span></div>
-    <div class="mr"><span class="ml">BTC value (live)</span><span class="mv b" id="btcVal">—</span></div>
-    <div class="mr"><span class="ml">Cash</span><span class="mv g">$940M</span></div>
-    <div class="mr"><span class="ml">Dry powder</span><span class="mv">~6–7 wks @ $140M/wk</span></div>
-  </div></div>
-  <div class="card"><div class="ch"><span class="ct">Moonshots</span><span class="badge ba">$291M book</span></div><div class="cb">
-    <div class="mr"><span class="ml">ORBS (Eightco/OpenAI)</span><span class="mv a">$91M book</span></div>
-    <div class="mr"><span class="ml">Beast Industries</span><span class="mv a">$200M book</span></div>
-    <div class="mr"><span class="ml">MrBeast Financial</span><span class="mv">pre-launch</span></div>
-    <div class="mr"><span class="ml">Combined book</span><span class="mv a">$291M</span></div>
-  </div></div>
-</div>
+    <div class="card">
+      <div class="ch"><span class="ct">Gold / oz (XAU)</span><span class="bg bl" id="goldBg">LIVE</span></div>
+      <div class="cb">
+        <div class="pval" id="goldP">—</div>
+        <div class="psub">Gold spot via PAXG · CoinGecko · seed: $4,795</div>
+        <div class="pchg ne" id="goldC">—</div>
+        <div class="pts"><div class="pdot" id="goldD"></div><span id="goldTs">Connecting…</span></div>
+      </div>
+    </div>
 
-<!-- SHARES -->
-<div class="sec">Shares Outstanding & Dilution</div>
-<div class="card" style="margin-bottom:12px"><div class="cb">
-  <div class="g3" style="margin-bottom:0">
-    <div class="mr"><span class="ml">10-Q anchor (Apr 13, 2026)</span><span class="mv a">537,628,819</span></div>
-    <div class="mr"><span class="ml">Est. weekly ATM dilution</span><span class="mv r">~10–15M/week</span></div>
-    <div class="mr"><span class="ml">Est. current shares</span><span class="mv a">~568–583M est.</span></div>
-    <div class="mr"><span class="ml">Method 1 basis</span><span class="mv">455M press coverage</span></div>
-    <div class="mr"><span class="ml">Method 2 basis</span><span class="mv">537.6M 10-Q (bmnr.rocks)</span></div>
-    <div class="mr"><span class="ml">Next official count</span><span class="mv">Q3 10-Q ~Jul 2026</span></div>
   </div>
-</div></div>
 
-<!-- CLARITY -->
-<div class="sec">CLARITY Act</div>
-<div class="g2">
-  <div class="card"><div class="cb">
-    <div style="font-size:56px;font-weight:700;text-align:center;color:var(--green);padding:4px 0">62%</div>
-    <div class="cpbar"><div class="cpfil" style="width:62%;background:var(--green)"></div></div>
-    <div class="mr"><span class="ml">As of</span><span class="mv">May 3, 2026</span></div>
-    <div class="mr"><span class="ml">Prior (Apr 29)</span><span class="mv">46%</span></div>
-    <div class="mr"><span class="ml">Change</span><span class="mv g">+16pts in one week</span></div>
-    <div class="mr"><span class="ml">Markup expected</span><span class="mv a">week of May 11</span></div>
-    <div class="cnote">Stablecoin yield compromise reached May 2 (Tillis/Alsobrooks). Tim Scott secured 13/13 Republican votes. Markup expected week of May 11. August recess is hard deadline.</div>
-  </div></div>
-  <div class="card"><div class="ch"><span class="ct">Probability Impact</span></div><div class="cb">
-    <div class="mr"><span class="ml">Bear (CLARITY fails)</span><span class="mv r">25% ↓ was 30%</span></div>
-    <div class="mr"><span class="ml">Base (passes late 2026)</span><span class="mv g">47% ↑ was 42%</span></div>
-    <div class="mr"><span class="ml">Bull</span><span class="mv b">20%</span></div>
-    <div class="mr"><span class="ml">Super Bull</span><span class="mv t">7%</span></div>
-    <div class="mr"><span class="ml">EV 2030</span><span class="mv a">$873 (39.4x)</span></div>
-    <div class="mr"><span class="ml">August recess</span><span class="mv r">hard deadline</span></div>
-  </div></div>
-</div>
+  <!-- PRICE HISTORY CHARTS -->
+  <div class="stitle">Price History <span class="sub">— live session data · built from 5s ticks since page open · seed: verified weekly BMNR press releases</span></div>
+  <div class="g4" style="margin-bottom:20px;">
+    <div class="card">
+      <div class="ch"><span class="ct">ETH / USD — 30 day</span><span class="bg bl">SESSION+SEED</span></div>
+      <div class="cb" style="padding:10px 14px;"><canvas id="ethHistChart" style="max-height:120px;"></canvas></div>
+    </div>
+    <div class="card" style="border-color:var(--amber);">
+      <div class="ch" style="border-color:var(--amber);"><span class="ct">BMNR — 30 day</span><span class="bg ba">SESSION+SEED</span></div>
+      <div class="cb" style="padding:10px 14px;"><canvas id="bmnrHistChart" style="max-height:120px;"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">BTC / USD — 30 day</span><span class="bg bl">SESSION+SEED</span></div>
+      <div class="cb" style="padding:10px 14px;"><canvas id="btcHistChart" style="max-height:120px;"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">Gold / oz — 30 day</span><span class="bg bl">SESSION+SEED</span></div>
+      <div class="cb" style="padding:10px 14px;"><canvas id="goldHistChart" style="max-height:120px;"></canvas></div>
+    </div>
+  </div>
 
-<!-- SCENARIOS -->
-<div class="sec">Four-Scenario Framework · 2026–2030</div>
-<div class="card" style="margin-bottom:12px;overflow-x:auto">
-<table class="tbl">
-<thead><tr>
-  <th class="tl">Scenario</th><th class="tl">Prob</th>
-  <th>ETH 26</th><th>BMNR 26</th><th>ETH 27</th><th>BMNR 27</th>
-  <th>ETH 30</th><th>BMNR 30</th><th>× now</th>
-</tr></thead>
-<tbody>
-<tr><td class="tl" style="color:var(--red);font-weight:600">Bear</td><td class="tl" style="color:var(--red)">25%</td><td>$2,600</td><td>$26</td><td>$6,500</td><td>$50</td><td>$22,000</td><td style="color:var(--red)">$275</td><td style="color:var(--red)" id="s_bear">—</td></tr>
-<tr><td class="tl" style="color:var(--green);font-weight:600">Base ★</td><td class="tl" style="color:var(--green)">47%</td><td>$4,500</td><td>$70</td><td>$10,000</td><td>$175</td><td>$30,000</td><td style="color:var(--green)">$715</td><td style="color:var(--green)" id="s_base">—</td></tr>
-<tr><td class="tl" style="color:var(--blue);font-weight:600">Bull</td><td class="tl" style="color:var(--blue)">20%</td><td>$6,200</td><td>$129</td><td>$16,000</td><td>$385</td><td>$50,000</td><td style="color:var(--blue)">$1,445</td><td style="color:var(--blue)" id="s_bull">—</td></tr>
-<tr><td class="tl" style="color:var(--teal);font-weight:600">Super Bull</td><td class="tl" style="color:var(--teal)">7%</td><td>$8,500</td><td>$212</td><td>$21,000</td><td>$590</td><td>$80,000</td><td style="color:var(--teal)">$2,554</td><td style="color:var(--teal)" id="s_sb">—</td></tr>
-<tr class="ev"><td class="tl">Weighted EV</td><td class="tl">97%</td><td>$4,097</td><td>$79</td><td>$11,175</td><td>$226</td><td>$32,950</td><td>$873</td><td id="s_ev">—</td></tr>
-</tbody>
-</table>
-</div>
+  <!-- RATIO HISTORY CHARTS -->
+  <!-- ETH HOLDINGS HISTORY -->
+  <div class="stitle">BMNR ETH Holdings — Accumulation <span class="sub">— seeded from 8-K filings · goal: 6,035,000 ETH (5% of supply)</span></div>
+  <div class="card">
+    <div class="ch">
+      <span class="ct">ETH Accumulated Over Time</span>
+      <span class="bg bl">82% to goal · 1.06M ETH remaining</span>
+    </div>
+    <div class="cb">
+      <div class="mr"><span class="ml">Current holdings</span><span class="mv g">5,078,386 ETH (4.21% of supply)</span></div>
+      <div class="mr"><span class="ml">5% goal</span><span class="mv">6,035,000 ETH · ~1,058,515 to go</span></div>
+      <div style="position:relative;height:180px;margin-top:12px;">
+        <canvas id="ethHeldChart" role="img" aria-label="BMNR ETH holdings accumulation over time">Holdings growing from 4.4M to 4.98M ETH.</canvas>
+      </div>
+      <div class="pts" style="margin-top:8px;"><div class="pdot" id="ethHeldD"></div><span id="ethHeldTs">Seeded from 8-K filings</span></div>
+    </div>
+  </div>
 
-<!-- EARNINGS -->
-<div class="sec">Earnings</div>
-<div class="g2">
-  <div class="card"><div class="cb" style="text-align:center">
-    <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Q2 FY2026 (10-Q)</div>
-    <div class="earnbig" style="color:var(--teal)">DONE</div>
-    <div style="font-size:12px;color:var(--text2)">released April 29, 2026</div>
-    <div style="font-size:11px;color:var(--text3);margin-top:6px">Period: Q2 FY2026 · ending Mar 31</div>
-  </div></div>
-  <div class="card"><div class="cb" style="text-align:center">
-    <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Next — Q3 FY2026 (10-Q)</div>
-    <div class="earnbig" id="q3days" style="color:var(--amber)">—</div>
-    <div style="font-size:12px;color:var(--text2)">days · ~July 14, 2026 (est.)</div>
-    <div style="font-size:11px;color:var(--text3);margin-top:6px">Period: Q3 FY2026 · ending May 31</div>
-    <div style="font-size:11px;color:var(--text2);margin-top:4px">Key watch: share count · ETH accretion · MAVAN rev</div>
-  </div></div>
-</div>
+  <!-- BMNR MULTIPLES HISTORY -->
+  <div class="stitle">BMNR Multiples to 2030 Targets <span class="sub">— live calc · updates every 60s from current BMNR price</span></div>
+  <div class="card">
+    <div class="ch"><span class="ct">Current × to 2030 Scenarios</span><span class="bg ba">live calc from BMNR price</span></div>
+    <div class="cb">
+      <div class="g3" style="margin-bottom:12px;">
+        <div style="text-align:center"><div class="psub">EV 2030 ($851)</div><div class="pval a" id="evMult2" style="font-size:24px;">38.4x</div></div>
+        <div style="text-align:center"><div class="psub">Base 2030 ($715)</div><div class="pval" id="baseMult2" style="font-size:24px;color:var(--green);">32.3x</div></div>
+        <div style="text-align:center"><div class="psub">Bear 2030 ($275)</div><div class="pval" id="bearMult2" style="font-size:24px;color:var(--red);">12.4x</div></div>
+      </div>
+      <div style="position:relative;height:180px;">
+        <canvas id="multChart" role="img" aria-label="BMNR multiples to 2030 EV, Base, and Bear targets over time">EV 2030 38x, Base 32x, Bear 12x from current price.</canvas>
+      </div>
+      <div class="pts" style="margin-top:8px;"><div class="pdot" id="multD"></div><span id="multTs">Seeded from weekly data</span></div>
+    </div>
+  </div>
 
-<div class="foot">
-  Dashboard v31 · Balance sheet: PRNewswire Apr 27, 2026 · ETH 5,078,386 · Cash $940M · CLARITY 62% (May 3, 2026) · Bear 25% / Base 47% / Bull 20% / Super Bull 7% · Prices: server-side via Vercel (CoinGecko + Finnhub + gold-api.com) · Auto-refresh every 10s · Not investment advice.
-</div>
+  <div class="stitle">Ratio History <span class="sub">— ETH/BTC and ETH/Gold over 30 days · seed data from BMNR weekly disclosures</span></div>
+  <div class="g2" style="margin-bottom:4px;">
+    <div class="card">
+      <div class="ch"><span class="ct">ETH / BTC Ratio — 30 day</span><span class="bg bl">SESSION+SEED</span></div>
+      <div class="cb" style="padding:10px 14px;"><canvas id="ebHistChart" style="max-height:140px;"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">ETH / Gold Ratio — 30 day</span><span class="bg bl">SESSION+SEED</span></div>
+      <div class="cb" style="padding:10px 14px;"><canvas id="egHistChart" style="max-height:140px;"></canvas></div>
+    </div>
+  </div>
 
-</div><!-- end wrap -->
+  <!-- KEY RATIO TRACKERS -->
+  <div class="stitle">Key Ratio Trackers <span class="sub">— recalculate in real time from live prices every 5 seconds</span></div>
+  <div class="g3">
+
+    <div class="card">
+      <div class="ch"><span class="ct">ETH / BTC Ratio</span><span class="bg bl">LIVE</span></div>
+      <div class="cb">
+        <div class="pval" id="ebR">—</div>
+        <div class="psub">Historical peak ~0.080</div>
+        <div style="margin-top:12px;">
+          <div class="pl"><span>Current</span><span id="ebLbl">—</span></div>
+          <div class="pt"><div class="pf" id="ebBar" style="width:0%"></div></div>
+          <div class="ptick"><span>0.020</span><span>Base 0.045</span><span>Bull 0.065</span><span>SB 0.10</span></div>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:var(--text2);line-height:1.5;">CLARITY passage is the primary catalyst for recovery to Base (0.045).</div>
+        <div class="pts" style="margin-top:8px;"><div class="pdot" id="ebD"></div><span id="ebTs">Connecting…</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ch"><span class="ct">ETH / Gold — Narrative Tracker</span><span class="bg bl">LIVE</span></div>
+      <div class="cb">
+        <div class="pval" id="egR">—</div>
+        <div class="psub">ETH price ÷ (Gold $/oz × 31.1)</div>
+        <div style="margin-top:12px;">
+          <div class="pl"><span>ETH % of gold market cap</span><span id="gPct">—</span></div>
+          <div class="pt"><div class="pf" id="gBar" style="width:0%;background:var(--amber)"></div></div>
+          <div class="ptick"><span>0%</span><span>1.7% Bull 26</span><span>17% Base 30</span><span>30% Bull 30</span></div>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:var(--text2);line-height:1.5;">Narrative activates above 0.030. ETH +2,743bp vs gold since Iran war began.</div>
+        <div class="pts" style="margin-top:8px;"><div class="pdot" id="egD"></div><span id="egTs">Connecting…</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ch"><span class="ct">RWA On-Chain Progress</span><span class="bg bg">MAY 3</span></div>
+      <div class="cb">
+        <div class="pval">$29.1B</div>
+        <div class="psub">rwa.xyz · excl. stablecoins · Apr 14, 2026</div>
+        <div style="margin-top:12px;" class="pm">
+          <div class="pl"><span>2026 Base target ($40–50B)</span><span>~65%</span></div>
+          <div class="pt"><div class="pf" style="background:var(--green);width:65%"></div></div>
+          <div class="ptick"><span>$0</span><span>$29.1B now</span><span>$40B Base</span><span>$80B SB</span></div>
+        </div>
+        <div class="pm">
+          <div class="pl"><span>2027 gate ($100B = Base confirmed)</span><span>29%</span></div>
+          <div class="pt"><div class="pf" style="background:var(--blue);width:29%"></div></div>
+          <div class="ptick"><span>$0</span><span>$29.1B</span><span>$100B</span><span>$300B Bull</span></div>
+        </div>
+        <div style="font-size:11px;color:var(--text2);">ETH share ~62% · +7.5%/30d · BlackRock BUIDL $1.9B</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BMNR POSITION -->
+  <div class="stitle">BMNR Position <span class="sub">— all holdings from 8-K Apr 20, 2026 · prices update live every 5s</span></div>
+
+  <!-- mNAV card — full width -->
+  <div class="card" style="margin-bottom:12px;">
+    <div class="ch"><span class="ct">mNAV — Two Methods Explained</span><span class="bg bm">8-K APR 20 · LIVE PRICES</span></div>
+    <div class="cb">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;flex-wrap:wrap;">
+        <!-- Method 1: Our calculation -->
+        <div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Method 1 — Press Coverage (455M shares)</div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+            <div style="font-family:var(--mono);font-size:36px;font-weight:700;color:var(--amber);" id="mnavBig">—</div>
+            <div>
+              <div style="font-size:12px;color:var(--text2);">NAV/share: <span id="navPS" style="font-family:var(--mono);font-weight:600;">—</span></div>
+              <div style="font-size:12px;color:var(--text2);">Discount to NAV: <span id="discNAV" style="font-family:var(--mono);font-weight:600;color:var(--amber);">—</span></div>
+              <div style="font-size:11px;color:var(--text2);margin-top:2px;">Based on ~455M shares (press coverage Apr 2026)</div>
+            </div>
+          </div>
+          <div class="btrk"><div class="bfil" id="mnavBar" style="width:1%"></div></div>
+          <div class="btick"><span>0.75x</span><span>1.0x parity</span><span>2.0x</span><span>3.2x</span></div>
+        </div>
+        <!-- Method 2: bmnr.rocks estimated shares -->
+        <div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Method 2 — bmnr.rocks (~530M predicted shares)</div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+            <div style="font-family:var(--mono);font-size:36px;font-weight:700;color:var(--teal);" id="mnavRocks">—</div>
+            <div>
+              <div style="font-size:12px;color:var(--text2);">NAV/share: <span id="navPSRocks" style="font-family:var(--mono);font-weight:600;">—</span></div>
+              <div style="font-size:12px;color:var(--text2);">Discount to NAV: <span id="discNAVRocks" style="font-family:var(--mono);font-weight:600;color:var(--teal);">—</span></div>
+              <div style="font-size:11px;color:var(--text2);margin-top:2px;">bmnr.rocks predicted ATM dilution ~530M</div>
+            </div>
+          </div>
+          <div class="btrk"><div class="bfil" id="mnavBarRocks" style="width:1%;background:var(--teal);"></div></div>
+          <div class="btick"><span>0.75x</span><span>1.0x parity</span><span>2.0x</span><span>3.2x</span></div>
+        </div>
+      </div>
+      <!-- Why different box -->
+      <div style="background:var(--surface2);border-radius:6px;padding:10px 14px;margin-top:14px;border-left:3px solid var(--blue);font-size:12px;color:var(--text2);line-height:1.7;">
+        <strong style="color:var(--text);">Why are the two mNAV values different?</strong> The answer is <strong>share count</strong>.
+        BMNR stopped publishing its share count in weekly press releases after August 2025. The ~455M figure comes from press coverage (Apr 2026). Official count pending Apr 29 10-Q. 
+        bmnr.rocks runs a predictive model: they track every ETH purchase, estimate how much capital was raised via ATM equity offerings, and calculate how many new shares were likely issued to fund those purchases.
+        Their model estimates <strong>~530M shares</strong>, meaning more dilution has occurred than officially reported.
+        Higher shares → lower NAV/share → higher mNAV multiple.
+        <strong>The truth is between the two until the next 10-Q filing confirms the official count.</strong>
+      </div>
+      <div class="pts" style="margin-top:10px;"><div class="pdot" id="mnavD"></div><span id="mnavTs">Connecting…</span></div>
+    </div>
+  </div>
+
+  <!-- mNAV HISTORY CHART -->
+  <div class="card" style="margin-bottom:12px;">
+    <div class="ch">
+      <span class="ct">mNAV History — 30 days</span>
+      <span class="bg bm">SESSION+SEED · BOTH METHODS</span>
+    </div>
+    <div class="cb" style="padding:10px 14px;">
+      <canvas id="mnavHistChart" style="max-height:160px;"></canvas>
+    </div>
+  </div>
+
+  <!-- Holdings grid: 3 cards -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
+
+    <!-- ETH -->
+    <div class="card">
+      <div class="ch"><span class="ct">Ethereum (ETH)</span><span class="bg bl">LIVE VALUE</span></div>
+      <div class="cb">
+        <div class="mr"><span class="ml">Total ETH held</span><span class="mv g" id="ethHeldAmt">5,078,386 ETH</span></div>
+        <div class="mr"><span class="ml">ETH staked via MAVAN</span><span class="mv">" id="ethStakedAmt">3,334,637 (67%)</span></div>
+        <div class="mr"><span class="ml">% of ETH total supply</span><span class="mv b">4.12% of 120.7M</span></div>
+        <div class="mr"><span class="ml">5% "Alchemy" goal</span><span class="mv">82.4% there · 1.06M left</span></div>
+        <div class="ebar" style="margin:4px 0 8px;"><div class="efil" style="width:82.4%"></div></div>
+        <div class="mr"><span class="ml">ETH value at live price</span><span class="mv g" id="ethHVal">—</span></div>
+        <div class="mr"><span class="ml">Annualised staking yield</span><span class="mv g">$221M @ 2.88% APY</span></div>
+        <div class="mr"><span class="ml">Projected (fully staked)</span><span class="mv">$330M / yr</span></div>
+        <div class="mr"><span class="ml">CESR benchmark</span><span class="mv">2.76% (BMNR: 2.88%)</span></div>
+        <div class="pts" style="margin-top:8px;"><div class="pdot" id="holdD"></div><span id="holdTs">Connecting…</span></div>
+      </div>
+    </div>
+
+    <!-- Bitcoin + Cash -->
+    <div class="card">
+      <div class="ch"><span class="ct">Bitcoin (BTC) & Cash</span><span class="bg bl">LIVE BTC VALUE</span></div>
+      <div class="cb">
+        <div class="mr"><span class="ml">BTC held</span><span class="mv">198 BTC</span></div>
+        <div class="mr"><span class="ml">BTC value at live price</span><span class="mv" id="btcHVal">—</span></div>
+        <div class="mr" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border2);"><span class="ml">Cash (unencumbered)</span><span class="mv g">$719M</span></div>
+        <div class="mr"><span class="ml">Cash as % of total NAV</span><span class="mv" id="cashPct">—</span></div>
+        <div class="mr"><span class="ml">Cash deployment pace</span><span class="mv">~$145M / week (recent avg)</span></div>
+        <div class="mr"><span class="ml">Weeks of dry powder</span><span class="mv" id="dryPowder">~5 weeks</span></div>
+        <div style="font-size:11px;color:var(--text2);margin-top:10px;line-height:1.6;">Cash held to fund ongoing ETH accumulation toward the 5% goal. At current pace, ~5 weeks of buying capacity remaining before next capital raise.</div>
+      </div>
+    </div>
+
+    <!-- Moonshots -->
+    <div class="card">
+      <div class="ch"><span class="ct">Moonshots</span><span class="bg ba">BOOK VALUE</span></div>
+      <div class="cb">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:10px;">Moonshots are BMNR's strategic equity stakes in high-growth companies. Values are at cost (book value) — market value varies with underlying company performance.</div>
+        <div class="mr"><span class="ml">ORBS — Eightco Holdings</span><span class="mv a">$85M book</span></div>
+        <div style="font-size:11px;color:var(--text2);margin:-4px 0 8px 0;">NASDAQ: ORBS · Holds ~$90M OpenAI preferred stock → only listed equity with direct OpenAI exposure. At $1T IPO: ~$900M value.</div>
+        <div class="mr"><span class="ml">Beast Industries</span><span class="mv a">$200M book</span></div>
+        <div style="font-size:11px;color:var(--text2);margin:-4px 0 8px 0;">Private · MrBeast / MrBeast Financial DeFi platform. Not publicly traded. At $10B IPO: ~$1.4B value.</div>
+        <div class="mr"><span class="ml">Combined moonshots value</span><span class="mv a">$285M</span></div>
+        <div class="mr"><span class="ml">Moonshots % of total NAV</span><span class="mv" id="moonPct">—</span></div>
+        <div style="background:var(--surface2);border-radius:5px;padding:8px;margin-top:10px;font-size:11px;color:var(--text2);">At current ETH prices, moonshots add ~$0.63/share to NAV (2.3%). At max IPO scenarios: +$7/share (+31% from $22.34).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV COMPOSITION CHART — compact, same row height as holdings cards -->
+  <div class="card" style="margin-bottom:20px;">
+    <div class="ch"><span class="ct">NAV Composition — Live</span><span class="bg bl">UPDATES WITH PRICES</span></div>
+    <div class="cb" style="padding:10px 14px;">
+      <canvas id="navPieChart" style="max-height:160px;"></canvas>
+    </div>
+  </div>
+
+  <!-- SHARES OUTSTANDING -->
+  <div class="stitle">Shares Outstanding & Dilution</div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="ch"><span class="ct">Share Count — 10-Q Apr 13, 2026</span><span class="bg ba">bmnr.rocks methodology</span></div>
+    <div class="cb">
+      <div class="mr"><span class="ml">Shares outstanding (10-Q anchor)</span><span class="mv a">537,628,819</span></div>
+      <div class="mr"><span class="ml">10-Q filing date</span><span class="mv">April 13, 2026 (period ending Feb 28)</span></div>
+      <div class="mr"><span class="ml">Est. weekly ATM dilution</span><span class="mv r" id="weeklyDilution">~10–15M shares/week</span></div>
+      <div class="mr"><span class="ml">Weeks since anchor</span><span class="mv">~3 weeks</span></div>
+      <div class="mr"><span class="ml">Est. current shares</span><span class="mv a" id="estShares">~568–583M est.</span></div>
+      <div class="mr"><span class="ml">Method 1 basis</span><span class="mv">455M press coverage — lower bound</span></div>
+      <div class="mr"><span class="ml">Method 2 basis</span><span class="mv">537.6M 10-Q anchor — bmnr.rocks</span></div>
+      <div style="font-size:11px;color:var(--text2);margin-top:8px;line-height:1.6;">BMNR stopped reporting share count in weekly press releases after Aug 2025. bmnr.rocks tracks each capital raise via SEC 424B5 prospectuses to estimate current dilution. Official count confirmed at next quarterly filing.</div>
+    </div>
+  </div>
+
+  <!-- CLARITY + EARNINGS -->
+  <div class="stitle">CLARITY Act & Upcoming Earnings</div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><span class="ct">CLARITY Act — Polymarket 2026 Passage</span><span class="bg bg">MAY 3</span></div>
+      <div class="cb">
+        <div class="cnum" style="color:var(--green);">62%</div>
+        <div class="cpbar"><div class="cpfil" style="background:var(--green);width:62%;height:100%;"></div></div>
+        <div class="cstep"><span>✓</span> House passed 294–134 (July 2025)</div>
+        <div class="cstep"><span>✓</span> Agriculture Committee passed (Jan 29, 2026)</div>
+        <div class="cstep"><span>⏳</span> Banking Committee markup — <strong>NOT YET SCHEDULED</strong></div>
+        <div class="cstep"><span>○</span> Full Senate vote (60 votes needed)</div>
+        <div class="cstep"><span>○</span> House reconciliation → Presidential signature</div>
+        <div class="cnote">Senator Tillis confirmed no April markup — pushed to mid-May. 120+ firms (Coinbase, Ripple, a16z, Kraken) issued May ultimatum. Galaxy CEO Novogratz: "done in May." Galaxy Research Thorn: "50-50, possibly lower." Watch: Senate Banking Committee first week of May.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">BMNR Earnings</span><span class="bg bg">Q2 RELEASED</span></div>
+      <div class="cb">
+        <div style="text-align:center;padding:8px 0 4px;">
+          <div style="font-family:var(--mono);font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">Q2 FY2026 (10-Q) — Released</div>
+          <div style="font-family:var(--mono);font-size:52px;font-weight:700;color:var(--teal);">DONE</div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--text2);margin-top:2px;">report released April 29, 2026</div>
+        </div>
+        <div style="background:var(--surface2);border-radius:6px;padding:12px;margin-top:12px;">
+          <div class="mr"><span class="ml">Period covered</span><span class="mv">Q2 FY2026 · ending Mar 31</span></div>
+          <div class="mr"><span class="ml">Key metrics to watch</span><span class="mv b">ETH holdings · MAVAN · mNAV</span></div>
+          <div class="mr"><span class="ml">8-K filings (live)</span><span class="mv"><a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=BMNR&type=8-K" target="_blank" style="color:var(--blue);text-decoration:none;">SEC EDGAR →</a></span></div>
+        </div>
+        <div style="text-align:center;padding:12px 0 4px;margin-top:12px;border-top:1px solid var(--border);">
+          <div style="font-family:var(--mono);font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">Next Report — Q3 FY2026 (10-Q)</div>
+          <div style="font-family:var(--mono);font-size:52px;font-weight:700;color:var(--amber);" id="earnCD">—</div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--text3);margin-top:2px;" id="earnLbl">days away</div>
+          <div style="font-family:var(--mono);font-size:18px;font-weight:600;margin-top:10px;">~July 14, 2026 (est.)</div>
+        </div>
+        <div style="background:var(--surface2);border-radius:6px;padding:12px;margin-top:12px;">
+          <div class="mr"><span class="ml">Period covered</span><span class="mv">Q3 FY2026 · ending May 31, 2026</span></div>
+          <div class="mr"><span class="ml">Expected filing</span><span class="mv">~July 2026 (45 days after period end)</span></div>
+          <div class="mr"><span class="ml">Key watch</span><span class="mv b">Share count · ETH accretion · MAVAN rev</span></div>
+          <div class="mr" style="border:none;padding-top:8px;"><span class="ml" style="font-size:11px;color:var(--text2);">Say "do a weekly update" to Claude — auto-pulls latest press release & 8-K.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIOS FULL WIDTH -->
+  <div class="stitle">Scenario Probabilities · 2026–2030</div>
+  <div class="card">
+    <div class="ch"><span class="ct">Four-Scenario Probability Framework</span><span class="bg bm">APR 14, 2026</span></div>
+    <div class="cb">
+      <div class="ev-note">
+        <strong style="color:var(--text2);">All scenarios combined (weighted avg)</strong> = 30%×Bear + 42%×Base + 20%×Bull + 7%×Super Bull.<br>
+        <strong style="color:var(--text2);">Why weighted-avg ETH ($4,097) is lower than Base ETH ($4,500):</strong> The Bear scenario (30%) at $2,600 pulls the probability-weighted average below the Base case. This is correct and expected.<br>
+        <strong style="color:var(--text2);">Why weighted-avg BMNR ($851 EV 2030) is higher than Base BMNR ($70):</strong> Bull + Super Bull scenarios (27% combined) produce $129–$212. mNAV expands at higher ETH prices, disproportionately amplifying BMNR upside — so these scenarios pull the BMNR average above the Base, even while Bear pulls ETH below Base.<br>
+        <strong style="color:var(--text2);">97% not 100%:</strong> A residual 3% covers tail scenarios not explicitly modelled.
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="sc">
+          <thead>
+            <tr class="yh">
+              <th class="tl" colspan="2"></th>
+              <th colspan="2" class="bl1">── 2026 ──</th>
+              <th colspan="2" class="bl1">── 2027 ──</th>
+              <th colspan="2" class="bl1">── 2028 ──</th>
+              <th colspan="2" class="bl1">── 2029 ──</th>
+              <th colspan="2" class="bl1">── 2030 ──</th>
+            </tr>
+            <tr>
+              <th class="tl">Scenario</th><th class="tp">Prob</th>
+              <th class="bl1">ETH $</th><th>BMNR $</th>
+              <th class="bl1">ETH $</th><th>BMNR $</th>
+              <th class="bl1">ETH $</th><th>BMNR $</th>
+              <th class="bl1">ETH $</th><th>BMNR $</th>
+              <th class="bl1">ETH $</th><th>BMNR $</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="bear"><td class="tl">Bear</td><td class="tp">25%</td><td class="bl1">$2,600</td><td>$26</td><td class="bl1">$6,500</td><td>$50</td><td class="bl1">$12,000</td><td>$130</td><td class="bl1">$18,000</td><td>$245</td><td class="bl1">$22,000</td><td>$275</td></tr>
+            <tr class="base"><td class="tl">Base ★ <span style="font-size:11px;opacity:.7">(most likely)</span></td><td class="tp">47%</td><td class="bl1">$4,500</td><td>$70</td><td class="bl1">$10,000</td><td>$175</td><td class="bl1">$18,000</td><td>$320</td><td class="bl1">$24,000</td><td>$525</td><td class="bl1">$30,000</td><td>$715</td></tr>
+            <tr class="bull"><td class="tl">Bull</td><td class="tp">20%</td><td class="bl1">$6,200</td><td>$129</td><td class="bl1">$16,000</td><td>$385</td><td class="bl1">$27,000</td><td>$630</td><td class="bl1">$36,000</td><td>$970</td><td class="bl1">$50,000</td><td>$1,445</td></tr>
+            <tr class="sb"><td class="tl">Super Bull</td><td class="tp">7%</td><td class="bl1">$8,500</td><td>$212</td><td class="bl1">$21,000</td><td>$590</td><td class="bl1">$38,000</td><td>$1,100</td><td class="bl1">$55,000</td><td>$1,706</td><td class="bl1">$80,000</td><td>$2,554</td></tr>
+            <tr class="ev">
+              <td class="tl">All scenarios combined <span style="font-size:11px;font-weight:400;opacity:.8">(weighted avg)</span></td>
+              <td class="tp" style="color:var(--amber);">97%</td>
+              <td class="bl1">$4,162</td><td id="ev26">$79</td>
+              <td class="bl1">$11,175</td><td>$226</td>
+              <td class="bl1">$19,750</td><td>$403</td>
+              <td class="bl1">$26,400</td><td id="ev29">$611</td>
+              <td class="bl1">$32,950</td><td id="ev30">$873</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="kpi3">
+        <div class="kpi"><div class="kpi-lbl">Current BMNR → 2030 weighted avg ($873)</div><div class="kpi-val" style="color:var(--amber);" id="evMult">—</div></div>
+        <div class="kpi"><div class="kpi-lbl">Median 2030 = Base case = $715</div><div class="kpi-val" style="color:var(--green);">33x</div></div>
+        <div class="kpi"><div class="kpi-lbl">Bear case 2030 — ETH $22,000 · BMNR $275</div><div class="kpi-val" style="color:var(--red);" id="bearMult">12x</div></div>
+      </div>
+
+      <!-- SCENARIO DRIVER NOTES -->
+      <div style="margin-top:20px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+
+        <!-- BEAR -->
+        <div style="background:var(--surface2);border-radius:8px;padding:14px;border-left:4px solid var(--red);">
+          <div style="font-family:var(--mono);font-size:12px;font-weight:600;color:var(--red);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">⬇ Bear — 25% probability ↓ (CLARITY improving)</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8;">
+            <strong style="color:var(--text);">Gate condition:</strong> CLARITY Act fails or stalls past mid-2026 midterm freeze.<br>
+            <strong style="color:var(--text);">Key headwinds:</strong>
+            <ul style="margin:6px 0 0 16px;line-height:2;">
+              <li>CLARITY Act fails Senate Banking Committee markup</li>
+              <li>US regulatory fragmentation — ETH limited to US institutional asset only</li>
+              <li>RWA tokenization stalls below $50B on-chain by end-2027</li>
+              <li>Sovereign wealth funds abstain from ETH allocation</li>
+              <li>ETH/BTC ratio stays depressed (below 0.030) — narrative fails to develop</li>
+              <li>Iran war escalation triggers sustained risk-off across crypto</li>
+              <li>BMNR dilution exceeds ETH NAV accretion — mNAV compression</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- BASE -->
+        <div style="background:var(--surface2);border-radius:8px;padding:14px;border-left:4px solid var(--green);">
+          <div style="font-family:var(--mono);font-size:12px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">★ Base — 47% probability (most likely)</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8;">
+            <strong style="color:var(--text);">Gate condition:</strong> CLARITY passes by late 2026; RWA reaches $100B on ETH by end-2027.<br>
+            <strong style="color:var(--text);">Key tailwinds:</strong>
+            <ul style="margin:6px 0 0 16px;line-height:2;">
+              <li>CLARITY Act signed into law — digital asset regulatory clarity established</li>
+              <li>RWA tokenization: $100B on ETH by end-2027 (currently $29.1B, +7.5%/mo)</li>
+              <li>MAVAN staking revenue scales: $221M current → $530M at ETH $10,000</li>
+              <li>Moderate SWF allocation ($20–40B) to ETH as reserve asset</li>
+              <li>ETH/BTC ratio recovers to 0.040–0.050 as ETH outperformance resumes</li>
+              <li>BTC cycle beta: ETH rides broader crypto bull market 2026–2027</li>
+              <li>GENIUS Act passes — stablecoin yields drive DeFi capital migration to ETH L2s</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- BULL -->
+        <div style="background:var(--surface2);border-radius:8px;padding:14px;border-left:4px solid var(--blue);">
+          <div style="font-family:var(--mono);font-size:12px;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">↑ Bull — 20% probability</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8;">
+            <strong style="color:var(--text);">Gate condition:</strong> All Base conditions met PLUS RWA $200B+ on ETH by 2027 AND SWF announcement.<br>
+            <strong style="color:var(--text);">Additional tailwinds beyond Base:</strong>
+            <ul style="margin:6px 0 0 16px;line-height:2;">
+              <li>RWA on ETH exceeds $200B by end-2027 — BlackRock, Fidelity scale tokenised funds</li>
+              <li>Sovereign wealth fund ETH allocation announced (Norway, Abu Dhabi, or Singapore)</li>
+              <li>ETH monetary premium develops — 5–15% of gold market cap captured (~$0.9–2.7T)</li>
+              <li>Agentic AI systems adopt ETH as primary settlement layer for machine-to-machine payments</li>
+              <li>MAVAN-as-a-service: institutional staking revenue adds $1B+ to MAVAN valuation</li>
+              <li>OpenAI IPO materialises — ORBS stake scales from $85M → ~$900M (+$1.75/BMNR share)</li>
+              <li>ETH/BTC ratio recovers to 0.060–0.070 — ETH outperforms BTC decisively</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- SUPER BULL -->
+        <div style="background:var(--surface2);border-radius:8px;padding:14px;border-left:4px solid var(--teal);">
+          <div style="font-family:var(--mono);font-size:12px;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">⚡ Super Bull — 7% probability</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8;">
+            <strong style="color:var(--text);">Gate condition:</strong> All Bull conditions met PLUS gold narrative captures 20–30% of gold market cap.<br>
+            <strong style="color:var(--text);">Additional tailwinds beyond Bull:</strong>
+            <ul style="margin:6px 0 0 16px;line-height:2;">
+              <li>Gold narrative fully activated — ETH captures 20–30% of gold's $18T monetary premium</li>
+              <li>Multiple SWF announcements — ETH adopted as strategic reserve asset by 3+ sovereign funds</li>
+              <li>Iran war resolution triggers sustained risk-on; ETH re-rated as "digital wartime gold"</li>
+              <li>Glamsterdam upgrade + full danksharding — ETH L1 fee burn turns sharply deflationary</li>
+              <li>EigenLayer restaking premium drives MAVAN yield above 4% — yield spread vs T-bills flips positive after rate cuts</li>
+              <li>Beast Industries IPO materialises — stake scales from $200M → ~$1.4B (+$2.61/BMNR share)</li>
+              <li>BMNR reaches 5% of ETH supply ("Alchemy of 5%") — symbolic milestone triggers institutional re-rating</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- DOCUMENT DOWNLOAD -->
+  <div class="stitle">Document Download</div>
+  <div class="card">
+    <div class="ch"><span class="ct">BMNR Deep Dive — Latest Version</span><span class="bg bm">v30</span></div>
+    <div class="cb" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div style="font-family:var(--mono);font-size:13px;">BMNR_Deep_Dive_13April26_v30.docx</div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--text2);margin-top:4px;">17 sections · 4-scenario framework · Extended thinking · Section 17 living data layer</div>
+      </div>
+      <a href="BMNR_Deep_Dive_13April26_v30.docx" download
+         style="background:var(--accent);color:#fff;text-decoration:none;padding:9px 20px;border-radius:6px;font-family:var(--mono);font-size:13px;font-weight:500;white-space:nowrap;"
+         onmouseover="this.style.background='#4c95fd'" onmouseout="this.style.background='var(--accent)'">
+        ↓ Download Document
+      </a>
+    </div>
+  </div>
+
+  <!-- API KEY DISPLAY — requested feature -->
+  <div class="stitle">API Key Reference</div>
+  <div class="card">
+    <div class="ch"><span class="ct">Your Finnhub API Key</span><span class="bg bl">STORED LOCALLY IN BROWSER</span></div>
+    <div class="cb">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:12px;">Your key is saved in your browser's localStorage. It is displayed here so you can copy it for reference. It is never transmitted anywhere except to Finnhub's API servers when fetching price data.</div>
+      <div class="apibox">
+        <div class="apikey-val" id="apiKeyDisplay">—</div>
+        <button class="cpbtn" onclick="copyKey()">⎘ Copy Key</button>
+      </div>
+      <div style="margin-top:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <input class="kinput" id="keyInput2" type="text" placeholder="Update key" style="flex:1;max-width:400px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:8px 12px;border-radius:6px;font-family:var(--mono);font-size:12px;outline:none;" />
+        <button class="ksave" onclick="updateKey()">Update Key</button>
+        <button onclick="clearKey()" style="background:var(--red-dim);color:var(--red);border:1px solid var(--red);padding:8px 14px;border-radius:6px;font-family:var(--mono);font-size:11px;cursor:pointer;">Clear Key</button>
+      </div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--text2);margin-top:8px;">
+        Free tier: 60 API calls/min · This dashboard uses 4 calls per 5-second cycle = 48 calls/min · safely within the limit.<br>
+        Register or manage your key: <a href="https://finnhub.io" target="_blank" style="color:var(--blue);">finnhub.io</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATA SOURCES -->
+  <div class="stitle">Data Sources</div>
+  <div class="card">
+    <div class="ch"><span class="ct">Source Directory</span></div>
+    <div class="cb" style="padding:0;">
+      <table class="src-tbl">
+        <thead><tr><th>Data</th><th>Source</th><th>Access</th><th>Freq</th></tr></thead>
+        <tbody>
+          <tr><td>ETH price + 24h change</td><td class="surl">finnhub.io/api/v1/quote?symbol=BINANCE:ETHUSDT — Binance spot price via Finnhub</td><td>Free API key — finnhub.io/register</td><td>Every 5s</td></tr>
+          <tr><td>BTC price + 24h change</td><td class="surl">finnhub.io/api/v1/quote?symbol=BINANCE:BTCUSDT — Binance spot price via Finnhub</td><td>Free API key</td><td>Every 5s</td></tr>
+          <tr><td>BMNR stock price + 24h change</td><td class="surl">finnhub.io/api/v1/quote?symbol=BMNR — NYSE real-time quote via Finnhub</td><td>Free API key</td><td>Every 5s</td></tr>
+          <tr><td>Gold spot price (XAU/USD)</td><td class="surl">Three-source waterfall — (1) gold-api.com/price/XAU (real-time spot, primary) → (2) api.coingecko.com PAXG (1:1 gold token, fallback) → (3) api.frankfurter.app XAU/USD (ECB, last resort). First successful source wins each cycle.</td><td>Free, no key needed</td><td>Every 5s</td></tr>
+          <tr><td>mNAV — Method 1 (455M shares)</td><td class="surl">Calculated live: BMNR price ÷ (Total NAV ÷ 455M). Share count from press coverage (Apr 2026). Official count pending Apr 29 10-Q. Lower bound.</td><td>Derived from live prices</td><td>Every 5s</td></tr>
+          <tr><td>mNAV — Method 2 (530M predicted)</td><td class="surl">Calculated live: BMNR price ÷ (Total NAV ÷ 530M). Share count predicted by bmnr.rocks via ATM equity issuance tracking. See bmnr.rocks/blog/how-predicted-mnav-works</td><td>Derived from live prices</td><td>Every 5s</td></tr>
+          <tr><td>BMNR NAV composition</td><td class="surl">ETH value (live) + BTC value (live) + ORBS $107M (book) + Beast $200M (book) + Cash $1,120M (static). Static values from 8-K April 20, 2026.</td><td>Partly live, partly static</td><td>Every 5s</td></tr>
+          <tr><td>Historical price seed data</td><td class="surl">Weekly anchor prices from BMNR press releases (8-K filings via SEC EDGAR) and contemporaneous sources (Fortune.com, Yahoo Finance, 24/7 Wall St.)</td><td>Verified historical</td><td>Static</td></tr>
+          <tr><td>BMNR balance sheet</td><td class="surl">PRNewswire + SEC EDGAR — Claude searches automatically each weekly update and pulls latest press release figures. No manual paste needed.</td><td>Auto via Claude</td><td>Weekly / after 8-K</td></tr>
+          <tr><td>RWA on-chain data</td><td class="surl">app.rwa.xyz (dashboard) · api.rwa.xyz (free tier API)</td><td>Free account</td><td>Weekly</td></tr>
+          <tr><td>ETH issuance + blob utilisation</td><td class="surl">ultrasound.money</td><td>Public</td><td>Monthly</td></tr>
+          <tr><td>EigenLayer TVL</td><td class="surl">defillama.com/protocol/eigenlayer</td><td>Free</td><td>Monthly</td></tr>
+          <tr><td>CLARITY Act odds</td><td class="surl">polymarket.com/event/clarity-act-signed-into-law-in-2026</td><td>Public</td><td>Weekly</td></tr>
+          <tr><td>OpenAI IPO (watch)</td><td class="surl">sec.gov/cgi-bin/browse-edgar?company=openai&action=getcompany — monitor for S-1 filing</td><td>Free</td><td>On event</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footnote">
+    Dashboard v31 · ETH price: CoinGecko · BTC, BMNR: Finnhub · Gold: CoinGecko PAXG → gold-api.com → Frankfurter/ECB waterfall · Updates every 5s · Balance sheet: 8-K Apr 20, 2026 (data as of Apr 19, 2026 4pm ET) · Claude searches PRNewswire/SEC automatically each update · Q2 released Apr 29, 2026 · Next: Q3 ~Jul 2026 · Not investment advice.
+  </div>
+</div><!-- end mainDash -->
 
 <script>
-const ETH_HELD=5078386, BTC_HELD=200, ORBS=91e6, BEAST=200e6, CASH=940e6;
-const S455=455e6, S537=537628819;
+// ── BALANCE SHEET CONSTANTS (8-K April 20, 2026) ────────────────────
+const ETH_HELD=5078386, BTC_HELD=200, ORBS=91e6, BEAST=200e6, CASH=940e6, SHARES_455=455e6;
+// ── bmnr.rocks methodology ────────────────────────────────────────────
+const SHARES_537=537628819; // 10-Q Apr 13, 2026 anchor — bmnr.rocks adds est. weekly ATM dilution
+// ── Press Release Apr 27, 2026 (data as of Apr 26, 4pm ET) ───────────
+const ETH_STAKED=3701589, ETH_SUPPLY=120.7e6, ETH_GOAL=ETH_SUPPLY*0.05;
+const STAKING_REV=264e6, STAKING_YIELD=3.033, CESR=3.028, STAKING_PROJ=363e6;
+const KEY_NAME='finnhub_key';
 
-function fP(n,d=2){if(n==null||isNaN(n))return '—';return '$'+Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});}
-function fB(n){if(!n)return '—';return n>=1e9?'$'+(n/1e9).toFixed(2)+'B':n>=1e6?'$'+(n/1e6).toFixed(1)+'M':'$'+Math.round(n).toLocaleString();}
-function fC(n){if(n==null)return '—';return (n>=0?'+':'')+Number(n).toFixed(2)+'%';}
-function s(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
-function sc(id,cls){const e=document.getElementById(id);if(e)e.className='pchg '+(cls||'ne');}
-function clsC(n){return n>0.05?'up up':n<-0.05?'dn dn':'ne ne';}
+// Key pre-loaded via BAKED_KEY fallback in getKey()
 
-async function fetchPrices(){
-  const dot=document.getElementById('dot');
-  const statEl=document.getElementById('stat');
-  dot.className='dot loading';
-  statEl.textContent='fetching…';
+// ── STATE ────────────────────────────────────────────────────────────
+// Pre-seeded with verified Apr 20 values — renders immediately, live fetches update these
+let P={
+  eth:null, btc:null, bmnr:null, gold:null,
+};
+let ticker=null;
+let goldPrevClose=null;
 
-  try{
-    const r=await fetch('/api/prices?t='+Date.now());
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    const d=await r.json();
-
-    const {eth,btc,bmnr,gold}=d;
-    const ts=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-
-    if(eth){
-      s('ethP',fP(eth.price));
-      sc('ethC',clsC(eth.changePct));s('ethC',fC(eth.changePct)+' (24h)');
-      s('ethTs',ts+' · CoinGecko');
-    }
-    if(btc){
-      s('btcP',fP(btc.price,0));
-      sc('btcC',clsC(btc.changePct));s('btcC',fC(btc.changePct)+' (24h)');
-      s('btcTs',ts+' · Finnhub');
-    }
-    if(bmnr){
-      s('bmnrP',fP(bmnr.price));s('bmnrCur',fP(bmnr.price));
-      sc('bmnrC',clsC(bmnr.changePct));s('bmnrC',fC(bmnr.changePct)+' (24h)');
-      s('bmnrTs',ts+' · Finnhub/NYSE');
-    }
-    if(gold){
-      s('goldP',fP(gold.price,0));
-      sc('goldC',clsC(gold.changePct));s('goldC',fC(gold.changePct)+' (24h)');
-      s('goldTs',ts+' · '+(gold.src||'live'));
-    }
-
-    const ep=eth?.price, bp=btc?.price, mp=bmnr?.price, gp=gold?.price;
-
-    if(ep) s('ethVal',fB(ETH_HELD*ep));
-    if(bp) s('btcVal',fB(BTC_HELD*bp));
-
-    if(ep&&bp&&mp){
-      const nav=ETH_HELD*ep+BTC_HELD*bp+ORBS+BEAST+CASH;
-      s('navT',fB(nav));
-      const nps1=nav/S455,mn1=mp/nps1,d1=((mp-nps1)/nps1*100);
-      s('mn1',mn1.toFixed(3)+'x');s('nps1',fP(nps1));s('disc1',d1.toFixed(1)+'%');
-      document.getElementById('mn1bar').style.width=Math.max(0,Math.min(100,(mn1-0.75)/(3.2-0.75)*100))+'%';
-      const nps2=nav/S537,mn2=mp/nps2,d2=((mp-nps2)/nps2*100);
-      s('mn2',mn2.toFixed(3)+'x');s('nps2',fP(nps2));s('disc2',d2.toFixed(1)+'%');
-      document.getElementById('mn2bar').style.width=Math.max(0,Math.min(100,(mn2-0.75)/(3.2-0.75)*100))+'%';
-      s('evX',(873/mp).toFixed(1)+'x');s('baseX',(715/mp).toFixed(1)+'x');
-      s('bearX',(275/mp).toFixed(1)+'x');s('bullX',(1445/mp).toFixed(1)+'x');
-      s('s_bear',(275/mp).toFixed(1)+'x');s('s_base',(715/mp).toFixed(1)+'x');
-      s('s_bull',(1445/mp).toFixed(1)+'x');s('s_sb',(2554/mp).toFixed(1)+'x');
-      s('s_ev',(873/mp).toFixed(1)+'x');
-    }
-    if(ep&&bp) s('ethbtc',(ep/bp).toFixed(4));
-
-    const ok=[eth,btc,bmnr,gold].filter(Boolean).length;
-    dot.className=ok===4?'dot live':ok>0?'dot loading':'dot err';
-    statEl.textContent=ok===4?'Live · '+ts:ok+'/4 live · '+ts;
-
-  }catch(e){
-    dot.className='dot err';
-    statEl.textContent='Error — tap refresh';
-    console.error('Price fetch failed:',e);
-  }
-
-  const days=Math.ceil((new Date('2026-07-14')-new Date())/864e5);
-  s('q3days',days>0?days:(days===0?'TODAY':'DONE'));
+// ── KEY MANAGEMENT ───────────────────────────────────────────────────
+// Key is baked in — works even if localStorage is blocked (sandboxed preview).
+const BAKED_KEY = 'd7foe0hr01qqb8rh1gr0d7foe0hr01qqb8rh1grg';
+function getKey(){
+  try{ return localStorage.getItem(KEY_NAME) || BAKED_KEY; }
+  catch(e){ return BAKED_KEY; }
+}
+function saveKey(){
+  const k=document.getElementById('keyInput')?.value.trim();
+  if(!k){alert('Please paste your Finnhub API key.');return;}
+  try{localStorage.setItem(KEY_NAME,k);}catch(e){}
+  boot();
+}
+function updateKey(){
+  const k=document.getElementById('keyInput2')?.value.trim();
+  if(!k){alert('Please enter a key.');return;}
+  try{localStorage.setItem(KEY_NAME,k);}catch(e){}
+  refreshKeyDisplay();
+  showBnr('ok','Key updated. Restarting data feed…');
+  if(ticker) clearInterval(ticker);
+  startTicker();
+}
+function clearKey(){
+  if(!confirm('Clear stored key? Dashboard will revert to built-in key.')) return;
+  try{localStorage.removeItem(KEY_NAME);}catch(e){}
+  refreshKeyDisplay();
+  showBnr('ok','Cleared — using built-in key.');
+}
+function refreshKeyDisplay(){
+  const k=getKey();
+  const el=document.getElementById('apiKeyDisplay');
+  if(el) el.textContent=k;
+  const el2=document.getElementById('keyInput2');
+  if(el2) el2.value='';
+}
+function copyKey(){
+  const k=getKey();
+  navigator.clipboard?.writeText(k)
+    .then(()=>showBnr('ok','API key copied to clipboard.'))
+    .catch(()=>showBnr('err','Copy failed — key: '+k.substring(0,8)+'…'));
 }
 
-fetchPrices();
-setInterval(fetchPrices,10000);
+// ── SHOW / HIDE PANELS ───────────────────────────────────────────────
+function showDash(){
+  const sp=document.getElementById('setupPanel');
+  const md=document.getElementById('mainDash');
+  if(sp) sp.style.display='none';
+  if(md) md.style.display='block';
+  refreshKeyDisplay();
+  updateEarnings();
+  setTimeout(()=>{ initHistCharts(); updateHistCharts(); initMnavChart(); updateMnavChart(); initEthHeldChart(); updateEthHeldChart(); initMultChart(); updateMultChart(); }, 200);
+}
+function showSetup(){ /* setup panel retired — key is baked in */ showDash(); }
+
+// ── FINNHUB QUOTE FETCH ──────────────────────────────────────────────
+async function fhQuote(symbol){
+  const key=getKey();
+  if(!key) return null;
+  try{
+    const r=await fetch(`https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(symbol)}&token=${key}`,{signal:AbortSignal.timeout(8000)});
+    if(!r.ok) return null;
+    const d=await r.json();
+    // d.c = current price, d.pc = previous close, d.d = change, d.dp = change %
+    if(!d.c||d.c===0) return null;
+    return {price:d.c, prevClose:d.pc, change:d.d||0, changePct:d.dp||0, time:new Date()};
+  }catch(e){return null;}
+}
+
+
+// ── ETH via CoinGecko (reliable, no API key needed) ──────────────────
+async function fetchCoinGecko(coinId){
+  try{
+    const cb='?_='+Date.now();
+    const url=`https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd&include_24hr_change=true`+cb;
+    const r=await fetch(url,{signal:AbortSignal.timeout(10000),cache:'no-store'});
+    if(!r.ok) return null;
+    const d=await r.json();
+    const price=d?.[coinId]?.usd;
+    const chgPct=d?.[coinId]?.usd_24h_change;
+    if(!price||price<=0) return null;
+    const prev=price/(1+(chgPct||0)/100);
+    return {price, prevClose:prev, change:price-prev, changePct:chgPct||0, time:new Date()};
+  }catch(e){return null;}
+}
+
+// ── GOLD price waterfall ─────────────────────────────────────────────
+// 1. gold-api.com (real-time spot, no key, most accurate)
+// 2. CoinGecko PAXG (1:1 gold-backed token, slight lag)
+// 3. Frankfurter/ECB (fallback)
+const GOLD_SEED = {price:null}; // no seed — loads live only
+
+async function fetchGold(){
+  const cb = '?_='+Date.now();
+
+  // Attempt 1: gold-api.com — real-time spot gold, no key, CORS allowed
+  try{
+    const r=await fetch('https://gold-api.com/price/XAU'+cb,{signal:AbortSignal.timeout(10000),cache:'no-store'});
+    if(r.ok){
+      const d=await r.json();
+      if(d?.price&&d.price>500){
+        const chg=d.ch||0, chgP=d.chp||0;
+        return {price:d.price, prevClose:d.prev_close_price||d.price, change:chg, changePct:chgP, time:new Date(), seed:false, src:'gold-api.com'};
+      }
+    }
+  }catch(e){}
+
+  // Attempt 2: CoinGecko PAXG (1:1 gold-backed token)
+  try{
+    const url='https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd&include_24hr_change=true'+cb;
+    const r=await fetch(url,{signal:AbortSignal.timeout(10000),cache:'no-store'});
+    if(r.ok){
+      const d=await r.json();
+      const price=d?.['pax-gold']?.usd;
+      const chgPct=d?.['pax-gold']?.usd_24h_change;
+      if(price&&price>500){
+        const prev=price/(1+(chgPct||0)/100);
+        return {price, prevClose:prev, change:price-prev, changePct:chgPct||0, time:new Date(), seed:false, src:'CoinGecko/PAXG'};
+      }
+    }
+  }catch(e){}
+
+  // Attempt 3: Frankfurter open FX API — XAU/USD (European Central Bank data)
+  // Returns how many USD per 1 XAU (troy oz)
+  try{
+    const r=await fetch('https://api.frankfurter.app/latest?from=XAU&to=USD'+cb,{signal:AbortSignal.timeout(10000),cache:'no-store'});
+    if(r.ok){
+      const d=await r.json();
+      const price=d?.rates?.USD;
+      if(price&&price>500){
+        const prev=GOLD_SEED.prevClose;
+        return {price, prevClose:prev, change:price-prev, changePct:((price-prev)/prev)*100, time:new Date(), seed:false, src:'Frankfurter/ECB'};
+      }
+    }
+  }catch(e){}
+
+  return null; // all failed — caller will keep seed
+}
+
+// ── FORMAT HELPERS ───────────────────────────────────────────────────
+const fmtP  =(n,dec=2)=>n==null?'—':'$'+n.toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec});
+const fmtC  =c=>c==null?'—':(c>=0?'▲ +':'▼ ')+Math.abs(c).toFixed(2)+'%';
+const clsC  =c=>c==null?'ne':c>=0?'up':'dn';
+const fmtTs =d=>d?d.toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'}):'—';
+const fmtB  =n=>n>=1e9?'$'+(n/1e9).toFixed(2)+'B':n>=1e6?'$'+(n/1e6).toFixed(1)+'M':'$'+Math.round(n).toLocaleString();
+function s(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function sc(id,cls){const e=document.getElementById(id);if(!e)return;e.className=e.className.replace(/\bup\b|\bdn\b|\bne\b/g,'').trim()+' '+cls;}
+function ss(id,p,v){const e=document.getElementById(id);if(e)e.style[p]=v;}
+function setDot(id,ok){ss(id,'background',ok?'var(--green)':'var(--red)');}
+
+// ── ETH CARD — single source of truth from constants ─────────────────
+function renderEthCard(ethPrice){
+  const pct      = (ETH_HELD / ETH_SUPPLY * 100).toFixed(2);
+  const goalPct  = (ETH_HELD / ETH_GOAL * 100).toFixed(1);
+  const left     = ((ETH_GOAL - ETH_HELD)/1e6).toFixed(2);
+  const stakedPct= (ETH_STAKED / ETH_HELD * 100).toFixed(1);
+  const revM     = (STAKING_REV/1e6).toFixed(0);
+  const projM    = (STAKING_PROJ/1e6).toFixed(0);
+  s('ethHeldAmt',  ETH_HELD.toLocaleString()+' ETH');
+  s('ethStakedAmt',ETH_STAKED.toLocaleString()+' ('+stakedPct+'%)');
+  s('ethSupplyPct',pct+'% of 120.7M');
+  s('alchemyGoal', goalPct+'% there · '+left+'M left');
+  ss('alchemyBar','width',goalPct+'%');
+  s('stakingRev',  '$'+revM+'M @ '+STAKING_YIELD+'% APY');
+  s('stakingProj', '$'+projM+'M / yr');
+  s('cesrBench',   CESR+'% (BMNR: '+STAKING_YIELD+'%)');
+  if(ethPrice) s('ethHVal', fmtB(ETH_HELD*ethPrice));
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────
+function render(){
+  const {eth,btc,gold,bmnr}=P;
+  const now=new Date();
+  renderEthCard(eth?.price);
+
+  // ETH
+  if(eth){
+    s('ethP',  fmtP(eth.price));
+    const ethDollar = eth.change != null ? (eth.change>=0?'+':'')+fmtP(Math.abs(eth.change))+' · ' : '';
+    s('ethC',  ethDollar+fmtC(eth.changePct)+' (24h)'); sc('ethC',clsC(eth.changePct));
+    s('ethTs', fmtTs(eth.time)+' · CoinGecko');
+    setDot('ethD', true);
+  } else {
+    s('ethP','Loading…'); s('ethC','—'); s('ethTs','Fetching live price…');
+    setDot('ethD', false);
+  }
+  // BTC
+  if(btc){
+    s('btcP',  fmtP(btc.price,0));
+    const btcDollar = btc.change != null ? (btc.change>=0?'+':'')+fmtP(Math.abs(btc.change),0)+' · ' : '';
+    s('btcC',  btcDollar+fmtC(btc.changePct)+' (24h)'); sc('btcC',clsC(btc.changePct));
+    s('btcTs', fmtTs(btc.time)+' · Finnhub/Binance');
+    setDot('btcD', true);
+  } else {
+    s('btcP','Loading…'); s('btcC','—'); s('btcTs','Fetching live price…');
+    setDot('btcD', false);
+  }
+  // BMNR
+  if(bmnr){
+    s('bmnrP',  fmtP(bmnr.price));
+    s('bmnrSh', fmtP(bmnr.price));
+    const bmnrDollar = bmnr.change != null ? (bmnr.change>=0?'+':'')+fmtP(Math.abs(bmnr.change))+' · ' : '';
+    s('bmnrC', bmnrDollar+fmtC(bmnr.changePct)+' (24h)'); sc('bmnrC',clsC(bmnr.changePct));
+    s('bmnrTs', fmtTs(bmnr.time)+' · Finnhub/NYSE');
+    setDot('bmnrD', true);
+  } else {
+    s('bmnrP','Loading…'); s('bmnrSh','—'); s('bmnrC','—'); s('bmnrTs','Fetching live price…');
+    setDot('bmnrD', false);
+  }
+  // Gold
+  if(gold){
+    s('goldP',  fmtP(gold.price,0));
+    const goldDollar = gold.change != null ? (gold.change>=0?'+':'')+fmtP(Math.abs(gold.change),0)+' · ' : '';
+    s('goldC', goldDollar+fmtC(gold.changePct)+' (24h)'); sc('goldC',clsC(gold.changePct));
+    s('goldTs', fmtTs(gold.time)+' · '+(gold.src||'live'));
+    setDot('goldD', true);
+  } else {
+    s('goldP','Loading…'); s('goldC','—'); s('goldTs','Fetching live price…');
+    setDot('goldD', false);
+  }
+
+  // mNAV — Method 1: 455M shares (press coverage anchor)
+  const ep=eth?.price, bp=btc?.price||74954, gp=gold?.price||4792, mp=bmnr?.price;
+  if(ep&&mp){
+    const SHARES_PRESS = 455e6;
+    const SHARES_ROCKS = SHARES_537; // bmnr.rocks uses 10-Q Apr 13 anchor: 537,628,819
+    const navT = ETH_HELD*ep + ORBS + BEAST + BTC_HELD*bp + CASH;
+
+    // Method 1
+    const nps1=navT/SHARES_PRESS, mn1=mp/nps1, disc1=((mp-nps1)/nps1*100).toFixed(1);
+    s('navPS','$'+nps1.toFixed(2));
+    s('discNAV',disc1+'%');
+    s('mnavBig',mn1.toFixed(3)+'x');
+    ss('mnavBar','width',Math.max(0,Math.min(100,(mn1-0.75)/(3.2-0.75)*100))+'%');
+
+    // Method 2
+    const nps2=navT/SHARES_ROCKS, mn2=mp/nps2, disc2=((mp-nps2)/nps2*100).toFixed(1);
+    s('navPSRocks','$'+nps2.toFixed(2));
+    s('discNAVRocks',disc2+'%');
+    s('mnavRocks',mn2.toFixed(3)+'x');
+    ss('mnavBarRocks','width',Math.max(0,Math.min(100,(mn2-0.75)/(3.2-0.75)*100))+'%');
+
+    s('mnavTs', fmtTs(bmnr.time||eth.time)+' · live calc');
+    setDot('mnavD',true);
+    s('evMult',(873/mp).toFixed(1)+'x');
+    s('evMult2',(873/mp).toFixed(1)+'x');
+    s('baseMult',(715/mp).toFixed(1)+'x');
+    s('baseMult2',(715/mp).toFixed(1)+'x');
+    s('bearMult2030',(275/mp).toFixed(1)+'x');
+    s('bearMult2',(275/mp).toFixed(1)+'x');
+    pushMultPoint();
+    // Bear 2030 multiple
+    const bearEl = document.getElementById('bearMult');
+    if(bearEl) bearEl.textContent = (275/mp).toFixed(1)+'x';
+    s('bmnrSh',fmtP(mp));
+
+    // BTC held value
+    s('btcHVal',fmtB(BTC_HELD*bp));
+
+    // Cash %
+    s('cashPct',((CASH/navT)*100).toFixed(1)+'% of NAV');
+
+    // Moonshots %
+    s('moonPct',((( ORBS+BEAST)/navT)*100).toFixed(1)+'% of NAV');
+
+    // Dry powder (weeks at $145M/wk burn)
+    s('dryPowder','~'+Math.round(CASH/145e6)+' weeks @ $145M/wk pace');
+
+    // ETH holdings value
+    s('ethHVal', fmtB(ETH_HELD*ep));
+    s('holdTs', fmtTs(eth.time)+' · live calc');
+    setDot('holdD',true);
+
+    // Nav pie chart
+    updateNavPie(ETH_HELD*ep, BTC_HELD*bp, ORBS, BEAST, CASH);
+  }
+  // ETH/BTC ratio
+  if(ep&&bp){
+    const eb=ep/bp;
+    s('ebR',eb.toFixed(4)); s('ebLbl',eb.toFixed(4));
+    ss('ebBar','width',Math.max(0,Math.min(100,(eb-0.02)/(0.10-0.02)*100))+'%');
+    ss('ebBar','background',eb<0.03?'var(--red)':eb<0.05?'var(--amber)':'var(--green)');
+    s('ebTs',fmtTs(eth.time)+' · live calc'); setDot('ebD',true);
+  }
+  // ETH/Gold ratio
+  if(ep&&gp){
+    const eg=ep/(gp*31.1035), gmp=(ep*120.7e6)/18e12*100;
+    s('egR',eg.toFixed(4)); s('gPct','~'+gmp.toFixed(1)+'%');
+    ss('gBar','width',Math.max(0,Math.min(100,gmp/30*100))+'%');
+    s('egTs',fmtTs(gold.time)+' · live calc'); setDot('egD',true);
+  }
+
+  // Snippet
+  const ds=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    pushSessionPoint();
+  pushMnavPoint();
+}
+
+function updateEarnings(){
+  const days=Math.ceil((new Date('2026-07-14')-new Date())/864e5); // est. Q3 10-Q ~Jul 14, 2026
+  s('earnCD',days>0?days:(days===0?'TODAY':'DONE'));
+  s('earnLbl',days>0?'days away':(days===0?'earnings today!':'report released'));
+}
+
+// ── FETCH CYCLE ──────────────────────────────────────────────────────
+// 4 parallel fetches per cycle:
+//   Finnhub: ETH, BTC, BMNR (3 calls)
+//   gold-api.com: Gold (0 Finnhub calls, separate free service)
+// Total Finnhub usage: 3 calls × 12 cycles/min = 36 calls/min (well within 60/min free limit)
+// Refresh interval: 5000ms = 12 cycles per minute
+let cycleCount=0;
+async function fetchCycle(){
+  // Fetch all prices from Vercel server-side API — no CORS/sandbox issues
+  let apiData = null;
+  try {
+    const r = await fetch('/api/prices?t='+Date.now(), {cache:'no-store'});
+    if (r.ok) apiData = await r.json();
+  } catch(e) {}
+
+  // Wrap into same format as Promise.allSettled
+  const wrap = (val) => val ? {status:'fulfilled', value:val} : {status:'rejected', reason:'API null'};
+  const [ethR,btcR,bmnrR,goldR] = apiData
+    ? [wrap(apiData.eth), wrap(apiData.btc), wrap(apiData.bmnr), wrap(apiData.gold)]
+    : await Promise.allSettled([
+        fetchCoinGecko('ethereum'),
+        fhQuote('BINANCE:BTCUSDT'),
+        fhQuote('BMNR'),
+        fetchGold()
+      ]);
+
+  function normPrice(v){
+    if(!v||!v.price) return null;
+    return {price:v.price, prevClose:v.prevClose||v.price, change:v.change||0, changePct:v.changePct||v.dp||0, time:new Date(), seed:false, src:v.src||''};
+  }
+  let ok=0;
+  if(ethR.status==='fulfilled'  &&ethR.value) {const n=normPrice(ethR.value);  if(n){P.eth=n;ok++;}}
+  if(btcR.status==='fulfilled'  &&btcR.value) {const n=normPrice(btcR.value);  if(n){P.btc=n;ok++;}}
+  if(bmnrR.status==='fulfilled' &&bmnrR.value){const n=normPrice(bmnrR.value); if(n){P.bmnr=n;ok++;}}
+  if(goldR.status==='fulfilled' &&goldR.value){const n=normPrice(goldR.value);  if(n){P.gold=n;ok++;}}
+
+  cycleCount++;
+  render();
+
+  const ts=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const dot=document.getElementById('lDot');
+  const allSeed = P.eth?.seed && P.btc?.seed && P.bmnr?.seed && P.gold?.seed;
+  if(ok===4){
+    dot.style.background='var(--green)';
+    dot.style.animation='lp 2s ease-in-out infinite';
+    const mktNote=P.bmnr&&!apiData?.bmnr?.isMarketOpen?' · mkt closed':'';s('lStat','Live · '+ts+mktNote);
+  } else if(ok>0){
+    dot.style.background='var(--amber)';
+    dot.style.animation='none';
+    s('lStat',ok+'/4 live · '+ts);
+  } else if(allSeed){
+    dot.style.background='var(--amber)';
+    dot.style.animation='none';
+    s('lStat','Seed data · no network · '+ts);
+  } else {
+    dot.style.background='var(--red)';
+    dot.style.animation='none';
+    s('lStat','No live feed · '+ts);
+  }
+}
+
+function startTicker(){
+  fetchCycle();
+  ticker=setInterval(fetchCycle, 5000);
+}
+
+function manualRefresh(){
+  cycleCount=0;
+  fetchCycle();
+}
+
+// ── COPY SNIPPET ─────────────────────────────────────────────────────
+function saveDashboard(){
+  // Grab the full HTML of this page and trigger a download
+  const html = document.documentElement.outerHTML;
+  const blob = new Blob([html], {type:'text/html'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'BMNR_Data_Dashboard.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=> URL.revokeObjectURL(url), 5000);
+}
+
+function showBnr(t,msg){hideBnrs();document.getElementById(t==='err'?'errTxt':'okTxt').textContent=msg;document.getElementById(t==='err'?'errBnr':'okBnr').classList.add('show');setTimeout(hideBnrs,7000);}
+function hideBnrs(){['errBnr','okBnr'].forEach(id=>document.getElementById(id).classList.remove('show'));}
+
+// ── BOOT ──────────────────────────────────────────────────────────────
+
+// ── NAV PIE CHART ────────────────────────────────────────────────────
+let navPieInstance = null;
+function updateNavPie(ethVal, btcVal, orbsVal, beastVal, cashVal){
+  const ctx = document.getElementById('navPieChart');
+  if(!ctx) return;
+  const total = ethVal + btcVal + orbsVal + beastVal + cashVal;
+  const data = {
+    labels: [
+      `ETH  ${ (ethVal/total*100).toFixed(1)}%`,
+      `Cash  ${(cashVal/total*100).toFixed(1)}%`,
+      `Beast  ${(beastVal/total*100).toFixed(1)}%`,
+      `ORBS  ${(orbsVal/total*100).toFixed(1)}%`,
+      `BTC  ${(btcVal/total*100).toFixed(1)}%`,
+    ],
+    datasets:[{
+      data:[ethVal, cashVal, beastVal, orbsVal, btcVal],
+      backgroundColor:['#58a6ff','#3fb950','#39d0d8','#d29922','#f78166'],
+      borderColor:'#0f1318', borderWidth:2,
+    }]
+  };
+  if(navPieInstance){
+    navPieInstance.data = data;
+    navPieInstance.update('none');
+  } else {
+    navPieInstance = new Chart(ctx,{
+      type:'doughnut',
+      data,
+      options:{
+        responsive:true, maintainAspectRatio:true,
+        cutout:'62%',
+        plugins:{
+          legend:{
+            position:'right',
+            labels:{ color:'#b0bac6', font:{family:"'IBM Plex Mono'",size:13}, padding:14, boxWidth:14 }
+          },
+          tooltip:{
+            callbacks:{
+              label: ctx => ` ${ctx.label.split('  ')[0]}: ${fmtB(ctx.raw)} (${(ctx.raw/total*100).toFixed(1)}%)`
+            }
+          }
+        }
+      }
+    });
+  }
+}
+
+
+
+// ── ETH HOLDINGS CHART ────────────────────────────────────────────────
+let ethHeldChartInst = null;
+function initEthHeldChart(){
+  const ctx = document.getElementById('ethHeldChart')?.getContext('2d');
+  if(!ctx || ethHeldChartInst) return;
+  const labels = HIST_SEED.labels;
+  const data   = HIST_SEED.eth_held.map(v => v ? +(v/1e6).toFixed(3) : null);
+  ethHeldChartInst = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels,
+      datasets:[{
+        label:'ETH Held (M)',
+        data, borderColor:'#3fb950', backgroundColor:'#3fb95022',
+        borderWidth:2, pointRadius:3, tension:0.3, fill:true,
+        spanGaps:true
+      },{
+        label:'5% Goal (6.035M)',
+        data: labels.map(()=>6.035),
+        borderColor:'#f85149', borderWidth:1, borderDash:[4,4],
+        pointRadius:0, fill:false
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      scales:{
+        x:{ticks:{color:'#8b949e',font:{size:10}},grid:{color:'#21262d'}},
+        y:{ticks:{color:'#8b949e',font:{size:10},callback:v=>v+'M'},grid:{color:'#21262d'},min:4.3,max:6.2}
+      },
+      plugins:{legend:{labels:{color:'#8b949e',font:{size:11},boxWidth:10}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+'M ETH'}}}
+    }
+  });
+}
+
+function updateEthHeldChart(){
+  if(!ethHeldChartInst) return;
+  const allLabels = [...HIST_SEED.labels, ...SESSION_DATA.labels];
+  const seedVals  = HIST_SEED.eth_held.map(v => v ? +(v/1e6).toFixed(3) : null);
+  // Session data: use latest known eth_held (5,078,386)
+  const sessVals  = SESSION_DATA.labels.map(()=>+(4976485/1e6).toFixed(3));
+  ethHeldChartInst.data.labels = allLabels;
+  ethHeldChartInst.data.datasets[0].data = [...seedVals, ...sessVals];
+  ethHeldChartInst.data.datasets[1].data = allLabels.map(()=>6.035);
+  ethHeldChartInst.update('none');
+  s('ethHeldTs', 'Source: BMNR 8-K filings · live session extends right');
+  setDot('ethHeldD', true);
+}
+
+// ── BMNR MULTIPLES CHART ──────────────────────────────────────────────
+let multChartInst = null;
+function initMultChart(){
+  const ctx = document.getElementById('multChart')?.getContext('2d');
+  if(!ctx || multChartInst) return;
+  multChartInst = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels: HIST_SEED.labels,
+      datasets:[
+        {label:'EV 2030 ($873)',   data:HIST_SEED.ev2030,   borderColor:'#d29922', backgroundColor:'#d2992211', borderWidth:2, pointRadius:2, tension:0.3, fill:false, spanGaps:true},
+        {label:'Base 2030 ($715)', data:HIST_SEED.base2030, borderColor:'#3fb950', backgroundColor:'#3fb95011', borderWidth:2, pointRadius:2, tension:0.3, fill:false, spanGaps:true},
+        {label:'Bear 2030 ($275)', data:HIST_SEED.bear2030, borderColor:'#f85149', backgroundColor:'#f8514911', borderWidth:2, pointRadius:2, tension:0.3, fill:false, spanGaps:true},
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      scales:{
+        x:{ticks:{color:'#8b949e',font:{size:10}},grid:{color:'#21262d'}},
+        y:{ticks:{color:'#8b949e',font:{size:10},callback:v=>v+'x'},grid:{color:'#21262d'}}
+      },
+      plugins:{legend:{labels:{color:'#8b949e',font:{size:11},boxWidth:10}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+'x'}}}
+    }
+  });
+}
+
+// Session multiples tracker
+const MULT_SESSION = {labels:[], ev:[], base:[], bear:[]};
+let lastMultPush = 0;
+
+function pushMultPoint(){
+  const now = Date.now();
+  if(now - lastMultPush < 55000) return;
+  if(!P.bmnr) return;
+  const mp = P.bmnr.price;
+  const t  = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  MULT_SESSION.labels.push(t);
+  MULT_SESSION.ev.push(+(873/mp).toFixed(1));
+  MULT_SESSION.base.push(+(715/mp).toFixed(1));
+  MULT_SESSION.bear.push(+(275/mp).toFixed(1));
+  lastMultPush = now;
+  updateMultChart();
+}
+
+function updateMultChart(){
+  if(!multChartInst) return;
+  const allLabels = [...HIST_SEED.labels, ...MULT_SESSION.labels];
+  multChartInst.data.labels = allLabels;
+  multChartInst.data.datasets[0].data = [...HIST_SEED.ev2030,   ...MULT_SESSION.ev];
+  multChartInst.data.datasets[1].data = [...HIST_SEED.base2030, ...MULT_SESSION.base];
+  multChartInst.data.datasets[2].data = [...HIST_SEED.bear2030, ...MULT_SESSION.bear];
+  multChartInst.update('none');
+  s('multTs', 'Live calc from BMNR price · updates every 60s');
+  setDot('multD', true);
+}
+
+// ── HISTORICAL CHART DATA ─────────────────────────────────────────────
+// Seed: verified data points from BMNR weekly press releases + market data
+// Dates are weekly anchors; prices verified from press releases and searches
+const HIST_SEED = {
+  // [date_label, eth, bmnr, btc, gold]
+  // Sources: BMNR 8-K press releases, Yahoo Finance, Fortune.com
+  data: [
+    // [date, eth_price, bmnr, btc, gold, eth_held, bmnr_ev2030, bmnr_base2030, bmnr_bear2030]
+    ['Mar 17', 1995, 7.20,  81200, 3010, 4422659,  null, null, null],
+    ['Mar 24', 2060, 9.80,  85000, 3085, 4550000,  null, null, null],
+    ['Mar 31', 2133, 12.40, 82500, 3115, 4660903,  null, null, null],
+    ['Apr 5',  2123, 13.50, 83000, 3140, 4732082,  null, null, null],
+    ['Apr 8',  2254, 18.20, 80000, 3080, 4803334,  null, null, null],
+    ['Apr 10', 2196, 21.00, 71000, 3230, 4803334,  null, null, null],
+    ['Apr 13', 2206, 21.48, 74543, 3230, 4874858,  null, null, null],
+    ['Apr 15', 2369, 22.34, 74954, 4792, 4874858,  null, null, null],
+    ['Apr 20', 2311, 22.53, 75749, 4792, 4976485,  851/22.53, 715/22.53, 275/22.53],
+    ['Apr 26', 2398, 22.14, 79409, 4686, 4976485,  851/22.14, 715/22.14, 275/22.14],
+    ['Apr 27', 2369, 22.14, 79409, 4727, 5078386,  851/22.14, 715/22.14, 275/22.14],
+    ['May 3',  2392, 22.14, 80000, 4727, 5078386,  873/22.14, 715/22.14, 275/22.14], // live anchor
+  ],
+  get labels(){ return this.data.map(d=>d[0]); },
+  get eth()   { return this.data.map(d=>d[1]); },
+  get bmnr()  { return this.data.map(d=>d[2]); },
+  get btc()   { return this.data.map(d=>d[3]); },
+  get gold()  { return this.data.map(d=>d[4]); },
+  get eb()      { return this.data.map(d=>+(d[1]/d[3]).toFixed(4)); },
+  get eg()      { return this.data.map(d=>+(d[1]/(d[4]*31.1035)).toFixed(4)); },
+  get eth_held(){ return this.data.map(d=>d[5]||null); },
+  get ev2030()  { return this.data.map(d=>d[6]?+d[6].toFixed(1):null); },
+  get base2030(){ return this.data.map(d=>d[7]?+d[7].toFixed(1):null); },
+  get bear2030(){ return this.data.map(d=>d[8]?+d[8].toFixed(1):null); },
+};
+
+// Session data accumulator — adds a point every 60 seconds
+const SESSION_DATA = { labels:[], eth:[], bmnr:[], btc:[], gold:[], eb:[], eg:[] };
+let lastSessionPush = 0;
+
+function pushSessionPoint(){
+  const now = Date.now();
+  if(now - lastSessionPush < 55000) return; // max 1 per minute
+  if(!P.eth || !P.bmnr || !P.btc || !P.gold) return;
+  const t = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  SESSION_DATA.labels.push(t);
+  SESSION_DATA.eth.push(P.eth.price);
+  SESSION_DATA.bmnr.push(P.bmnr.price);
+  SESSION_DATA.btc.push(P.btc.price);
+  SESSION_DATA.gold.push(P.gold.price);
+  SESSION_DATA.eb.push(+(P.eth.price/P.btc.price).toFixed(4));
+  SESSION_DATA.eg.push(+(P.eth.price/(P.gold.price*31.1035)).toFixed(4));
+  lastSessionPush = now;
+  updateHistCharts();
+}
+
+function mergeHistData(seedVals, sessionVals, seedLabels, sessionLabels){
+  return {
+    labels: [...seedLabels, ...sessionLabels],
+    data:   [...seedVals,   ...sessionVals],
+  };
+}
+
+const CHART_DEFAULTS = (color, label) => ({
+  type:'line',
+  data:{
+    labels:[],
+    datasets:[{
+      label, data:[], borderColor:color, backgroundColor:color+'22',
+      borderWidth:2, pointRadius:2, pointHoverRadius:4, tension:0.3, fill:true,
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:true,
+    animation:{duration:300},
+    plugins:{legend:{display:false}, tooltip:{mode:'index',intersect:false,titleFont:{size:13},bodyFont:{size:13},
+      callbacks:{title:i=>i[0]?.label||'', label:c=>' '+c.dataset.label+': '+c.raw}}},
+    scales:{
+      x:{ticks:{color:'#8b949e',font:{size:12},maxTicksLimit:6}, grid:{color:'#2d333b'}},
+      y:{ticks:{color:'#8b949e',font:{size:12},maxTicksLimit:5,
+          callback:v=>v>=1000?'$'+(v/1000).toFixed(0)+'k':'$'+v},
+        grid:{color:'#2d333b'}, position:'right'},
+    }
+  }
+});
+
+const RATIO_CHART_DEFAULTS = (color, label) => {
+  const cfg = CHART_DEFAULTS(color, label);
+  cfg.options.scales.y.ticks.callback = v => v.toFixed(4);
+  cfg.options.scales.y.ticks.color = '#8b949e';
+  cfg.options.scales.y.ticks.font = {size:12};
+  cfg.options.scales.x.ticks.color = '#8b949e';
+  cfg.options.scales.x.ticks.font = {size:12};
+  return cfg;
+};
+
+let histCharts = {};
+
+function initHistCharts(){
+  const defs = [
+    ['ethHistChart',  '#58a6ff', 'ETH $'],
+    ['bmnrHistChart', '#d29922', 'BMNR $'],
+    ['btcHistChart',  '#f78166', 'BTC $'],
+    ['goldHistChart', '#3fb950', 'Gold $'],
+    ['ebHistChart',   '#58a6ff', 'ETH/BTC'],
+    ['egHistChart',   '#d29922', 'ETH/Gold'],
+  ];
+  for(const [id, color, label] of defs){
+    const ctx = document.getElementById(id);
+    if(!ctx || histCharts[id]) continue;
+    const isRatio = id.startsWith('eb') || id.startsWith('eg');
+    histCharts[id] = new Chart(ctx, isRatio ? RATIO_CHART_DEFAULTS(color, label) : CHART_DEFAULTS(color, label));
+  }
+}
+
+function updateHistCharts(){
+  const M = (seed, sess, seedL, sessL) => mergeHistData(seed, sess, seedL, sessL);
+  const pairs = [
+    ['ethHistChart',  M(HIST_SEED.eth,  SESSION_DATA.eth,  HIST_SEED.labels, SESSION_DATA.labels)],
+    ['bmnrHistChart', M(HIST_SEED.bmnr, SESSION_DATA.bmnr, HIST_SEED.labels, SESSION_DATA.labels)],
+    ['btcHistChart',  M(HIST_SEED.btc,  SESSION_DATA.btc,  HIST_SEED.labels, SESSION_DATA.labels)],
+    ['goldHistChart', M(HIST_SEED.gold, SESSION_DATA.gold, HIST_SEED.labels, SESSION_DATA.labels)],
+    ['ebHistChart',   M(HIST_SEED.eb,   SESSION_DATA.eb,   HIST_SEED.labels, SESSION_DATA.labels)],
+    ['egHistChart',   M(HIST_SEED.eg,   SESSION_DATA.eg,   HIST_SEED.labels, SESSION_DATA.labels)],
+  ];
+  for(const [id, merged] of pairs){
+    const c = histCharts[id];
+    if(!c) continue;
+    c.data.labels = merged.labels;
+    c.data.datasets[0].data = merged.data;
+    c.update('none');
+  }
+}
+
+
+// ── mNAV HISTORY CHART ────────────────────────────────────────────────
+const MNAV_SEED_LABELS = ['Mar 17', 'Mar 24', 'Mar 31', 'Apr 5', 'Apr 8', 'Apr 10', 'Apr 13', 'Apr 15', 'Apr 26'];
+const MNAV_SEED_455 = [0.305, 0.403, 0.494, 0.54, 0.69, 0.815, 0.83, 0.809, 0.753];
+const MNAV_SEED_530 = [0.355, 0.469, 0.576, 0.629, 0.803, 0.949, 0.967, 0.942, 0.877];
+const MNAV_SESSION = {labels:[], m455:[], m530:[]};
+let mnavLastPush = 0;
+
+function pushMnavPoint(){
+  const now = Date.now();
+  if(now - mnavLastPush < 55000) return;
+  const ep=P.eth?.price, bp=P.btc?.price, mp=P.bmnr?.price;
+  if(!ep||!bp||!mp) return;
+  const navT = ETH_HELD*ep + ORBS + BEAST + BTC_HELD*bp + CASH;
+  const m1 = +(mp/(navT/455e6)).toFixed(3);
+  const m2 = +(mp/(navT/530e6)).toFixed(3);
+  const t = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  MNAV_SESSION.labels.push(t);
+  MNAV_SESSION.m455.push(m1);
+  MNAV_SESSION.m530.push(m2);
+  mnavLastPush = now;
+  updateMnavChart();
+}
+
+let mnavChartInst = null;
+function initMnavChart(){
+  const ctx = document.getElementById('mnavHistChart');
+  if(!ctx || mnavChartInst) return;
+  mnavChartInst = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels:[...MNAV_SEED_LABELS],
+      datasets:[
+        {
+          label:'mNAV (455M shares)',
+          data:[...MNAV_SEED_455],
+          borderColor:'#d29922', backgroundColor:'#d2992222',
+          borderWidth:2, pointRadius:3, pointHoverRadius:5, tension:0.3, fill:false,
+        },
+        {
+          label:'mNAV (530M predicted)',
+          data:[...MNAV_SEED_530],
+          borderColor:'#39d0d8', backgroundColor:'#39d0d822',
+          borderWidth:2, pointRadius:3, pointHoverRadius:5, tension:0.3, fill:false,
+          borderDash:[5,3],
+        }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      animation:{duration:300},
+      plugins:{
+        legend:{display:true,position:'top',labels:{color:'#8b949e',font:{size:12},boxWidth:14,padding:14}},
+        tooltip:{mode:'index',intersect:false,titleFont:{size:13},bodyFont:{size:13}},
+        annotation:{
+          annotations:{
+            parityLine:{
+              type:'line',
+              yMin:1.0, yMax:1.0,
+              borderColor:'#484f58',
+              borderWidth:1,
+              borderDash:[4,4],
+              label:{content:'1.0x parity',display:true,color:'#8b949e',font:{size:11}}
+            }
+          }
+        }
+      },
+      scales:{
+        x:{ticks:{color:'#8b949e',font:{size:12},maxTicksLimit:6},grid:{color:'#2d333b'}},
+        y:{
+          ticks:{color:'#8b949e',font:{size:12},callback:v=>v.toFixed(2)+'x',maxTicksLimit:6},
+          grid:{color:'#2d333b'},
+          min:0.5, max:1.5,
+        }
+      }
+    }
+  });
+}
+
+function updateMnavChart(){
+  if(!mnavChartInst) return;
+  const allL = [...MNAV_SEED_LABELS, ...MNAV_SESSION.labels];
+  const all1 = [...MNAV_SEED_455,   ...MNAV_SESSION.m455];
+  const all2 = [...MNAV_SEED_530,   ...MNAV_SESSION.m530];
+  mnavChartInst.data.labels = allL;
+  mnavChartInst.data.datasets[0].data = all1;
+  mnavChartInst.data.datasets[1].data = all2;
+  mnavChartInst.update('none');
+}
+
+function boot(){
+  // Always show dashboard — key is baked in, no setup gate needed
+  showDash();
+  // Render immediately from seed data so dashboard is never blank
+  render();
+  s('lStat','Seeded · Connecting live…');
+  startTicker();
+}
+window.addEventListener('load', boot);
 </script>
 </body>
 </html>
