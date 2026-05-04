@@ -469,21 +469,25 @@
     </div>
 
     <div class="card">
-      <div class="ch"><span class="ct">RWA On-Chain Progress</span><span class="bg bg">MAY 3</span></div>
+      <div class="ch"><span class="ct">RWA On-Chain Progress</span><span class="bg bg" id="rwaBadge">loading…</span></div>
       <div class="cb">
-        <div class="pval">$29.1B</div>
-        <div class="psub">rwa.xyz · excl. stablecoins · Apr 14, 2026</div>
+        <div class="pval" id="rwaExcl">$30.9B</div>
+        <div class="psub" id="rwaSource">DeFiLlama · excl. stablecoins · loading…</div>
+        <div class="mr" style="margin-top:8px"><span class="ml">Incl. stablecoins</span><span class="mv b" id="rwaIncl">~$330B</span></div>
+        <div class="mr"><span class="ml">ETH share (~62%)</span><span class="mv g" id="rwaEthShare">~$19.2B on ETH</span></div>
+        <div class="mr"><span class="ml">30-day change</span><span class="mv g" id="rwaChange">+7.5%</span></div>
+        <div class="mr"><span class="ml">BlackRock BUIDL</span><span class="mv">$1.9B</span></div>
         <div style="margin-top:12px;" class="pm">
-          <div class="pl"><span>2026 Base target ($40–50B)</span><span>~65%</span></div>
-          <div class="pt"><div class="pf" style="background:var(--green);width:65%"></div></div>
-          <div class="ptick"><span>$0</span><span>$29.1B now</span><span>$40B Base</span><span>$80B SB</span></div>
+          <div class="pl"><span>2026 Base target ($40–50B excl. SC)</span><span id="rwaBasePct">~69%</span></div>
+          <div class="pt"><div class="pf" id="rwaBaseBar" style="background:var(--green);width:69%"></div></div>
+          <div class="ptick"><span>$0</span><span id="rwaExclTick">$30.9B now</span><span>$40B Base</span><span>$80B SB</span></div>
         </div>
         <div class="pm">
-          <div class="pl"><span>2027 gate ($100B = Base confirmed)</span><span>29%</span></div>
-          <div class="pt"><div class="pf" style="background:var(--blue);width:29%"></div></div>
-          <div class="ptick"><span>$0</span><span>$29.1B</span><span>$100B</span><span>$300B Bull</span></div>
+          <div class="pl"><span>2027 gate ($100B excl. SC = Base confirmed)</span><span id="rwaGatePct">31%</span></div>
+          <div class="pt"><div class="pf" id="rwaGateBar" style="background:var(--blue);width:31%"></div></div>
+          <div class="ptick"><span>$0</span><span id="rwaGateTick">$30.9B</span><span>$100B</span><span>$300B Bull</span></div>
         </div>
-        <div style="font-size:11px;color:var(--text2);">ETH share ~62% · +7.5%/30d · BlackRock BUIDL $1.9B</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:4px;" id="rwaNote">Fetching live RWA data…</div>
       </div>
     </div>
   </div>
@@ -1537,7 +1541,89 @@ function updateMnavChart(){
   mnavChartInst.update('none');
 }
 
-function boot(){
+// ── MARKET DATA (shares, CLARITY, ETH supply, RWA) ───────────────────
+let MARKET = {};
+
+async function fetchMarket() {
+  try {
+    const r = await fetch('/api/market?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    MARKET = d;
+    renderMarket(d);
+  } catch(e) { console.warn('Market fetch failed:', e.message); }
+}
+
+function fB2(n) {
+  if (!n) return '—';
+  if (n >= 1e12) return '$'+(n/1e12).toFixed(2)+'T';
+  if (n >= 1e9)  return '$'+(n/1e9).toFixed(1)+'B';
+  return '$'+(n/1e6).toFixed(0)+'M';
+}
+
+function renderMarket(d) {
+  // ── Shares outstanding ──
+  if (d.shares && !d.shares.error) {
+    const sh = d.shares;
+    s('sharesOutstanding', sh.best ? sh.best.toLocaleString() : '—');
+    s('sharesSource', sh.source || '—');
+    s('atmFilings', sh.atmFilings != null ? sh.atmFilings + ' filings' : '—');
+    s('atmShares', sh.atmEstimate ? '~'+sh.atmEstimate.toLocaleString()+' est.' : '—');
+    s('weeklyRunRate', sh.weeklyEst ? '~'+(sh.weeklyEst/1e6).toFixed(0)+'M/filing est.' : '—');
+    s('method2Shares', sh.best ? sh.best.toLocaleString()+' ('+sh.source+')' : '537,628,819 (Apr 13 anchor)');
+    s('sharesBadge', sh.source || 'live');
+    s('sharesNote', 'Live from '+sh.source+' · '+sh.atmFilings+' ATM filings since Apr 13 anchor · Next official: Q3 10-Q ~Jul 2026');
+    if (sh.best && sh.best > 400e6) window.LIVE_SHARES_537 = sh.best;
+  }
+
+  // ── CLARITY odds ──
+  if (d.clarity && d.clarity.odds != null) {
+    const odds = d.clarity.odds;
+    const color = odds >= 60 ? 'var(--green)' : odds >= 45 ? 'var(--amber)' : 'var(--red)';
+    const el = document.getElementById('clarityPct');
+    if (el) { el.textContent = odds+'%'; el.style.color = color; }
+    const bar = document.getElementById('clarityBar');
+    if (bar) { bar.style.width = odds+'%'; bar.style.background = color; }
+    s('clarityBadge', d.clarity.cached ? 'cached' : 'Polymarket live');
+    s('clarityDate', new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}));
+  }
+
+  // ── ETH supply ──
+  if (d.ethSupply && d.ethSupply.supply) {
+    const supply = d.ethSupply.supply;
+    window.LIVE_ETH_SUPPLY = supply;
+    s('ethSupplyTotal', (supply/1e6).toFixed(2)+'M ('+d.ethSupply.source+')');
+    const pct = (ETH_HELD / supply * 100).toFixed(2);
+    s('ethSupplyPct', pct+'% of '+(supply/1e6).toFixed(1)+'M');
+  }
+
+  // ── RWA data ──
+  if (d.rwa) {
+    const rwa = d.rwa;
+    const excl = rwa.exclStablecoins || 30.91e9;
+    const incl = rwa.inclStablecoins || 330e9;
+    const ethRWA = excl * (rwa.ethShare || 0.62);
+    const basePct = Math.min(99, (excl/45e9*100)).toFixed(0);
+    const gatePct = Math.min(99, (excl/100e9*100)).toFixed(0);
+    s('rwaExcl', fB2(excl));
+    s('rwaIncl', fB2(incl));
+    s('rwaEthShare', '~'+fB2(ethRWA)+' on ETH');
+    s('rwaChange', rwa.change30d || '—');
+    s('rwaSource', (rwa.source||'live')+' · excl. stablecoins · '+new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}));
+    s('rwaBadge', rwa.cached ? 'cached' : 'live');
+    s('rwaBasePct', '~'+basePct+'%');
+    s('rwaGatePct', gatePct+'%');
+    s('rwaExclTick', fB2(excl)+' now');
+    s('rwaGateTick', fB2(excl));
+    s('rwaNote', 'Excl. stablecoins: '+fB2(excl)+' · Incl. stablecoins: '+fB2(incl)+' · ETH ~62% share · BlackRock BUIDL $1.9B');
+    const baseBar = document.getElementById('rwaBaseBar');
+    const gateBar = document.getElementById('rwaGateBar');
+    if (baseBar) baseBar.style.width = basePct+'%';
+    if (gateBar) gateBar.style.width = gatePct+'%';
+  }
+}
+
+
   // Always show dashboard — key is baked in, no setup gate needed
   showDash();
   // Render immediately from seed data so dashboard is never blank
