@@ -951,7 +951,7 @@ function render(){
     s('ethP',  fmtP(eth.price));
     const ethDollar = eth.change != null ? (eth.change>=0?'+':'')+fmtP(Math.abs(eth.change))+' · ' : '';
     s('ethC',  ethDollar+fmtC(eth.changePct)+' (24h)'); sc('ethC',clsC(eth.changePct));
-    s('ethTs', fmtTs(eth.time)+' · CoinGecko');
+    s('ethTs', (eth.time ? fmtTs(eth.time) : 'live')+' · CoinGecko');
     setDot('ethD', true);
   } else {
     s('ethP','Loading…'); s('ethC','—'); s('ethTs','Fetching live price…');
@@ -962,7 +962,7 @@ function render(){
     s('btcP',  fmtP(btc.price,0));
     const btcDollar = btc.change != null ? (btc.change>=0?'+':'')+fmtP(Math.abs(btc.change),0)+' · ' : '';
     s('btcC',  btcDollar+fmtC(btc.changePct)+' (24h)'); sc('btcC',clsC(btc.changePct));
-    s('btcTs', fmtTs(btc.time)+' · Finnhub/Binance');
+    s('btcTs', (btc.time ? fmtTs(btc.time) : 'live')+' · Finnhub/Binance');
     setDot('btcD', true);
   } else {
     s('btcP','Loading…'); s('btcC','—'); s('btcTs','Fetching live price…');
@@ -974,7 +974,7 @@ function render(){
     s('bmnrSh', fmtP(bmnr.price));
     const bmnrDollar = bmnr.change != null ? (bmnr.change>=0?'+':'')+fmtP(Math.abs(bmnr.change))+' · ' : '';
     s('bmnrC', bmnrDollar+fmtC(bmnr.changePct)+' (24h)'); sc('bmnrC',clsC(bmnr.changePct));
-    s('bmnrTs', fmtTs(bmnr.time)+' · Finnhub/NYSE');
+    s('bmnrTs', (bmnr.time ? fmtTs(bmnr.time) : 'live')+' · Finnhub/NYSE');
     setDot('bmnrD', true);
   } else {
     s('bmnrP','Loading…'); s('bmnrSh','—'); s('bmnrC','—'); s('bmnrTs','Fetching live price…');
@@ -985,7 +985,7 @@ function render(){
     s('goldP',  fmtP(gold.price,0));
     const goldDollar = gold.change != null ? (gold.change>=0?'+':'')+fmtP(Math.abs(gold.change),0)+' · ' : '';
     s('goldC', goldDollar+fmtC(gold.changePct)+' (24h)'); sc('goldC',clsC(gold.changePct));
-    s('goldTs', fmtTs(gold.time)+' · '+(gold.src||'live'));
+    s('goldTs', (gold.time ? fmtTs(gold.time) : 'live')+' · '+(gold.src||'live'));
     setDot('goldD', true);
   } else {
     s('goldP','Loading…'); s('goldC','—'); s('goldTs','Fetching live price…');
@@ -1013,7 +1013,7 @@ function render(){
     s('mnavRocks',mn2.toFixed(3)+'x');
     ss('mnavBarRocks','width',Math.max(0,Math.min(100,(mn2-0.75)/(3.2-0.75)*100))+'%');
 
-    s('mnavTs', fmtTs(bmnr.time||eth.time)+' · live calc');
+    s('mnavTs', ((bmnr?.time||eth?.time) ? fmtTs(bmnr.time||eth.time) : 'live')+' · live calc');
     setDot('mnavD',true);
     s('evMult',(873/mp).toFixed(1)+'x');
     s('evMult2',(873/mp).toFixed(1)+'x');
@@ -1041,7 +1041,7 @@ function render(){
 
     // ETH holdings value
     s('ethHVal', fmtB(ETH_HELD*ep));
-    s('holdTs', fmtTs(eth.time)+' · live calc');
+    s('holdTs', (eth.time ? fmtTs(eth.time) : 'live')+' · live calc');
     setDot('holdD',true);
 
     // Nav pie chart
@@ -1053,7 +1053,7 @@ function render(){
     s('ebR',eb.toFixed(4)); s('ebLbl',eb.toFixed(4));
     ss('ebBar','width',Math.max(0,Math.min(100,(eb-0.02)/(0.10-0.02)*100))+'%');
     ss('ebBar','background',eb<0.03?'var(--red)':eb<0.05?'var(--amber)':'var(--green)');
-    s('ebTs',fmtTs(eth.time)+' · live calc'); setDot('ebD',true);
+    s('ebTs',(eth.time ? fmtTs(eth.time) : 'live')+' · live calc'); setDot('ebD',true);
   }
   // ETH/Gold ratio
   if(ep&&gp){
