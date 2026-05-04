@@ -254,6 +254,140 @@
   </div>
 
   <!-- RATIO HISTORY CHARTS -->
+
+  <div class="stitle">Scenario Probabilities · 2026–2030</div>
+  <div class="card">
+    <div class="ch"><span class="ct">Four-Scenario Probability Framework</span><span class="bg bm">APR 14, 2026</span></div>
+    <div class="cb">
+      <div class="ev-note">
+        <strong style="color:var(--text2);">All scenarios combined (weighted avg)</strong> = 30%×Bear + 42%×Base + 20%×Bull + 7%×Super Bull.<br>
+        <strong style="color:var(--text2);">Why weighted-avg ETH ($4,097) is lower than Base ETH ($4,500):</strong> The Bear scenario (30%) at $2,600 pulls the probability-weighted average below the Base case. This is correct and expected.<br>
+        <strong style="color:var(--text2);">Why weighted-avg BMNR ($851 EV 2030) is higher than Base BMNR ($70):</strong> Bull + Super Bull scenarios (27% combined) produce $129–$212. mNAV expands at higher ETH prices, disproportionately amplifying BMNR upside — so these scenarios pull the BMNR average above the Base, even while Bear pulls ETH below Base.<br>
+        <strong style="color:var(--text2);">97% not 100%:</strong> A residual 3% covers tail scenarios not explicitly modelled.
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="sc">
+          <thead>
+            <tr class="yh">
+              <th class="tl" colspan="2"></th>
+              <th colspan="2" class="bl1">── 2026 ──</th>
+              <th colspan="2" class="bl1">── 2027 ──</th>
+              <th colspan="2" class="bl1">── 2028 ──</th>
+              <th colspan="2" class="bl1">── 2029 ──</th>
+              <th colspan="2" class="bl1">── 2030 ──</th>
+            </tr>
+            <tr>
+              <th class="tl">Scenario</th><th class="tp">Prob</th>
+              <th class="bl1">ETH $</th><th>BMNR $</th>
+              <th class="bl1">ETH $</th><th>BMNR $</th>
+              <th class="bl1">ETH $</th><th>BMNR $</th>
+              <th class="bl1">ETH $</th><th>BMNR $</th>
+              <th class="bl1">ETH $</th><th>BMNR $</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="bear"><td class="tl">Bear</td><td class="tp">25%</td><td class="bl1">$2,600</td><td>$26</td><td class="bl1">$6,500</td><td>$50</td><td class="bl1">$12,000</td><td>$130</td><td class="bl1">$18,000</td><td>$245</td><td class="bl1">$22,000</td><td>$275</td></tr>
+            <tr class="base"><td class="tl">Base ★ <span style="font-size:11px;opacity:.7">(most likely)</span></td><td class="tp">47%</td><td class="bl1">$4,500</td><td>$70</td><td class="bl1">$10,000</td><td>$175</td><td class="bl1">$18,000</td><td>$320</td><td class="bl1">$24,000</td><td>$525</td><td class="bl1">$30,000</td><td>$715</td></tr>
+            <tr class="bull"><td class="tl">Bull</td><td class="tp">20%</td><td class="bl1">$6,200</td><td>$129</td><td class="bl1">$16,000</td><td>$385</td><td class="bl1">$27,000</td><td>$630</td><td class="bl1">$36,000</td><td>$970</td><td class="bl1">$50,000</td><td>$1,445</td></tr>
+            <tr class="sb"><td class="tl">Super Bull</td><td class="tp">7%</td><td class="bl1">$8,500</td><td>$212</td><td class="bl1">$21,000</td><td>$590</td><td class="bl1">$38,000</td><td>$1,100</td><td class="bl1">$55,000</td><td>$1,706</td><td class="bl1">$80,000</td><td>$2,554</td></tr>
+            <tr class="ev">
+              <td class="tl">All scenarios combined <span style="font-size:11px;font-weight:400;opacity:.8">(weighted avg)</span></td>
+              <td class="tp" style="color:var(--amber);">97%</td>
+              <td class="bl1">$4,162</td><td id="ev26">$79</td>
+              <td class="bl1">$11,175</td><td>$226</td>
+              <td class="bl1">$19,750</td><td>$403</td>
+              <td class="bl1">$26,400</td><td id="ev29">$611</td>
+              <td class="bl1">$32,950</td><td id="ev30">$873</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="kpi3">
+        <div class="kpi"><div class="kpi-lbl">Current BMNR → 2030 weighted avg ($873)</div><div class="kpi-val" style="color:var(--amber);" id="evMult">—</div></div>
+        <div class="kpi"><div class="kpi-lbl">Median 2030 = Base case = $715</div><div class="kpi-val" style="color:var(--green);">33x</div></div>
+        <div class="kpi"><div class="kpi-lbl">Bear case 2030 — ETH $22,000 · BMNR $275</div><div class="kpi-val" style="color:var(--red);" id="bearMult">12x</div></div>
+      </div>
+
+      <!-- SCENARIO DRIVER NOTES -->
+      <div style="margin-top:20px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+
+        <!-- BEAR -->
+        <div style="background:var(--surface2);border-radius:8px;padding:14px;border-left:4px solid var(--red);">
+          <div style="font-family:var(--mono);font-size:12px;font-weight:600;color:var(--red);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">⬇ Bear — 25% probability ↓ (CLARITY improving)</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8;">
+            <strong style="color:var(--text);">Gate condition:</strong> CLARITY Act fails or stalls past mid-2026 midterm freeze.<br>
+            <strong style="color:var(--text);">Key headwinds:</strong>
+            <ul style="margin:6px 0 0 16px;line-height:2;">
+              <li>CLARITY Act fails Senate Banking Committee markup</li>
+              <li>US regulatory fragmentation — ETH limited to US institutional asset only</li>
+              <li>RWA tokenization stalls below $50B on-chain by end-2027</li>
+              <li>Sovereign wealth funds abstain from ETH allocation</li>
+              <li>ETH/BTC ratio stays depressed (below 0.030) — narrative fails to develop</li>
+              <li>Iran war escalation triggers sustained risk-off across crypto</li>
+              <li>BMNR dilution exceeds ETH NAV accretion — mNAV compression</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- BASE -->
+        <div style="background:var(--surface2);border-radius:8px;padding:14px;border-left:4px solid var(--green);">
+          <div style="font-family:var(--mono);font-size:12px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">★ Base — 47% probability (most likely)</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8;">
+            <strong style="color:var(--text);">Gate condition:</strong> CLARITY passes by late 2026; RWA reaches $100B on ETH by end-2027.<br>
+            <strong style="color:var(--text);">Key tailwinds:</strong>
+            <ul style="margin:6px 0 0 16px;line-height:2;">
+              <li>CLARITY Act signed into law — digital asset regulatory clarity established</li>
+              <li>RWA tokenization: $100B on ETH by end-2027 (currently $29.1B, +7.5%/mo)</li>
+              <li>MAVAN staking revenue scales: $221M current → $530M at ETH $10,000</li>
+              <li>Moderate SWF allocation ($20–40B) to ETH as reserve asset</li>
+              <li>ETH/BTC ratio recovers to 0.040–0.050 as ETH outperformance resumes</li>
+              <li>BTC cycle beta: ETH rides broader crypto bull market 2026–2027</li>
+              <li>GENIUS Act passes — stablecoin yields drive DeFi capital migration to ETH L2s</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- BULL -->
+        <div style="background:var(--surface2);border-radius:8px;padding:14px;border-left:4px solid var(--blue);">
+          <div style="font-family:var(--mono);font-size:12px;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">↑ Bull — 20% probability</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8;">
+            <strong style="color:var(--text);">Gate condition:</strong> All Base conditions met PLUS RWA $200B+ on ETH by 2027 AND SWF announcement.<br>
+            <strong style="color:var(--text);">Additional tailwinds beyond Base:</strong>
+            <ul style="margin:6px 0 0 16px;line-height:2;">
+              <li>RWA on ETH exceeds $200B by end-2027 — BlackRock, Fidelity scale tokenised funds</li>
+              <li>Sovereign wealth fund ETH allocation announced (Norway, Abu Dhabi, or Singapore)</li>
+              <li>ETH monetary premium develops — 5–15% of gold market cap captured (~$0.9–2.7T)</li>
+              <li>Agentic AI systems adopt ETH as primary settlement layer for machine-to-machine payments</li>
+              <li>MAVAN-as-a-service: institutional staking revenue adds $1B+ to MAVAN valuation</li>
+              <li>OpenAI IPO materialises — ORBS stake scales from $85M → ~$900M (+$1.75/BMNR share)</li>
+              <li>ETH/BTC ratio recovers to 0.060–0.070 — ETH outperforms BTC decisively</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- SUPER BULL -->
+        <div style="background:var(--surface2);border-radius:8px;padding:14px;border-left:4px solid var(--teal);">
+          <div style="font-family:var(--mono);font-size:12px;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">⚡ Super Bull — 7% probability</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8;">
+            <strong style="color:var(--text);">Gate condition:</strong> All Bull conditions met PLUS gold narrative captures 20–30% of gold market cap.<br>
+            <strong style="color:var(--text);">Additional tailwinds beyond Bull:</strong>
+            <ul style="margin:6px 0 0 16px;line-height:2;">
+              <li>Gold narrative fully activated — ETH captures 20–30% of gold's $18T monetary premium</li>
+              <li>Multiple SWF announcements — ETH adopted as strategic reserve asset by 3+ sovereign funds</li>
+              <li>Iran war resolution triggers sustained risk-on; ETH re-rated as "digital wartime gold"</li>
+              <li>Glamsterdam upgrade + full danksharding — ETH L1 fee burn turns sharply deflationary</li>
+              <li>EigenLayer restaking premium drives MAVAN yield above 4% — yield spread vs T-bills flips positive after rate cuts</li>
+              <li>Beast Industries IPO materialises — stake scales from $200M → ~$1.4B (+$2.61/BMNR share)</li>
+              <li>BMNR reaches 5% of ETH supply ("Alchemy of 5%") — symbolic milestone triggers institutional re-rating</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
   <!-- ETH HOLDINGS HISTORY -->
   <div class="stitle">BMNR ETH Holdings — Accumulation <span class="sub">— seeded from 8-K filings · goal: 6,035,000 ETH (5% of supply)</span></div>
   <div class="card">
@@ -535,138 +669,6 @@
   </div>
 
   <!-- SCENARIOS FULL WIDTH -->
-  <div class="stitle">Scenario Probabilities · 2026–2030</div>
-  <div class="card">
-    <div class="ch"><span class="ct">Four-Scenario Probability Framework</span><span class="bg bm">APR 14, 2026</span></div>
-    <div class="cb">
-      <div class="ev-note">
-        <strong style="color:var(--text2);">All scenarios combined (weighted avg)</strong> = 30%×Bear + 42%×Base + 20%×Bull + 7%×Super Bull.<br>
-        <strong style="color:var(--text2);">Why weighted-avg ETH ($4,097) is lower than Base ETH ($4,500):</strong> The Bear scenario (30%) at $2,600 pulls the probability-weighted average below the Base case. This is correct and expected.<br>
-        <strong style="color:var(--text2);">Why weighted-avg BMNR ($851 EV 2030) is higher than Base BMNR ($70):</strong> Bull + Super Bull scenarios (27% combined) produce $129–$212. mNAV expands at higher ETH prices, disproportionately amplifying BMNR upside — so these scenarios pull the BMNR average above the Base, even while Bear pulls ETH below Base.<br>
-        <strong style="color:var(--text2);">97% not 100%:</strong> A residual 3% covers tail scenarios not explicitly modelled.
-      </div>
-      <div style="overflow-x:auto;">
-        <table class="sc">
-          <thead>
-            <tr class="yh">
-              <th class="tl" colspan="2"></th>
-              <th colspan="2" class="bl1">── 2026 ──</th>
-              <th colspan="2" class="bl1">── 2027 ──</th>
-              <th colspan="2" class="bl1">── 2028 ──</th>
-              <th colspan="2" class="bl1">── 2029 ──</th>
-              <th colspan="2" class="bl1">── 2030 ──</th>
-            </tr>
-            <tr>
-              <th class="tl">Scenario</th><th class="tp">Prob</th>
-              <th class="bl1">ETH $</th><th>BMNR $</th>
-              <th class="bl1">ETH $</th><th>BMNR $</th>
-              <th class="bl1">ETH $</th><th>BMNR $</th>
-              <th class="bl1">ETH $</th><th>BMNR $</th>
-              <th class="bl1">ETH $</th><th>BMNR $</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="bear"><td class="tl">Bear</td><td class="tp">25%</td><td class="bl1">$2,600</td><td>$26</td><td class="bl1">$6,500</td><td>$50</td><td class="bl1">$12,000</td><td>$130</td><td class="bl1">$18,000</td><td>$245</td><td class="bl1">$22,000</td><td>$275</td></tr>
-            <tr class="base"><td class="tl">Base ★ <span style="font-size:11px;opacity:.7">(most likely)</span></td><td class="tp">47%</td><td class="bl1">$4,500</td><td>$70</td><td class="bl1">$10,000</td><td>$175</td><td class="bl1">$18,000</td><td>$320</td><td class="bl1">$24,000</td><td>$525</td><td class="bl1">$30,000</td><td>$715</td></tr>
-            <tr class="bull"><td class="tl">Bull</td><td class="tp">20%</td><td class="bl1">$6,200</td><td>$129</td><td class="bl1">$16,000</td><td>$385</td><td class="bl1">$27,000</td><td>$630</td><td class="bl1">$36,000</td><td>$970</td><td class="bl1">$50,000</td><td>$1,445</td></tr>
-            <tr class="sb"><td class="tl">Super Bull</td><td class="tp">7%</td><td class="bl1">$8,500</td><td>$212</td><td class="bl1">$21,000</td><td>$590</td><td class="bl1">$38,000</td><td>$1,100</td><td class="bl1">$55,000</td><td>$1,706</td><td class="bl1">$80,000</td><td>$2,554</td></tr>
-            <tr class="ev">
-              <td class="tl">All scenarios combined <span style="font-size:11px;font-weight:400;opacity:.8">(weighted avg)</span></td>
-              <td class="tp" style="color:var(--amber);">97%</td>
-              <td class="bl1">$4,162</td><td id="ev26">$79</td>
-              <td class="bl1">$11,175</td><td>$226</td>
-              <td class="bl1">$19,750</td><td>$403</td>
-              <td class="bl1">$26,400</td><td id="ev29">$611</td>
-              <td class="bl1">$32,950</td><td id="ev30">$873</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="kpi3">
-        <div class="kpi"><div class="kpi-lbl">Current BMNR → 2030 weighted avg ($873)</div><div class="kpi-val" style="color:var(--amber);" id="evMult">—</div></div>
-        <div class="kpi"><div class="kpi-lbl">Median 2030 = Base case = $715</div><div class="kpi-val" style="color:var(--green);">33x</div></div>
-        <div class="kpi"><div class="kpi-lbl">Bear case 2030 — ETH $22,000 · BMNR $275</div><div class="kpi-val" style="color:var(--red);" id="bearMult">12x</div></div>
-      </div>
-
-      <!-- SCENARIO DRIVER NOTES -->
-      <div style="margin-top:20px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
-
-        <!-- BEAR -->
-        <div style="background:var(--surface2);border-radius:8px;padding:14px;border-left:4px solid var(--red);">
-          <div style="font-family:var(--mono);font-size:12px;font-weight:600;color:var(--red);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">⬇ Bear — 25% probability ↓ (CLARITY improving)</div>
-          <div style="font-size:12px;color:var(--text2);line-height:1.8;">
-            <strong style="color:var(--text);">Gate condition:</strong> CLARITY Act fails or stalls past mid-2026 midterm freeze.<br>
-            <strong style="color:var(--text);">Key headwinds:</strong>
-            <ul style="margin:6px 0 0 16px;line-height:2;">
-              <li>CLARITY Act fails Senate Banking Committee markup</li>
-              <li>US regulatory fragmentation — ETH limited to US institutional asset only</li>
-              <li>RWA tokenization stalls below $50B on-chain by end-2027</li>
-              <li>Sovereign wealth funds abstain from ETH allocation</li>
-              <li>ETH/BTC ratio stays depressed (below 0.030) — narrative fails to develop</li>
-              <li>Iran war escalation triggers sustained risk-off across crypto</li>
-              <li>BMNR dilution exceeds ETH NAV accretion — mNAV compression</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- BASE -->
-        <div style="background:var(--surface2);border-radius:8px;padding:14px;border-left:4px solid var(--green);">
-          <div style="font-family:var(--mono);font-size:12px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">★ Base — 47% probability (most likely)</div>
-          <div style="font-size:12px;color:var(--text2);line-height:1.8;">
-            <strong style="color:var(--text);">Gate condition:</strong> CLARITY passes by late 2026; RWA reaches $100B on ETH by end-2027.<br>
-            <strong style="color:var(--text);">Key tailwinds:</strong>
-            <ul style="margin:6px 0 0 16px;line-height:2;">
-              <li>CLARITY Act signed into law — digital asset regulatory clarity established</li>
-              <li>RWA tokenization: $100B on ETH by end-2027 (currently $29.1B, +7.5%/mo)</li>
-              <li>MAVAN staking revenue scales: $221M current → $530M at ETH $10,000</li>
-              <li>Moderate SWF allocation ($20–40B) to ETH as reserve asset</li>
-              <li>ETH/BTC ratio recovers to 0.040–0.050 as ETH outperformance resumes</li>
-              <li>BTC cycle beta: ETH rides broader crypto bull market 2026–2027</li>
-              <li>GENIUS Act passes — stablecoin yields drive DeFi capital migration to ETH L2s</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- BULL -->
-        <div style="background:var(--surface2);border-radius:8px;padding:14px;border-left:4px solid var(--blue);">
-          <div style="font-family:var(--mono);font-size:12px;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">↑ Bull — 20% probability</div>
-          <div style="font-size:12px;color:var(--text2);line-height:1.8;">
-            <strong style="color:var(--text);">Gate condition:</strong> All Base conditions met PLUS RWA $200B+ on ETH by 2027 AND SWF announcement.<br>
-            <strong style="color:var(--text);">Additional tailwinds beyond Base:</strong>
-            <ul style="margin:6px 0 0 16px;line-height:2;">
-              <li>RWA on ETH exceeds $200B by end-2027 — BlackRock, Fidelity scale tokenised funds</li>
-              <li>Sovereign wealth fund ETH allocation announced (Norway, Abu Dhabi, or Singapore)</li>
-              <li>ETH monetary premium develops — 5–15% of gold market cap captured (~$0.9–2.7T)</li>
-              <li>Agentic AI systems adopt ETH as primary settlement layer for machine-to-machine payments</li>
-              <li>MAVAN-as-a-service: institutional staking revenue adds $1B+ to MAVAN valuation</li>
-              <li>OpenAI IPO materialises — ORBS stake scales from $85M → ~$900M (+$1.75/BMNR share)</li>
-              <li>ETH/BTC ratio recovers to 0.060–0.070 — ETH outperforms BTC decisively</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- SUPER BULL -->
-        <div style="background:var(--surface2);border-radius:8px;padding:14px;border-left:4px solid var(--teal);">
-          <div style="font-family:var(--mono);font-size:12px;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">⚡ Super Bull — 7% probability</div>
-          <div style="font-size:12px;color:var(--text2);line-height:1.8;">
-            <strong style="color:var(--text);">Gate condition:</strong> All Bull conditions met PLUS gold narrative captures 20–30% of gold market cap.<br>
-            <strong style="color:var(--text);">Additional tailwinds beyond Bull:</strong>
-            <ul style="margin:6px 0 0 16px;line-height:2;">
-              <li>Gold narrative fully activated — ETH captures 20–30% of gold's $18T monetary premium</li>
-              <li>Multiple SWF announcements — ETH adopted as strategic reserve asset by 3+ sovereign funds</li>
-              <li>Iran war resolution triggers sustained risk-on; ETH re-rated as "digital wartime gold"</li>
-              <li>Glamsterdam upgrade + full danksharding — ETH L1 fee burn turns sharply deflationary</li>
-              <li>EigenLayer restaking premium drives MAVAN yield above 4% — yield spread vs T-bills flips positive after rate cuts</li>
-              <li>Beast Industries IPO materialises — stake scales from $200M → ~$1.4B (+$2.61/BMNR share)</li>
-              <li>BMNR reaches 5% of ETH supply ("Alchemy of 5%") — symbolic milestone triggers institutional re-rating</li>
-            </ul>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
   <!-- DOCUMENT DOWNLOAD -->
   <div class="stitle">Document Download</div>
   <div class="card">
