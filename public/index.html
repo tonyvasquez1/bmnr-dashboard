@@ -559,6 +559,7 @@
         <div class="mr"><span class="ml">Total ETH held</span><span class="mv g" id="ethHeldAmt">—</span></div>
         <div class="mr"><span class="ml">ETH staked via MAVAN</span><span class="mv" id="ethStakedAmt">—</span></div>
         <div class="mr"><span class="ml">% of ETH total supply</span><span class="mv b" id="ethSupplyPct">—</span></div>
+        <div class="mr"><span class="ml">Total ETH supply (live)</span><span class="mv" id="ethSupplyTotal">120.7M (static)</span></div>
         <div class="mr"><span class="ml">5% "Alchemy" goal</span><span class="mv">82.4% there · 1.06M left</span></div>
         <div class="ebar" style="margin:4px 0 8px;"><div class="efil" style="width:82.4%"></div></div>
         <div class="mr"><span class="ml">ETH value at live price</span><span class="mv g" id="ethHVal">—</span></div>
@@ -608,18 +609,20 @@
   </div>
 
   <!-- SHARES OUTSTANDING -->
-  <div class="stitle">Shares Outstanding & Dilution</div>
+  <div class="stitle">Shares Outstanding & Dilution <span class="sub">— live from Finnhub + SEC EDGAR 424B5</span></div>
   <div class="card" style="margin-bottom:16px;">
-    <div class="ch"><span class="ct">Share Count — 10-Q Apr 13, 2026</span><span class="bg ba">bmnr.rocks methodology</span></div>
+    <div class="ch"><span class="ct">Share Count — Live</span><span class="bg ba" id="sharesBadge">loading…</span></div>
     <div class="cb">
-      <div class="mr"><span class="ml">Shares outstanding (10-Q anchor)</span><span class="mv a">537,628,819</span></div>
-      <div class="mr"><span class="ml">10-Q filing date</span><span class="mv">April 13, 2026 (period ending Feb 28)</span></div>
-      <div class="mr"><span class="ml">Est. weekly ATM dilution</span><span class="mv r" id="weeklyDilution">~10–15M shares/week</span></div>
-      <div class="mr"><span class="ml">Weeks since anchor</span><span class="mv">~3 weeks</span></div>
-      <div class="mr"><span class="ml">Est. current shares</span><span class="mv a" id="estShares">~568–583M est.</span></div>
-      <div class="mr"><span class="ml">Method 1 basis</span><span class="mv">455M press coverage — lower bound</span></div>
-      <div class="mr"><span class="ml">Method 2 basis</span><span class="mv">537.6M 10-Q anchor — bmnr.rocks</span></div>
-      <div style="font-size:11px;color:var(--text2);margin-top:8px;line-height:1.6;">BMNR stopped reporting share count in weekly press releases after Aug 2025. bmnr.rocks tracks each capital raise via SEC 424B5 prospectuses to estimate current dilution. Official count confirmed at next quarterly filing.</div>
+      <div class="mr"><span class="ml">Shares outstanding (best est.)</span><span class="mv a" id="sharesOutstanding">—</span></div>
+      <div class="mr"><span class="ml">Data source</span><span class="mv" id="sharesSource">—</span></div>
+      <div class="mr"><span class="ml">10-Q anchor (Apr 13)</span><span class="mv">537,628,819</span></div>
+      <div class="mr"><span class="ml">ATM filings since anchor</span><span class="mv r" id="atmFilings">—</span></div>
+      <div class="mr"><span class="ml">ATM shares issued since anchor</span><span class="mv r" id="atmShares">—</span></div>
+      <div class="mr"><span class="ml">Est. weekly ATM run-rate</span><span class="mv r" id="weeklyRunRate">—</span></div>
+      <div class="mr"><span class="ml">Method 1 basis</span><span class="mv">455M press coverage (lower bound)</span></div>
+      <div class="mr"><span class="ml">Method 2 basis</span><span class="mv" id="method2Shares">537.6M 10-Q anchor</span></div>
+      <div class="mr"><span class="ml">Next official count</span><span class="mv">Q3 10-Q ~Jul 2026</span></div>
+      <div style="font-size:11px;color:var(--text2);margin-top:8px;line-height:1.6;" id="sharesNote">Fetching live share count from Finnhub and SEC EDGAR 424B5 filings…</div>
     </div>
   </div>
 
@@ -627,10 +630,10 @@
   <div class="stitle">CLARITY Act & Upcoming Earnings</div>
   <div class="g2">
     <div class="card">
-      <div class="ch"><span class="ct">CLARITY Act — Polymarket 2026 Passage</span><span class="bg bg">MAY 3</span></div>
+      <div class="ch"><span class="ct">CLARITY Act — Polymarket 2026 Passage</span><span class="bg bg" id="clarityBadge">MAY 3</span></div>
       <div class="cb">
-        <div class="cnum" style="color:var(--green);">62%</div>
-        <div class="cpbar"><div class="cpfil" style="background:var(--green);width:62%;height:100%;"></div></div>
+        <div class="cnum" id="clarityPct" style="color:var(--green);">62%</div>
+        <div class="cpbar"><div class="cpfil" id="clarityBar" style="background:var(--green);width:62%;height:100%;"></div></div>
         <div class="cstep"><span>✓</span> House passed 294–134 (July 2025)</div>
         <div class="cstep"><span>✓</span> Agriculture Committee passed (Jan 29, 2026)</div>
         <div class="cstep"><span>⏳</span> Banking Committee markup — <strong>NOT YET SCHEDULED</strong></div>
@@ -989,7 +992,7 @@ function render(){
   const ep=eth?.price, bp=btc?.price||74954, gp=gold?.price||4792, mp=bmnr?.price;
   if(ep&&mp){
     const SHARES_PRESS = 455e6;
-    const SHARES_ROCKS = SHARES_537; // bmnr.rocks uses 10-Q Apr 13 anchor: 537,628,819
+    const SHARES_ROCKS = window.LIVE_SHARES_537 || SHARES_537; // live from /api/market, falls back to 10-Q anchor
     const navT = ETH_HELD*ep + ORBS + BEAST + BTC_HELD*bp + CASH;
 
     // Method 1
@@ -1541,6 +1544,9 @@ function boot(){
   render();
   s('lStat','Seeded · Connecting live…');
   startTicker();
+  // Fetch market data (shares, CLARITY, ETH supply, RWA)
+  fetchMarket();
+  setInterval(fetchMarket, 300000); // refresh every 5 min
 }
 window.addEventListener('load', boot);
 </script>
