@@ -396,7 +396,7 @@
       <span class="bg bl">82% to goal · 1.06M ETH remaining</span>
     </div>
     <div class="cb">
-      <div class="mr"><span class="ml">Current holdings</span><span class="mv g">5,078,386 ETH (4.21% of supply)</span></div>
+      <div class="mr"><span class="ml">Current holdings</span><span class="mv g" id="ethHeldSupply">—</span></div>
       <div class="mr"><span class="ml">5% goal</span><span class="mv">6,035,000 ETH · ~1,058,515 to go</span></div>
       <div style="position:relative;height:180px;margin-top:12px;">
         <canvas id="ethHeldChart" role="img" aria-label="BMNR ETH holdings accumulation over time">Holdings growing from 4.4M to 4.98M ETH.</canvas>
@@ -556,15 +556,15 @@
     <div class="card">
       <div class="ch"><span class="ct">Ethereum (ETH)</span><span class="bg bl">LIVE VALUE</span></div>
       <div class="cb">
-        <div class="mr"><span class="ml">Total ETH held</span><span class="mv g" id="ethHeldAmt">5,078,386 ETH</span></div>
-        <div class="mr"><span class="ml">ETH staked via MAVAN</span><span class="mv" id="ethStakedAmt">3,701,589 (73%)</span></div>
-        <div class="mr"><span class="ml">% of ETH total supply</span><span class="mv b">4.12% of 120.7M</span></div>
+        <div class="mr"><span class="ml">Total ETH held</span><span class="mv g" id="ethHeldAmt">—</span></div>
+        <div class="mr"><span class="ml">ETH staked via MAVAN</span><span class="mv" id="ethStakedAmt">—</span></div>
+        <div class="mr"><span class="ml">% of ETH total supply</span><span class="mv b" id="ethSupplyPct">—</span></div>
         <div class="mr"><span class="ml">5% "Alchemy" goal</span><span class="mv">82.4% there · 1.06M left</span></div>
         <div class="ebar" style="margin:4px 0 8px;"><div class="efil" style="width:82.4%"></div></div>
         <div class="mr"><span class="ml">ETH value at live price</span><span class="mv g" id="ethHVal">—</span></div>
-        <div class="mr"><span class="ml">Annualised staking yield</span><span class="mv g">$221M @ 2.88% APY</span></div>
-        <div class="mr"><span class="ml">Projected (fully staked)</span><span class="mv">$330M / yr</span></div>
-        <div class="mr"><span class="ml">CESR benchmark</span><span class="mv">2.76% (BMNR: 2.88%)</span></div>
+        <div class="mr"><span class="ml">Annualised staking yield</span><span class="mv g" id="stakingRev">—</span></div>
+        <div class="mr"><span class="ml">Projected (fully staked)</span><span class="mv" id="stakingProj">—</span></div>
+        <div class="mr"><span class="ml">CESR benchmark</span><span class="mv" id="cesrBench">—</span></div>
         <div class="pts" style="margin-top:8px;"><div class="pdot" id="holdD"></div><span id="holdTs">Connecting…</span></div>
       </div>
     </div>
@@ -573,9 +573,9 @@
     <div class="card">
       <div class="ch"><span class="ct">Bitcoin (BTC) & Cash</span><span class="bg bl">LIVE BTC VALUE</span></div>
       <div class="cb">
-        <div class="mr"><span class="ml">BTC held</span><span class="mv">198 BTC</span></div>
+        <div class="mr"><span class="ml">BTC held</span><span class="mv" id="btcHeldAmt">—</span></div>
         <div class="mr"><span class="ml">BTC value at live price</span><span class="mv" id="btcHVal">—</span></div>
-        <div class="mr" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border2);"><span class="ml">Cash (unencumbered)</span><span class="mv g">$719M</span></div>
+        <div class="mr" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border2);"><span class="ml">Cash (unencumbered)</span><span class="mv g" id="cashAmt">—</span></div>
         <div class="mr"><span class="ml">Cash as % of total NAV</span><span class="mv" id="cashPct">—</span></div>
         <div class="mr"><span class="ml">Cash deployment pace</span><span class="mv">~$145M / week (recent avg)</span></div>
         <div class="mr"><span class="ml">Weeks of dry powder</span><span class="mv" id="dryPowder">~5 weeks</span></div>
@@ -588,7 +588,7 @@
       <div class="ch"><span class="ct">Moonshots</span><span class="bg ba">BOOK VALUE</span></div>
       <div class="cb">
         <div style="font-size:11px;color:var(--text2);margin-bottom:10px;">Moonshots are BMNR's strategic equity stakes in high-growth companies. Values are at cost (book value) — market value varies with underlying company performance.</div>
-        <div class="mr"><span class="ml">ORBS — Eightco Holdings</span><span class="mv a">$85M book</span></div>
+        <div class="mr"><span class="ml">ORBS — Eightco Holdings</span><span class="mv a" id="orbsAmt">—</span></div>
         <div style="font-size:11px;color:var(--text2);margin:-4px 0 8px 0;">NASDAQ: ORBS · Holds ~$90M OpenAI preferred stock → only listed equity with direct OpenAI exposure. At $1T IPO: ~$900M value.</div>
         <div class="mr"><span class="ml">Beast Industries</span><span class="mv a">$200M book</span></div>
         <div style="font-size:11px;color:var(--text2);margin:-4px 0 8px 0;">Private · MrBeast / MrBeast Financial DeFi platform. Not publicly traded. At $10B IPO: ~$1.4B value.</div>
@@ -736,19 +736,19 @@
   </div>
 
   <div class="footnote">
-    Dashboard v31 · ETH price: CoinGecko · BTC, BMNR: Finnhub · Gold: CoinGecko PAXG → gold-api.com → Frankfurter/ECB waterfall · Updates every 5s · Balance sheet: PRNewswire May 4, 2026 · ETH 5,180,000 · Cash $700M · ★ staking yield/CESR/proj are estimates (not in press release) · CLARITY 62% · Bear 25% / Base 47% · Q2 released Apr 29, 2026 · Next: Q3 ~Jul 2026 · Not investment advice.
+    Dashboard v31 · ETH price: CoinGecko · BTC, BMNR: Finnhub · Gold: CoinGecko PAXG → gold-api.com → Frankfurter/ECB waterfall · Updates every 5s · Balance sheet: PRNewswire May 4, 2026 · ETH 5,180,000 · Cash $700M · ★ CESR estimated only — all other staking figures confirmed · CLARITY 62% · Bear 25% / Base 47% · Q2 released Apr 29, 2026 · Next: Q3 ~Jul 2026 · Not investment advice.
   </div>
 </div><!-- end mainDash -->
 
 <script>
 // ── PRNewswire May 4, 2026 — single source of truth ──────────────────
 // ★ est. = estimated (not reported in May 4 press release)
-const ETH_HELD=5180000, BTC_HELD=200, ORBS=83e6, BEAST=200e6, CASH=700e6, SHARES_455=455e6;
+const ETH_HELD=5180131, BTC_HELD=200, ORBS=83e6, BEAST=200e6, CASH=700e6, SHARES_455=455e6;
 // ── bmnr.rocks methodology ────────────────────────────────────────────
 const SHARES_537=537628819; // 10-Q Apr 13, 2026 anchor — bmnr.rocks adds est. weekly ATM dilution
 // ── Staking (★ estimated — not in May 4 press release) ───────────────
 const ETH_STAKED=4362757, ETH_SUPPLY=120.7e6, ETH_GOAL=ETH_SUPPLY*0.05;
-const STAKING_REV=305e6, STAKING_YIELD=3.00, CESR=2.95, STAKING_PROJ=380e6; // ★ est.
+const STAKING_REV=297e6, STAKING_YIELD=2.91, CESR=2.95, STAKING_PROJ=352e6; // CESR ★ est. only
 const KEY_NAME='finnhub_key';
 
 // Key pre-loaded via BAKED_KEY fallback in getKey()
@@ -919,8 +919,12 @@ function renderEthCard(ethPrice){
   const revM     = (STAKING_REV/1e6).toFixed(0);
   const projM    = (STAKING_PROJ/1e6).toFixed(0);
   s('ethHeldAmt',  ETH_HELD.toLocaleString()+' ETH');
+  s('ethHeldSupply', ETH_HELD.toLocaleString()+' ETH ('+pct+'% of supply)');
   s('ethStakedAmt',ETH_STAKED.toLocaleString()+' ('+stakedPct+'%)');
   s('ethSupplyPct',pct+'% of 120.7M');
+  s('btcHeldAmt',  BTC_HELD+' BTC');
+  s('cashAmt',     '$'+(CASH/1e6).toFixed(0)+'M');
+  s('orbsAmt',     '$'+(ORBS/1e6).toFixed(0)+'M book');
   s('alchemyGoal', goalPct+'% there · '+left+'M left');
   ss('alchemyBar','width',goalPct+'%');
   s('stakingRev',  '$'+revM+'M @ '+STAKING_YIELD+'% APY');
@@ -1241,7 +1245,7 @@ function updateEthHeldChart(){
   if(!ethHeldChartInst) return;
   const allLabels = [...HIST_SEED.labels, ...SESSION_DATA.labels];
   const seedVals  = HIST_SEED.eth_held.map(v => v ? +(v/1e6).toFixed(3) : null);
-  // Session data: use latest known eth_held (5,078,386)
+  // Session data: use ETH_HELD constant
   const sessVals  = SESSION_DATA.labels.map(()=>+(4976485/1e6).toFixed(3));
   ethHeldChartInst.data.labels = allLabels;
   ethHeldChartInst.data.datasets[0].data = [...seedVals, ...sessVals];
@@ -1327,7 +1331,7 @@ const HIST_SEED = {
     ['Apr 26', 2398, 22.14, 79409, 4686, 4976485,  851/22.14, 715/22.14, 275/22.14],
     ['Apr 27', 2369, 22.14, 79409, 4727, 5078386,  851/22.14, 715/22.14, 275/22.14],
     ['May 3',  2392, 22.14, 80000, 4727, 5078386,  873/22.14, 715/22.14, 275/22.14],
-    ['May 4',  2336, 22.14, 80000, 4720, 5180000,  873/22.14, 715/22.14, 275/22.14], // live anchor
+    ['May 4',  2336, 22.14, 80000, 4720, 5180131,  873/22.14, 715/22.14, 275/22.14], // live anchor
   ],
   get labels(){ return this.data.map(d=>d[0]); },
   get eth()   { return this.data.map(d=>d[1]); },
