@@ -736,18 +736,19 @@
   </div>
 
   <div class="footnote">
-    Dashboard v31 · ETH price: CoinGecko · BTC, BMNR: Finnhub · Gold: CoinGecko PAXG → gold-api.com → Frankfurter/ECB waterfall · Updates every 5s · Balance sheet: 8-K Apr 20, 2026 (data as of Apr 19, 2026 4pm ET) · Claude searches PRNewswire/SEC automatically each update · Q2 released Apr 29, 2026 · Next: Q3 ~Jul 2026 · Not investment advice.
+    Dashboard v31 · ETH price: CoinGecko · BTC, BMNR: Finnhub · Gold: CoinGecko PAXG → gold-api.com → Frankfurter/ECB waterfall · Updates every 5s · Balance sheet: PRNewswire May 4, 2026 · ETH 5,180,000 · Cash $700M · ★ staking yield/CESR/proj are estimates (not in press release) · CLARITY 62% · Bear 25% / Base 47% · Q2 released Apr 29, 2026 · Next: Q3 ~Jul 2026 · Not investment advice.
   </div>
 </div><!-- end mainDash -->
 
 <script>
-// ── BALANCE SHEET CONSTANTS (8-K April 20, 2026) ────────────────────
-const ETH_HELD=5078386, BTC_HELD=200, ORBS=91e6, BEAST=200e6, CASH=940e6, SHARES_455=455e6;
+// ── PRNewswire May 4, 2026 — single source of truth ──────────────────
+// ★ est. = estimated (not reported in May 4 press release)
+const ETH_HELD=5180000, BTC_HELD=200, ORBS=83e6, BEAST=200e6, CASH=700e6, SHARES_455=455e6;
 // ── bmnr.rocks methodology ────────────────────────────────────────────
 const SHARES_537=537628819; // 10-Q Apr 13, 2026 anchor — bmnr.rocks adds est. weekly ATM dilution
-// ── Press Release Apr 27, 2026 (data as of Apr 26, 4pm ET) ───────────
-const ETH_STAKED=3701589, ETH_SUPPLY=120.7e6, ETH_GOAL=ETH_SUPPLY*0.05;
-const STAKING_REV=264e6, STAKING_YIELD=3.033, CESR=3.028, STAKING_PROJ=363e6;
+// ── Staking (★ estimated — not in May 4 press release) ───────────────
+const ETH_STAKED=4362757, ETH_SUPPLY=120.7e6, ETH_GOAL=ETH_SUPPLY*0.05;
+const STAKING_REV=305e6, STAKING_YIELD=3.00, CESR=2.95, STAKING_PROJ=380e6; // ★ est.
 const KEY_NAME='finnhub_key';
 
 // Key pre-loaded via BAKED_KEY fallback in getKey()
@@ -1325,7 +1326,8 @@ const HIST_SEED = {
     ['Apr 20', 2311, 22.53, 75749, 4792, 4976485,  851/22.53, 715/22.53, 275/22.53],
     ['Apr 26', 2398, 22.14, 79409, 4686, 4976485,  851/22.14, 715/22.14, 275/22.14],
     ['Apr 27', 2369, 22.14, 79409, 4727, 5078386,  851/22.14, 715/22.14, 275/22.14],
-    ['May 3',  2392, 22.14, 80000, 4727, 5078386,  873/22.14, 715/22.14, 275/22.14], // live anchor
+    ['May 3',  2392, 22.14, 80000, 4727, 5078386,  873/22.14, 715/22.14, 275/22.14],
+    ['May 4',  2336, 22.14, 80000, 4720, 5180000,  873/22.14, 715/22.14, 275/22.14], // live anchor
   ],
   get labels(){ return this.data.map(d=>d[0]); },
   get eth()   { return this.data.map(d=>d[1]); },
