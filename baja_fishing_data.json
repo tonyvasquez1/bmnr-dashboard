@@ -1,0 +1,118 @@
+{
+  "_meta": {
+    "version": 29,
+    "updated": "May 2026",
+    "description": "Master data file for Baja Roosterfish Shore Fishing Guide",
+    "drive_folder": "Baja_Roosterfish_Guide_2026",
+    "folder_id": "1F8zPDaDUvRzadlNSRHNtWNVjJZU4Q76t"
+  },
+
+  "trip": {
+    "base": "Los Barriles, Baja California Sur",
+    "airbnb_zone": "Los Barriles town center",
+    "dates": "June 15–22, 2026",
+    "anglers": 2,
+    "style": "Shore fishing only (+ optional panga days)",
+    "moon": {
+      "last_quarter": "June 8",
+      "new_moon": "June 15",
+      "first_quarter": "June 21",
+      "full_moon": "June 29"
+    }
+  },
+
+  "beaches": [
+    {"n":"01","name":"El Cardonal Beach","lat":23.8439,"lng":-109.7441,"zone":1,"species":"Roosterfish · Sierra · Pompano","time":"Dawn 6–9:30am ★★★★★","tide":"Incoming tide adds full star","id":"beach-01"},
+    {"n":"02","name":"Punta Pescadero","lat":23.7957,"lng":-109.7005,"zone":1,"species":"Trophy Roosterfish · Yellowfin Tuna · Jacks","time":"Sunrise 6–7:30am ★★★★★","tide":"Rocky point — less tide dependent","id":"beach-02"},
+    {"n":"03","name":"Los Barriles Town Beach","lat":23.6823,"lng":-109.6870,"zone":1,"species":"Roosterfish · Ladyfish · Jack Crevalle","time":"Dawn 6–9am ★★★☆☆","tide":"Incoming preferred","id":"beach-03"},
+    {"n":"04","name":"Playa La Ribera","lat":23.5997,"lng":-109.5751,"zone":2,"species":"Roosterfish · Snapper · Pompano","time":"Dawn 6–9am ★★★★☆","tide":"First 90 min of incoming only","id":"beach-04"},
+    {"n":"05","name":"Punta Colorada / Punta Arena","lat":23.5939,"lng":-109.5623,"zone":2,"species":"Trophy Roosterfish · Yellowfin Tuna · Wahoo","time":"Dawn 6–8:30am ★★★★★","tide":"2–4ft surf ideal","id":"beach-05"},
+    {"n":"06","name":"Los Frailes Cove","lat":23.3793,"lng":-109.4370,"zone":2,"species":"Roosterfish · Snapper · Pargo","time":"Dawn 6–11am ★★★★☆","tide":"Widest window of all beaches","id":"beach-06"},
+    {"n":"07","name":"La Playita (SJdC)","lat":23.0621,"lng":-109.7086,"zone":3,"species":"Roosterfish · Jack Crevalle · Sierra","time":"Dawn 6–9am ★★★☆☆","tide":"Incoming tide critical","id":"beach-07"},
+    {"n":"08","name":"Costa Azul Beach","lat":23.0291,"lng":-109.7200,"zone":3,"species":"Roosterfish · Jacks","time":"Dawn 6–9am ★★★☆☆","tide":"Incoming + 2–4ft surf","id":"beach-08"},
+    {"n":"09","name":"Playa Palmilla","lat":23.0453,"lng":-109.7133,"zone":3,"species":"Roosterfish · Sierra · Snapper","time":"Dawn 6–9:30am ★★★★☆","tide":"Rocky point — flexible","id":"beach-09"},
+    {"n":"10","name":"Punta Gorda","lat":22.9989,"lng":-109.7289,"zone":3,"species":"Roosterfish · Dorado · Jack Crevalle","time":"Dawn 6–8:30am ★★★★☆","tide":"Rocky point","id":"beach-10"},
+    {"n":"11","name":"Santa Maria Bay","lat":22.9218,"lng":-109.8347,"zone":3,"species":"Roosterfish · Snapper · Pompano","time":"Dawn 6–10:30am ★★★★☆","tide":"Protected cove — widest window in Zone 3","id":"beach-11"},
+    {"n":"12","name":"Playa Migrino","lat":22.9344,"lng":-110.0194,"zone":4,"species":"Roosterfish · Jack Crevalle · Sierra","time":"Dawn 6–8am ★★★☆☆","tide":"Pacific — check surf forecast","id":"beach-12"}
+  ],
+
+  "atv_routes": {
+    "note": "All routes start from Los Barriles (23.6823, -109.6967)",
+    "punta_pescadero_warning": "Take paved Los Barriles–Santa Teresa Hwy to El Cardonal then follow blue hotel signs. Do NOT follow Google's coastal cliff road.",
+    "routes": [
+      {"id":"r03","beach":"03","name":"Los Barriles Town Beach","distance_mi":0,"drive_min":0,"road":"Walk"},
+      {"id":"rsouth","beach":"south","name":"South Beach Run","distance_mi":"2-6","drive_min":"10-20","road":"Beach sand"},
+      {"id":"r01","beach":"01","name":"El Cardonal","distance_mi":14,"drive_min":"30-40","road":"Coastal dirt — moderate","car_ok":true,"car_note":"Any car via paved Santa Teresa Hwy (45 min)"},
+      {"id":"r02","beach":"02","name":"Punta Pescadero","distance_mi":18,"drive_min":"25-30","road":"Paved to El Cardonal, short sand track to hotel","car_ok":"SUV preferred","car_note":"Via Santa Teresa Hwy + blue hotel signs. NOT the coastal cliff road."},
+      {"id":"r04","beach":"04","name":"Playa La Ribera","distance_mi":28,"drive_min":"40-50","road":"Hwy 1 + paved La Ribera road","car_ok":true},
+      {"id":"r05","beach":"05","name":"Punta Colorada","distance_mi":36,"drive_min":"60-75","road":"Hwy 1 + paved + coastal dirt","car_ok":"High clearance recommended"}
+    ]
+  },
+
+  "google_maps_nav": {
+    "r03": {"origin":"23.6855,-109.7010","dest":"23.6823,-109.6870"},
+    "r01": {"origin":"23.6823,-109.6967","dest":"23.8439,-109.7441"},
+    "r02": {"origin":"23.6823,-109.6967","dest":"23.7957,-109.7005","waypoint":"23.8439,-109.7441"},
+    "rsouth": {"origin":"23.6823,-109.6870","dest":"23.6300,-109.6700"},
+    "r04": {"origin":"23.6823,-109.6967","dest":"23.5997,-109.5751"},
+    "r05": {"origin":"23.6823,-109.6967","dest":"23.5939,-109.5623"}
+  },
+
+  "panga_pricing": {
+    "updated": "2025-2026",
+    "types": [
+      {"type":"Basic panga","size":"20-23ft","capacity":"1-2","price_day":"$250-320","price_half":"$150-200","notes":"+ bait $20-40, + tip, + 16% IVA tax"},
+      {"type":"Super panga","size":"23-26ft","capacity":"1-3","price_day":"$480-550","price_half":"$280-350","notes":"Best value for 2 anglers"},
+      {"type":"Deluxe cruiser","size":"28-32ft","capacity":"2-4","price_day":"$900-1000","price_half":null,"notes":"Overkill for roosterfish"},
+      {"type":"Independent captain","size":"varies","capacity":"1-2","price_day":"$250-350","price_half":"~$150","notes":"All-in negotiated, best value"}
+    ],
+    "contacts": [
+      {"name":"Ramon Almanza","boat":"Los Amigos","phone":"+52 624 166 7216","email":"ramon_losamigos@hotmail.com","notes":"Bilingual son Carlos at East Cape Tackle Shop"},
+      {"name":"Hotel Palmas de Cortez dock","type":"Walk-in","notes":"50+ boat fleet, hotel markup, book 1-2 days ahead"},
+      {"name":"East Cape Tackle Shop","type":"Broker","notes":"Best insider booking method, Plaza del Pueblo"},
+      {"name":"The Reel Baja","url":"thereelbaja.com","notes":"Only Orvis-endorsed outfitter in Mexico"},
+      {"name":"Los Barriles Sportfishing","url":"losbarrilessportfishing.com","notes":"26ft super panga"}
+    ],
+    "fishing_license": {"day":"$22","year":"$75","notes":"Required by law, buy at East Cape Tackle or through captain"}
+  },
+
+  "north_corridor": {
+    "description": "Roosterfish zone north of Los Barriles toward La Paz",
+    "spots": [
+      {"name":"Ensenada de Muertos","alias":"Bahia de los Suenos","drive_min_from_lb":45,"roosters":"Grande roosters June-July","shore":true,"panga":true,"operators":["Fish Ranch","Rise Fishing","Travel Creel","Angling Baja"]},
+      {"name":"Punta Arena de la Ventana","drive_min_from_lb":55,"roosters":"Excellent shore fishing, rocky point","shore":true,"panga":true},
+      {"name":"La Ventana / El Sargento","drive_min_from_lb":75,"roosters":"Active fleet, multiple daily trips","shore":true,"panga":true,"operators":["Angling Baja","Ventana Bay Resort","Tailhunter International"]},
+      {"name":"Cerralvo Island","alias":"Isla Jacques Cousteau","drive_min_from_lb":null,"roosters":"World record 114lb roosterfish caught here","shore":false,"panga":true},
+      {"name":"Las Arenas / La Paz area","drive_min_from_lb":90,"roosters":"Grande roosters to 60+ lb","shore":false,"panga":true,"operators":["Tailhunter International (Jonathan Roldan)"]}
+    ]
+  },
+
+  "june_conditions": {
+    "calendar_start": "June 7",
+    "calendar_end": "June 30",
+    "grid_note": "June 7 = Sunday, so 6 spacer cells before first real day",
+    "trip_dates": "June 15-22",
+    "prime_window": "June 15-17 (new moon + spring tides)",
+    "cortez_surf_june": "Typically 1-3ft dawn, 2-4ft by afternoon thermal",
+    "thermal_wind": "Calm dawn to 10am, builds 15-25kt by 2-3pm daily",
+    "water_temp_f": "78-82"
+  },
+
+  "tackle_shops": [
+    {"id":"tackle-eastcape","name":"East Cape Tackle Shop","location":"Plaza del Pueblo, Los Barriles","notes":"Main hub, stock Rangers, Cabo Killers, poppers"},
+    {"id":"tackle-minervas","name":"Minerva's Baja Tackle","location":"Los Barriles"},
+    {"id":"tackle-horizon","name":"Baja Outfitters","location":"Los Cabos area"},
+    {"id":"tackle-lapaz","name":"La Paz Tackle","location":"La Paz"}
+  ],
+
+  "key_lures": [
+    {"name":"Roberts Ranger","type":"Metal casting","weight":"2-3oz","species":"Roosterfish, Jacks, Sierra","technique":"Cast max distance, fast erratic retrieve with pause","best_beaches":[1,2,3,4,5,12]},
+    {"name":"Cabo Killer (Metal Jig)","type":"Metal jig","weight":"2-4oz","species":"Roosterfish, Jacks, Yellowtail","technique":"Cast to rocky points, jerk-and-pause, count to 3-5 on sink","best_beaches":[1,2,3,4,5]},
+    {"name":"Zara Spook (Heddon)","type":"Topwater walk-the-dog","weight":"1oz","species":"Roosterfish, Jacks","technique":"Walk-the-dog on glassy dawn surface","best_beaches":[1,3,4]},
+    {"name":"Yo-Zuri Hydro Popper","type":"Popper","weight":"1.5oz","species":"Roosterfish, Dorado","technique":"Loud pop-pause on flat water before thermal wind","best_beaches":[3,4,6,11]},
+    {"name":"Halco Twisty","type":"Metal spinning lure","weight":"1.5oz","species":"Sierra, Jacks, Roosterfish","technique":"Fast straight retrieve, flash attracts sierra","best_beaches":[1,2,3]},
+    {"name":"Rapala X-Rap","type":"Suspending jerkbait","weight":"1oz","species":"Roosterfish, Snapper","technique":"Jerk-pause-twitch in wash zone","best_beaches":[6,9,11]},
+    {"name":"Decoy Stinger 80","type":"Iron jig","weight":"3oz","species":"Roosterfish, Yellowtail","technique":"Vertical jigging from panga or off rocky points","best_beaches":[2,5,10]},
+    {"name":"Live Sardina","type":"Live bait","species":"All species","technique":"Hook through nose, cast to bait schools or use as chum from panga","notes":"Buy from returning pangas 8-9am, $5-10 per dozen"}
+  ]
+}
