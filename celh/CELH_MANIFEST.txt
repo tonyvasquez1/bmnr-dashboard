@@ -1,0 +1,94 @@
+══════════════════════════════════════════════════════════════════════════════
+CELSIUS HOLDINGS (CELH) — SCRIPT MANIFEST
+READ THIS AT THE START OF EVERY CELH SESSION BEFORE TOUCHING ANYTHING
+Last updated: May 2026
+══════════════════════════════════════════════════════════════════════════════
+
+GITHUB REPOSITORY (source of truth for scripts)
+────────────────────────────────────────────────
+Repo: https://github.com/tonyvasquez1/bmnr-dashboard
+Path: /celh/
+Token: [stored in CLAUDE_AMD_INSTRUCTIONS.txt on Drive — never put in scripts]
+
+SCRIPTS — PULL FROM GITHUB, NOT DRIVE
+──────────────────────────────────────
+File: celh/build_celsius_simple_v4_final.py
+Size: 40,740 bytes (if smaller it is a stub — do not use)
+Run:  python build_celsius_simple_v4_final.py
+Output: CELH_Q1_2026_Income_Statement_v4.xlsx
+Self-test: prints SELF-TEST PASSED or FAILED
+
+File: celh/build_celh_projection_final.py
+Size: 30,603 bytes (if smaller it is a stub — do not use)
+Run:  python build_celh_projection_final.py
+Output: CELH_5Year_Projection_v3.xlsx
+Self-test: prints SELF-TEST PASSED or FAILED
+
+HOW TO PULL AND RUN (do this every session before anything else)
+─────────────────────────────────────────────────────────────────
+git clone https://[GITHUB_TOKEN]@github.com/tonyvasquez1/bmnr-dashboard.git /tmp/repo
+cd /tmp/repo/celh
+python build_celsius_simple_v4_final.py
+python build_celh_projection_final.py
+
+VERIFICATION CHECKLIST (run before telling Tony anything is ready)
+───────────────────────────────────────────────────────────────────
+□ Script pulled from GitHub (not from Drive, not from memory)
+□ File size matches exactly (40,740 and 30,603 bytes)
+□ Script ran without errors
+□ Self-test printed SELF-TEST PASSED
+□ Key outputs match baseline below
+
+BASELINE OUTPUTS — Q1 2026 (verify after every run)
+─────────────────────────────────────────────────────
+Income Statement:
+  Revenue: $782.6M
+  Gross Margin: 48.3%
+  Adj. EBITDA: $195.5M (25.0% margin)
+  Adj. EPS: $0.41
+  Grade: B+
+
+Projection 2030:
+  Bull: SPL=$217 SPH=$271 CAGR=+45.7%
+  Base: SPL=$110 SPH=$138 CAGR=+27.2%
+  Bear: SPL=$39  SPH=$51  CAGR=+3.2%
+  EV:   SPL=$124 SPH=$156 CAGR=+30.4%
+
+RULES — NO EXCEPTIONS
+──────────────────────
+1. NEVER rebuild from memory or scratch. Always pull from GitHub.
+2. NEVER start any task without Tony's explicit approval.
+3. NEVER save a script to Drive unless self-test printed SELF-TEST PASSED.
+4. NEVER upload xlsx to Drive via API — present for download only.
+5. NEVER change row structure, colors, or formatting without Tony's approval.
+6. ALWAYS verify file size matches manifest before using any script.
+7. ALWAYS run self-test and show Tony the output before declaring done.
+8. ALWAYS create a new version file for updates — never overwrite.
+
+QUARTERLY UPDATE WORKFLOW
+──────────────────────────
+Income Statement:
+1. git clone repo → cd celh
+2. Verify file size = 40,740 bytes
+3. Update ROWS data block with new quarter numbers
+4. Run script → self-test must pass
+5. git add -A && git commit -m "CELH Q[X] 20XX income statement update"
+6. git push
+7. Present xlsx for Tony to download and manually upload to Drive
+
+Projection:
+1. git clone repo → cd celh
+2. Verify file size = 30,603 bytes
+3. Update DATA BLOCK at top with new actuals
+4. Run script → self-test must pass
+5. Verify 2030 outputs match new assumptions
+6. git add -A && git commit -m "CELH Q[X] 20XX projection update"
+7. git push
+8. Present xlsx for Tony to download and manually upload to Drive
+
+DRIVE FOLDER STRUCTURE (for xlsx files only — scripts live on GitHub)
+───────────────────────────────────────────────────────────────────────
+Master: https://drive.google.com/drive/folders/1WimYidZSd3uQiFvCdrn-lrsabOQdhvKt
+Q1 2026: https://drive.google.com/drive/folders/11defNNAjxEOcbCw3-oMT5CeT82NJCfPx
+Q2 2026: https://drive.google.com/drive/folders/1QQmrGcxtwrQsEemANbFn6IgLLdFT1RSN
+══════════════════════════════════════════════════════════════════════════════
