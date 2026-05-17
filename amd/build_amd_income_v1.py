@@ -107,7 +107,7 @@ ROWS = [
      None),
 
     ("Gross Margin",
-     53.0, 54.0, 50.0, "green", None, True,
+     53.0, 54.0, 50.0, "green", "green", True,
      "+300bps Y/Y expansion (50% → 53%). Q/Q contracted -100bps (54% → 53%) due to "
      "seasonal product mix shift — Q4 typically carries more premium Data Center mix. "
      "Structural Y/Y driver: MI300X/MI325X GPU carries meaningfully higher gross margins "
@@ -370,15 +370,19 @@ def bullet_row(ws, row, text, bg, font_size=SZ_DEFAULT, color=BLACK):
 #                           (leverage violation)
 #
 # 2. MARGIN / PERCENTAGE ROWS (is_pct=True)
-#    Color reflects whether the margin EXPANDED or CONTRACTED vs prior year,
-#    independent of how fast revenue grew.
-#    yy_color = "green"  if margin expanded Y/Y  (positive — costs shrinking
-#                           as % of revenue, more profit retained per dollar)
-#    yy_color = "amber"  if margin was roughly flat Y/Y (+/- ~50bps)
-#    yy_color = "red"    if margin contracted Y/Y (negative signal)
-#    actual_color follows the same rule applied to the current-period value:
-#    color the actual cell if the margin rate itself warrants attention
-#    (e.g. amber if margin is below a meaningful threshold even if expanding)
+#    Color is derived by comparing the margin LINE to revenue:
+#      "green"  = gross profit (or relevant profit) grew FASTER than revenue
+#                 (margin expanded — costs growing slower than revenue)
+#      "amber"  = margin roughly flat Y/Y (+/- ~50bps)
+#      "red"    = margin CONTRACTED — costs growing faster than revenue
+#    actual_color = same color as yy_color when margin is expanding/strong;
+#                   "amber" if margin level is below a meaningful threshold
+#                   even if it expanded; None if margin is in normal range
+#                   and no additional highlight is needed.
+#    GROSS MARGIN specifically: color reflects whether Gross Profit grew
+#    faster than Net Revenue (expansion = green, contraction = red).
+#    actual_color = "green" when Gross Margin is expanding and above ~40%;
+#                   "amber" if below 40% even if expanding.
 #
 # 3. SUPPORT LINES (interest, tax, equity income, share counts)
 #    yy_color = None — no color applied; these are derived/reference lines
