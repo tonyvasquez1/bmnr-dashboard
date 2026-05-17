@@ -8,7 +8,10 @@ GITHUB REPOSITORY (source of truth for scripts)
 ────────────────────────────────────────────────
 Repo: https://github.com/tonyvasquez1/bmnr-dashboard
 Path: /celh/
-Token: [stored in CLAUDE_AMD_INSTRUCTIONS.txt on Drive — never put in scripts]
+Auth: Never embed a token here, in scripts, or in clone URLs. In Claude Code
+      on the web the repo is already checked out — no credential needed. If a
+      clone is ever required, use the environment's authenticated git, or a
+      GITHUB_TOKEN environment variable consumed at runtime (never committed).
 
 SCRIPTS — PULL FROM GITHUB, NOT DRIVE
 ──────────────────────────────────────
@@ -26,10 +29,15 @@ Self-test: prints SELF-TEST PASSED or FAILED
 
 HOW TO PULL AND RUN (do this every session before anything else)
 ─────────────────────────────────────────────────────────────────
-git clone https://[GITHUB_TOKEN]@github.com/tonyvasquez1/bmnr-dashboard.git /tmp/repo
-cd /tmp/repo/celh
+# Claude Code on the web: repo is already checked out — just run from it.
+cd celh
 python build_celsius_simple_v4_final.py
 python build_celh_projection_final.py
+
+# Empty sandbox only (no token in the URL — use the environment's
+# authenticated git, or export GITHUB_TOKEN beforehand and let git use it):
+#   git clone https://github.com/tonyvasquez1/bmnr-dashboard.git /tmp/repo
+#   cd /tmp/repo/celh && python build_celsius_simple_v4_final.py
 
 VERIFICATION CHECKLIST (run before telling Tony anything is ready)
 ───────────────────────────────────────────────────────────────────
@@ -68,7 +76,7 @@ RULES — NO EXCEPTIONS
 QUARTERLY UPDATE WORKFLOW
 ──────────────────────────
 Income Statement:
-1. git clone repo → cd celh
+1. cd celh  (repo already checked out — see HOW TO PULL AND RUN)
 2. Verify file size = 40,740 bytes
 3. Update ROWS data block with new quarter numbers
 4. Run script → self-test must pass
@@ -77,7 +85,7 @@ Income Statement:
 7. Present xlsx for Tony to download and manually upload to Drive
 
 Projection:
-1. git clone repo → cd celh
+1. cd celh  (repo already checked out — see HOW TO PULL AND RUN)
 2. Verify file size = 30,603 bytes
 3. Update DATA BLOCK at top with new actuals
 4. Run script → self-test must pass

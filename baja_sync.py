@@ -26,7 +26,9 @@ from datetime import datetime
 # ── CONFIG ────────────────────────────────────────────────────────────
 GITHUB_USER  = "tonyvasquez1"
 GITHUB_REPO  = "bmnr-dashboard"
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "ghp_" + "yD1M3rDM20SiUnXWsPgpybaUk6WsMD2XFQoh")
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+if not GITHUB_TOKEN:
+    sys.exit("GITHUB_TOKEN environment variable is required (do not hardcode tokens).")
 AUTHED_URL   = f"https://{GITHUB_TOKEN}@github.com/{GITHUB_USER}/{GITHUB_REPO}.git"
 
 # Local backup directory — change this if you prefer a different location
