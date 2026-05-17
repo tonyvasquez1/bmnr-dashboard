@@ -1268,11 +1268,6 @@ def build():
     build_sources_tab(wb)
     build_whats_new_tab(wb)
 
-    # Fix Excel tab navigation: explicitly mark first sheet selected.
-    # Without this, tabSelected=None on all sheets and Excel tab-switching breaks.
-    for sheet in wb.worksheets:
-        sheet.sheet_view.tabSelected = False
-    wb["Q1 2026 Income Statement"].sheet_view.tabSelected = True
     wb.active = wb["Q1 2026 Income Statement"]
 
     out = "/mnt/user-data/outputs/AMD_Q1_2026_Income_Statement_v1.xlsx"
