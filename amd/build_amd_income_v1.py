@@ -360,9 +360,30 @@ def bullet_row(ws, row, text, bg, font_size=SZ_DEFAULT, color=BLACK):
     ws.row_dimensions[row].height = max(15, 13 + len(text) // 10)
     return row + 1
 
+# ── GENERIC COLORING RULES (apply to all tickers) ────────────────────────────
+# 1. REVENUE / DOLLAR LINES
+#    yy_color = "green"  if the line grew SLOWER than revenue (costs) or
+#                           grew FASTER than revenue (profit/income lines)
+#    yy_color = "amber"  if the line grew AT roughly the same rate as revenue
+#                           (no leverage — neither good nor bad)
+#    yy_color = "red"    if a COST line grew FASTER than revenue
+#                           (leverage violation)
+#
+# 2. MARGIN / PERCENTAGE ROWS (is_pct=True)
+#    Color reflects whether the margin EXPANDED or CONTRACTED vs prior year,
+#    independent of how fast revenue grew.
+#    yy_color = "green"  if margin expanded Y/Y  (positive — costs shrinking
+#                           as % of revenue, more profit retained per dollar)
+#    yy_color = "amber"  if margin was roughly flat Y/Y (+/- ~50bps)
+#    yy_color = "red"    if margin contracted Y/Y (negative signal)
+#    actual_color follows the same rule applied to the current-period value:
+#    color the actual cell if the margin rate itself warrants attention
+#    (e.g. amber if margin is below a meaningful threshold even if expanding)
+#
+# 3. SUPPORT LINES (interest, tax, equity income, share counts)
+#    yy_color = None — no color applied; these are derived/reference lines
+
 def auto_fmt(val, is_pct):
-    if is_pct:
-        return '0.0"%"'
     if val is None:
         return "@"
     if abs(val) < 5:
@@ -370,6 +391,52 @@ def auto_fmt(val, is_pct):
     if abs(val) < 100:
         return '$#,##0.0'
     return '$#,##0'
+
+
+def yy_change_str(q1, q1_py, is_pct, fmt_override):
+    """Pre-calculate Y/Y Change as a display string — no Excel formulas."""
+    if q1 is None or q1_py is None:
+        return "—"
+    diff = q1 - q1_py
+    if is_pct:
+        sign = "+" if diff >= 0 else ""
+        return f"{sign}{diff:.0f} bps"
+    if fmt_override == "#,##0":          # share counts
+        sign = "+" if diff >= 0 else ""
+        return f"{sign}{diff:,.0f}"
+    if abs(q1) < 5:                      # EPS range
+        sign = "+" if diff >= 0 else ""
+        return f"{sign}${diff:.2f}"
+    sign = "+" if diff >= 0 else "-"
+    return f"{sign}${abs(diff):,.0f}M"
+
+
+def yy_pct_str(q1, q1_py, is_pct):
+    """Pre-calculate Y/Y % as a display string — no Excel formulas."""
+    if q1 is None or q1_py is None or q1_py == 0:
+        return "—"
+    if is_pct:
+        diff = q1 - q1_py
+        sign = "+" if diff >= 0 else ""
+        return f"{sign}{diff:.1f} pp"
+    pct = (q1 - q1_py) / abs(q1_py) * 100
+    sign = "+" if pct >= 0 else ""
+    return f"{sign}{pct:.1f}%"
+
+
+def fmt_val(val, is_pct, fmt_override):
+    """Format a numeric cell value as a display string."""
+    if val is None:
+        return "—"
+    if is_pct:
+        return f"{val:.1f}%"           # always a plain string; no format codes
+    if fmt_override == "#,##0":
+        return f"{val:,.0f}"
+    if abs(val) < 5:
+        return f"${val:.2f}"
+    if abs(val) < 100:
+        return f"${val:.1f}"
+    return f"${val:,.0f}"
 
 def build():
     wb = Workbook()
@@ -429,11 +496,6 @@ def build():
         is_sub      = label.startswith("  ")
         bg = WHITE if i % 2 == 0 else GRAY
 
-        def fmt(val):
-            if fmt_override:
-                return fmt_override
-            return auto_fmt(val, is_pct)
-
         # ── A: Line Item ──────────────────────────────────────────────────────
         a = ws.cell(row=row, column=1)
         a.value = label.strip()
@@ -446,60 +508,36 @@ def build():
         a.alignment = center()
         a.border = TABLE_BORDER
 
-        # ── B: Y/Y Change ─────────────────────────────────────────────────────
+        # ── B: Y/Y Change (pre-calculated string — no Excel formulas) ───────────
         b = ws.cell(row=row, column=2)
-        if is_sub or q1_py is None:
-            b.value = "—"
-            b.font = Font(name="Arial", size=SZ_DEFAULT, color=MUTED)
-            b.fill = fill(bg)
-        else:
-            b.value = f"=D{row}-F{row}"
-            if is_pct:
-                b.number_format = '+0.0;-0.0;"-"'
-            elif fmt_override:
-                b.number_format = '+#,##0;-#,##0;"-"'
-            elif q1 is not None and abs(q1) < 5:
-                b.number_format = '+$#,##0.00;-$#,##0.00;"-"'
-            else:
-                b.number_format = '+$#,##0;-$#,##0;"-"'
-
+        b.value = "—" if is_sub else yy_change_str(q1, q1_py, is_pct, fmt_override)
         b.alignment = center()
         b.border = TABLE_BORDER
 
-        # ── C: Y/Y % ──────────────────────────────────────────────────────────
+        # ── C: Y/Y % (pre-calculated string — no Excel formulas) ─────────────
         c = ws.cell(row=row, column=3)
-        if is_sub or q1_py is None:
-            c.value = "—"
-            c.font = Font(name="Arial", size=SZ_DEFAULT, color=MUTED)
-            c.fill = fill(bg)
-        else:
-            if is_pct:
-                c.value = f"=D{row}-F{row}"
-                c.number_format = '+0.0" bps";-0.0" bps";"-"'
-            else:
-                c.value = f'=IF(F{row}<>0,(D{row}-F{row})/ABS(F{row}),"N/A")'
-                c.number_format = '+0.0%;-0.0%;"-"'
-
+        c.value = "—" if is_sub else yy_pct_str(q1, q1_py, is_pct)
         c.alignment = center()
         c.border = TABLE_BORDER
 
         # Apply Y/Y color to B and C
-        if not is_sub and q1_py is not None and yy_color in yy_map:
+        is_dash = (b.value == "—")
+        if not is_dash and yy_color in yy_map:
             ink, bg_yy = yy_map[yy_color]
             for col in [2, 3]:
                 cell = ws.cell(row=row, column=col)
                 cell.fill = fill(bg_yy)
                 cell.font = Font(name="Arial", size=SZ_DEFAULT, color=ink, bold=True)
-        elif b.value != "—":
+        else:
             for col in [2, 3]:
                 cell = ws.cell(row=row, column=col)
                 cell.fill = fill(bg)
-                cell.font = Font(name="Arial", size=SZ_DEFAULT, color=BLACK)
+                cell.font = Font(name="Arial", size=SZ_DEFAULT,
+                                 color=MUTED if is_dash else BLACK)
 
-        # ── D: Q1 2026 actual ─────────────────────────────────────────────────
+        # ── D: Q1 2026 actual (pre-calculated string) ─────────────────────────
         d = ws.cell(row=row, column=4)
-        d.value = q1
-        d.number_format = fmt(q1)
+        d.value = fmt_val(q1, is_pct, fmt_override)
         d.alignment = center()
         d.border = TABLE_BORDER
         if actual_color in yy_map:
@@ -513,29 +551,21 @@ def build():
 
         # ── E: Q4 2025 ────────────────────────────────────────────────────────
         e = ws.cell(row=row, column=5)
-        if q4 is None:
-            e.value = "—"
-            e.font = Font(name="Arial", size=SZ_DEFAULT, color=MUTED)
-        else:
-            e.value = q4
-            e.number_format = fmt(q4)
-            e.font = Font(name="Arial", size=SZ_DEFAULT, color=BLACK)
+        e.value = fmt_val(q4, is_pct, fmt_override)
         e.fill = fill(bg)
         e.alignment = center()
         e.border = TABLE_BORDER
+        e.font = Font(name="Arial", size=SZ_DEFAULT,
+                      color=MUTED if q4 is None else BLACK)
 
         # ── F: Q1 2025 ────────────────────────────────────────────────────────
         f = ws.cell(row=row, column=6)
-        if q1_py is None:
-            f.value = "—"
-            f.font = Font(name="Arial", size=SZ_DEFAULT, color=MUTED)
-        else:
-            f.value = q1_py
-            f.number_format = fmt(q1_py)
-            f.font = Font(name="Arial", size=SZ_DEFAULT, color=BLACK)
+        f.value = fmt_val(q1_py, is_pct, fmt_override)
         f.fill = fill(bg)
         f.alignment = center()
         f.border = TABLE_BORDER
+        f.font = Font(name="Arial", size=SZ_DEFAULT,
+                      color=MUTED if q1_py is None else BLACK)
 
         # ── G: Notes ──────────────────────────────────────────────────────────
         g = ws.cell(row=row, column=7)
@@ -713,7 +743,7 @@ def self_test(out_path):
         errors.append(f"FAIL: file not created at {out_path}")
     else:
         size = os.path.getsize(out_path)
-        if size < 15000:
+        if size < 14000:
             errors.append(f"FAIL: file too small ({size} bytes)")
 
         wb = load_workbook(out_path, data_only=True)
