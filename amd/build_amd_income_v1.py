@@ -572,8 +572,7 @@ def build():
         g.value = note
         g.font = Font(name="Arial", size=SZ_DEFAULT, color="333333")
         g.fill = fill(bg)
-        g.alignment = Alignment(horizontal="center", vertical="center",
-                                wrap_text=True)
+        g.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
         g.border = TABLE_BORDER
 
         # ── H: What This Measures ─────────────────────────────────────────────
@@ -581,7 +580,7 @@ def build():
         h.value = measure
         h.font = Font(name="Arial", size=SZ_DEFAULT, color="1F4E79", italic=True)
         h.fill = fill(MEASURE_BG)
-        h.alignment = center(wrap=True)
+        h.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
         h.border = TABLE_BORDER
 
         ws.row_dimensions[row].height = max(45, min(180, 12 + note.count(" ") * 1.4))
