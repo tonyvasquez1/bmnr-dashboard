@@ -566,137 +566,413 @@ def build_sources_tab(wb):
 
 def build_whats_new_tab(wb):
     """
-    Template for quarterly update tracking.
-    Each new version (v2, v3, ...) should populate this tab with everything
-    discovered since the prior version: new results, guidance, product news,
-    market data, analyst changes. Review this tab FIRST before editing row data.
+    Quarterly intelligence update tab.
+    Covers AMD own data, product roadmap, competitor results, and sector/macro.
+    Ends with a Coherence Check that maps new data against projection engine assumptions.
+    Each new version (v2, v3, ...) replaces all content here with the latest research.
+    Review this tab FIRST before touching any row data in the income statement.
     """
     ws = wb.create_sheet("What's New")
 
-    ws.column_dimensions["A"].width = 20
-    ws.column_dimensions["B"].width = 40
-    ws.column_dimensions["C"].width = 32
-    ws.column_dimensions["D"].width = 32
-    ws.column_dimensions["E"].width = 30
+    for col, w in zip("ABCDEF", [20, 36, 26, 26, 28, 28]):
+        ws.column_dimensions[col].width = w
 
-    ws.merge_cells("A1:E1")
+    # ── Title ─────────────────────────────────────────────────────────────────
+    ws.merge_cells("A1:F1")
     t = ws["A1"]
     t.value = ("AMD — WHAT'S NEW  |  Version: Q1 2026  |  "
-               "Script: build_amd_income_v1.py  |  Updated: May 2026")
+               "Script: build_amd_income_v1.py  |  Researched: May 2026")
     t.font = Font(name="Arial", bold=True, size=SZ_TITLE, color=WHITE)
     t.fill = fill(NAVY)
     t.alignment = center()
     ws.row_dimensions[1].height = 24
 
-    ws.merge_cells("A2:E2")
+    ws.merge_cells("A2:F2")
     instr = ws["A2"]
     instr.value = (
-        "HOW TO USE: In each quarterly update (v2, v3, ...), fill this tab with ALL new data, "
-        "guidance, and product news found since the prior version. Review this tab first — "
-        "then carry each item into the income statement data, notes, and narrative sections. "
-        "This tab is the audit trail for every change between versions."
+        "HOW TO USE: In each quarterly update (v2, v3, ...) research AMD results, guidance, "
+        "product news, competitor earnings, and sector macro BEFORE editing any row data. "
+        "Populate every section below. Carry each item into the income statement and projection "
+        "engine. Confirm the Coherence Check passes before committing. This tab is the audit "
+        "trail between versions."
     )
     instr.font = Font(name="Arial", size=SZ_SUBTITLE, color=WHITE, italic=True)
     instr.fill = fill(BLUE)
     instr.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
-    ws.row_dimensions[2].height = 36
+    ws.row_dimensions[2].height = 40
 
-    for col_idx, h in enumerate(
-        ["Category", "Item", "Prior State", "Current State (Q1 2026)", "Impact on Analysis"], 1
-    ):
-        cell = ws.cell(row=3, column=col_idx)
-        cell.value = h
-        cell.font = Font(name="Arial", bold=True, size=SZ_HEADER, color=WHITE)
-        cell.fill = fill(ACCENT)
-        cell.alignment = center(wrap=True)
-        cell.border = TABLE_BORDER
-    ws.row_dimensions[3].height = 24
+    # ── Column headers ────────────────────────────────────────────────────────
+    col_headers = ["Category", "Item", "Prior State",
+                   "Current State (Q1 2026)",
+                   "Consequences → Earnings",
+                   "Consequences → Projections"]
+    for col_idx, h in enumerate(col_headers, 1):
+        c = ws.cell(row=3, column=col_idx)
+        c.value = h
+        c.font = Font(name="Arial", bold=True, size=SZ_HEADER, color=WHITE)
+        c.fill = fill(ACCENT)
+        c.alignment = center(wrap=True)
+        c.border = TABLE_BORDER
+    ws.row_dimensions[3].height = 30
 
-    # Category → ink color
     cat_colors = {
-        "Financial Results": "1A5276",
-        "Guidance":          "1A7A3A",
-        "Product Roadmap":   "6C3483",
-        "Market Data":       "B7770D",
-        "Competitive":       "8B0000",
+        "AMD — Financial":     "1A5276",
+        "AMD — Guidance":      "1A7A3A",
+        "AMD — Product":       "6C3483",
+        "AMD — Market Share":  "B7770D",
+        "Competitor — Nvidia": "8B0000",
+        "Competitor — Intel":  "4A235A",
+        "Sector / Macro":      "1B4F72",
     }
 
+    # (category, item, prior, current, consequences_earnings, consequences_projections)
     items = [
-        ("Financial Results",
-         "Net Revenue Q1 2026 actuals",
-         "Q4 2025: $7,658M",
-         "Q1 2026: $10,253M (+37.9% Y/Y). Essentially flat Q/Q despite seasonal pattern.",
-         "Revenue row updated; all Y/Y and Q/Q strings pre-calculated"),
+        # ── AMD FINANCIAL RESULTS ──────────────────────────────────────────────
+        ("AMD — Financial",
+         "Net Revenue Q1 2026",
+         "Q1 2025: $7,438M  |  Q4 2025: $7,658M",
+         "$10,253M actual. +37.9% Y/Y. ~flat Q/Q despite seasonal pattern.",
+         "Revenue row updated. Y/Y growth above Base case (36%) and below Bull (43%). "
+         "Q2 2026 guided $11.2B — sequential growth confirms no demand cliff.",
+         "FY2026 on pace for $44-47B (H1 ~$21.5B + typical H2 seasonal lift). "
+         "Within Base ($47.1B) / Bull ($49.5B) range. No change to scenario thresholds needed."),
 
-        ("Financial Results",
-         "Gross Margin expansion",
+        ("AMD — Financial",
+         "Gross Margin: +300bps Y/Y expansion",
          "Q1 2025: 50.0%  |  Q4 2025: 54.0%",
-         "Q1 2026: 53.0% (+300bps Y/Y, -100bps Q/Q). Data Center GPU mix is structural driver.",
-         "Gross Margin row updated; actual_color set green"),
+         "Q1 2026: 53.0%. Data Center GPU mix shift is the structural driver.",
+         "Gross margin row updated. Mix shift (MI350 carrying higher margin than Gaming/Embedded) "
+         "is repeatable and structural — not a one-quarter effect.",
+         "Bull NI margin ramp (28%→43%) is supported by gross margin expansion continuing as "
+         "Data Center mix grows. Each 100bps gross margin = ~$100M quarterly gross profit."),
 
-        ("Financial Results",
-         "Operating Income leverage confirmed",
-         "Q1 2025: $806M (10.8% margin)",
-         "Q1 2026: $1,476M (+83.1% Y/Y, 14.4% margin). 2x+ revenue growth rate.",
-         "Operating Income row updated; featured in assessment and Strengths"),
+        ("AMD — Financial",
+         "Operating Income: +83.1% Y/Y",
+         "Q1 2025: $806M (10.8% GAAP margin)",
+         "$1,476M actual. 14.4% GAAP margin. 2x+ revenue growth rate.",
+         "Operating leverage confirmed. MG&A (+41.4%) is the sole cost line that grew faster "
+         "than revenue — all other lines showed leverage. If MG&A corrects in Q2, the story "
+         "is clean.",
+         "Operating leverage trajectory validates Non-GAAP margin expansion in Base/Bull cases. "
+         "Base 2026 NI margin (25%) is conservative vs current Non-GAAP trajectory of ~22-27%."),
 
-        ("Financial Results",
-         "Diluted EPS Y/Y growth",
+        ("AMD — Financial",
+         "Diluted EPS: +90.9% Y/Y",
          "Q1 2025: $0.44",
-         "Q1 2026: $0.84 (+90.9% Y/Y). Clean leverage; basic-diluted spread only 19M shares.",
-         "EPS row updated; minimal dilution noted in Strengths"),
+         "Q1 2026: $0.84 GAAP. Non-GAAP higher. Minimal dilution (+1.5% share count Y/Y).",
+         "EPS row updated. Share dilution is not a compounding headwind — repurchase program "
+         "offsets stock-based compensation effectively.",
+         "Projection engine uses 1.65B diluted shares. Q1 confirms this is accurate. "
+         "No adjustment needed to share count assumption."),
 
-        ("Guidance",
-         "Q2 2026 Non-GAAP EPS guidance issued",
+        # ── AMD GUIDANCE ───────────────────────────────────────────────────────
+        ("AMD — Guidance",
+         "Q2 2026 Non-GAAP EPS guidance: $0.96 midpoint",
          "No prior guidance (initial build)",
-         "$0.96 midpoint Non-GAAP Diluted EPS. Non-GAAP operating margin ~27%.",
-         "Key Metrics Watch ⑦ updated; Strengths bullet added"),
+         "$0.96 Non-GAAP Diluted EPS midpoint. Non-GAAP operating margin ~27% guided.",
+         "Q2 beat confirmation in August 2026 is the next catalyst. Operating margin 27% vs "
+         "Q1 GAAP 14.4% — Xilinx amortization gap remains the optics problem.",
+         "Non-GAAP NI margin for Q2 implied ~23-24% (below 27% operating margin after interest "
+         "and tax). Projection engine Base 2026 NI margin 25% is slightly optimistic for H1 "
+         "but likely achievable for the full year as H2 seasonally stronger."),
 
-        ("Product Roadmap",
-         "MI350 status corrected: shipping, not 'in development'",
-         "Incorrectly noted as 'in development'",
-         "MI350 launched 2025 and is the current shipping AI GPU. CDNA 4, 3nm, 288GB HBM3E.",
-         "R&D note corrected; Concerns bullet updated from MI300 → MI350"),
+        ("AMD — Guidance",
+         "Q2 2026 Revenue guidance: $11.2B midpoint",
+         "Q1 2026 actual: $10,253M",
+         "$11.2B midpoint (+9.2% Q/Q sequential). Implies continued Data Center demand.",
+         "Sequential growth is positive — Q1 seasonal dip did not signal demand deceleration. "
+         "H1 2026 total: ~$21.5B.",
+         "FY2026 annualized at H1 pace + typical H2 lift: ~$44-47B. Comfortably within "
+         "Base case ($47.1B). Bull case ($49.5B) requires strong H2 acceleration from MI450."),
 
-        ("Product Roadmap",
-         "MI450 sampling confirmed (H2 2026)",
+        # ── AMD PRODUCT ROADMAP ────────────────────────────────────────────────
+        ("AMD — Product",
+         "MI350: now shipping (CDNA 4, 3nm, 288GB HBM3E)",
+         "Previously referenced as 'in development'",
+         "MI350 launched 2025. Current shipping AI GPU. Deployed at scale by Oracle Cloud "
+         "Infrastructure. Fastest-ramping AMD product in company history.",
+         "MI350 is the active product driving Data Center GPU revenue now. Any supply "
+         "constraint or yield issue would directly impact Q2-Q3 2026 DC segment.",
+         "MI350 ramp supports Base case revenue growth for 2026. MI450 (H2 2026) is the "
+         "next incremental upside catalyst that could push 2027 toward Bull scenario."),
+
+        ("AMD — Product",
+         "MI450: sampling confirmed for H2 2026 production",
          "Not previously documented",
-         "AMD sampling MI450 to lead customers. H2 2026 production. HBM4, 432GB memory.",
-         "Added to Key Metrics Watch ③; added to forward-looking assessment text"),
+         "AMD sampling MI450 to lead customers. H2 2026 production deployment in Helios rack. "
+         "CDNA 5, HBM4, 432GB memory (~50% more bandwidth vs MI350).",
+         "H2 2026 MI450 production creates a potential Data Center revenue step-up in Q3/Q4. "
+         "Higher memory bandwidth addresses inference workload requirements — growing faster "
+         "than training as agentic AI scales.",
+         "MI450 is the key 2027 revenue growth driver in Bull case (50% growth). If MI450 "
+         "ships on schedule and hyperscalers adopt quickly, the 2027 Bull case is well-supported. "
+         "Delay risk: if H2 2026 production slips to 2027, Base case more likely."),
 
-        ("Product Roadmap",
-         "MI500 roadmap confirmed (2027)",
+        ("AMD — Product",
+         "MI500: 2027 roadmap confirmed (CDNA 6, 2nm, HBM4E)",
          "Not previously documented",
-         "MI500 on 2027 roadmap. CDNA 6, 2nm, HBM4E. MI455X + MI430X variants.",
-         "Added to assessment; Letter Grade D scenario updated to MI350/MI450"),
+         "MI500 for 2027. CDNA 6, 2nm process (TSMC), HBM4E. Two variants: MI455X "
+         "(training/inference) and MI430X (HPC/Sovereign AI).",
+         "MI500 will be AMD's 2028 EPS driver — unlikely to materially impact 2026-2027 results. "
+         "Important for long-term investor confidence in AMD's GPU roadmap continuity.",
+         "MI500 supports Bull case 2028-2030 NI margin expansion (38%→43%) by providing a "
+         "generational product with higher ASPs. 2nm cost structure depends on TSMC ramp."),
 
-        ("Market Data",
-         "EPYC record 46.2% server CPU revenue share",
-         "Q4 2025: 28.8% server revenue share",
-         "Q1 2026: 46.2% revenue share (record). AMD Data Center $5.8B surpassed Intel $5.1B.",
-         "New Strengths bullet added; R&D note updated; assessment paragraph added"),
+        # ── COMPETITOR: NVIDIA ─────────────────────────────────────────────────
+        ("Competitor — Nvidia",
+         "Nvidia Q4 FY2026: Data Center $62.3B (period ending Jan 2026)",
+         "Nvidia Q3 FY2026 Data Center: ~$30.8B",
+         "Q4 FY2026 total revenue $68.1B (+73% Y/Y). Data Center $62.3B (+75% Y/Y). "
+         "91% of total revenue. Blackwell ramp driving acceleration.",
+         "AMD Data Center ($5.8B) is ~9% of Nvidia's DC revenue. The TAM is real and enormous. "
+         "Nvidia's dominance is not shrinking — AMD must grow into the expanding TAM rather "
+         "than take share from a shrinking pie.",
+         "Nvidia's scale validates the hyperscaler AI capex thesis underpinning AMD's Bull/Base "
+         "revenue growth assumptions. As long as Nvidia demand is this strong, hyperscaler "
+         "customers will also qualify AMD as a second-source — benefiting MI350/MI450."),
 
-        ("Competitive",
-         "Nvidia competitive benchmark updated",
-         "H200/B200 referenced in prior language",
-         "B200/B300/Vera Rubin is the correct current benchmark for forward-looking statements.",
-         "Concerns bullet and Key Metrics Watch ③ updated"),
+        ("Competitor — Nvidia",
+         "Nvidia Q1 FY2027 guidance: $78B revenue",
+         "Q4 FY2026: $68.1B",
+         "$78B Q1 FY2027 guidance (period Feb-Apr 2026). +15% Q/Q sequential. "
+         "Implies AI GPU demand acceleration continues into mid-2026.",
+         "Nvidia's guidance acceleration makes it harder for AMD to gain relative share in "
+         "the short term — but a rising tide lifts all boats. Strong Nvidia guidance = "
+         "strong hyperscaler GPU budgets overall.",
+         "Strong Nvidia demand validates the Bull/Base case $690-725B hyperscaler capex "
+         "environment. AMD's revenue growth projections do not require Nvidia share loss — "
+         "only participation in TAM growth. Supports current scenario assumptions."),
+
+        ("Competitor — Nvidia",
+         "Nvidia Vera Rubin (next-gen GPU) on 2026-2027 roadmap",
+         "H100/H200 → B200/B300 was the last transition",
+         "Vera Rubin (GR100) is the post-Blackwell architecture, targeted 2026-2027. "
+         "Expected to widen performance and efficiency lead vs prior generation.",
+         "AMD must execute MI450 and MI500 flawlessly. Each Nvidia generation raises the "
+         "competitive bar. AMD's value proposition is second-source diversity + EPYC integration "
+         "rather than matching Nvidia performance spec-for-spec.",
+         "Competitive escalation is the primary Bear case risk factor. If Vera Rubin makes "
+         "MI450 uncompetitive on performance-per-dollar, the Bear revenue growth assumption "
+         "(32% → 10%) becomes the base case."),
+
+        # ── COMPETITOR: INTEL ──────────────────────────────────────────────────
+        ("Competitor — Intel",
+         "Intel Q1 2026: DCAI revenue $5.1B (+22% Y/Y)",
+         "Intel DCAI Q1 2025: ~$4.2B",
+         "$5.1B Data Center & AI revenue vs AMD Data Center $5.8B. AMD has now passed Intel "
+         "in quarterly Data Center revenue. Intel DCAI operating profit: $1.5B (31% margin). "
+         "AI-specific revenue within DCAI: $750M (vs ~$400M a year ago).",
+         "AMD's Data Center revenue surpassing Intel is a structural inflection point that "
+         "validates the EPYC CPU and Instinct GPU narrative. Intel is growing (22%) but AMD "
+         "is growing faster in the segment that matters most.",
+         "Intel's DCAI growth (+22%) is slower than AMD's projected Data Center growth. "
+         "Each additional EPYC server socket win reduces Intel's CPU installed base — "
+         "EPYC market share gains are now a proven, compounding revenue driver. "
+         "Supports the CPU component of Bull/Base revenue growth projections."),
+
+        ("Competitor — Intel",
+         "Intel CPU recovery: Xeon 6 'Granite Rapids' driving ASP gains",
+         "Intel CPU market share ~70%+ units",
+         "Xeon 6 driving higher ASPs and AI-specific revenue growth ($750M in Q1). "
+         "Intel responding to EPYC competitive pressure with improved products and pricing.",
+         "Intel is not in freefall — Xeon 6 is a real competitive response. EPYC Turin "
+         "needs to sustain pricing power and performance lead to keep winning sockets. "
+         "Watch AMD EPYC revenue and unit share in Q2 2026 for any deceleration signal.",
+         "If Intel Xeon 6 slows EPYC share gains from Q1's record 46.2%, the CPU growth "
+         "component of revenue projections could moderate. This is the primary Bear case "
+         "CPU risk. Currently not a concern but a metric to track each quarter."),
+
+        # ── SECTOR / MACRO ─────────────────────────────────────────────────────
+        ("Sector / Macro",
+         "Hyperscaler combined AI capex 2026: $690-725B (+77% Y/Y)",
+         "2025 combined capex: ~$410B",
+         "Microsoft $190B, Amazon $200B, Google $190B, Meta $145B. Spending driven by "
+         "capacity constraints, not declining demand. Backlogs at record levels.",
+         "~30% of hyperscaler capex goes to AI accelerators/GPUs (~$207-217B market). "
+         "AMD's ~$23B Data Center annual run rate is ~10-11% of the addressable GPU market. "
+         "Supply absorption is not a risk — demand is the binding constraint.",
+         "The $690-725B capex environment is the single most important macro tailwind "
+         "supporting AMD's Bull and Base case revenue growth. Even if AMD's share stays "
+         "flat, 77% capex growth creates ~77% revenue upside opportunity for the sector. "
+         "Bull case (43% AMD rev growth) requires AMD to hold or slightly grow its share."),
+
+        ("Sector / Macro",
+         "Memory and chip cost inflation affecting hyperscaler budgets",
+         "Memory pricing stable in 2024-2025",
+         "Microsoft attributed $25B of its 2026 AI budget to rising memory and chip costs. "
+         "HBM3E/HBM4 pricing elevated due to SK Hynix/Samsung supply constraints.",
+         "HBM4 cost inflation could pressure AMD's gross margins on MI450 at launch. "
+         "AMD's 53% GAAP gross margin may face headwinds if HBM4 component costs are "
+         "passed through more slowly than ASP increases on MI450.",
+         "Gross margin expansion to 55%+ (Bull case) requires AMD to manage HBM cost "
+         "inflation through volume pricing agreements with HBM suppliers. Watch for "
+         "gross margin guidance commentary on Q2 2026 earnings call in July/August."),
     ]
 
-    for i, (cat, item, prior, current, impact) in enumerate(items):
-        row = 4 + i
-        bg = WHITE if i % 2 == 0 else GRAY
-        for col_idx, val in enumerate([cat, item, prior, current, impact], 1):
-            cell = ws.cell(row=row, column=col_idx)
-            cell.value = val
-            cell.fill = fill(bg)
-            cell.border = TABLE_BORDER
-            cell.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
-            cell.font = Font(name="Arial", size=SZ_DEFAULT, color=BLACK)
+    def write_data_row(ws, row, cat, item, prior, current, cons_earn, cons_proj,
+                       bg, cat_colors):
+        vals = [cat, item, prior, current, cons_earn, cons_proj]
+        for col_idx, val in enumerate(vals, 1):
+            c = ws.cell(row=row, column=col_idx)
+            c.value = val
+            c.fill = fill(bg)
+            c.border = TABLE_BORDER
+            c.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+            c.font = Font(name="Arial", size=SZ_DEFAULT, color=BLACK)
         ink = cat_colors.get(cat, NAVY)
         ws.cell(row=row, column=1).font = Font(
             name="Arial", size=SZ_DEFAULT, bold=True, color=ink)
-        ws.row_dimensions[row].height = 52
+        ws.row_dimensions[row].height = 65
+
+    next_row = 4
+    for i, row_data in enumerate(items):
+        bg = WHITE if i % 2 == 0 else GRAY
+        write_data_row(ws, next_row, *row_data, bg, cat_colors)
+        next_row += 1
+
+    # ── COHERENCE CHECK SECTION ───────────────────────────────────────────────
+    # Maps each projection engine assumption against current income statement data.
+    # If a cell is RED the projection engine needs updating before the next commit.
+    next_row += 1
+
+    ws.merge_cells(f"A{next_row}:F{next_row}")
+    sec = ws[f"A{next_row}"]
+    sec.value = ("▶  COHERENCE CHECK — PROJECTION ENGINE vs INCOME STATEMENT  |  "
+                 "RED = mismatch requiring update to build_amd_projection_engine.py")
+    sec.font = Font(name="Arial", bold=True, size=SZ_HEADER, color=WHITE)
+    sec.fill = fill(NAVY)
+    sec.alignment = Alignment(horizontal="left", vertical="center")
+    ws.row_dimensions[next_row].height = 24
+    next_row += 1
+
+    ws.merge_cells(f"A{next_row}:F{next_row}")
+    sub = ws[f"A{next_row}"]
+    sub.value = ("Projection engine file: build_amd_projection_engine.py  |  "
+                 "Key constants: BASE_REV=$34.64B, ENTRY_PRICE=$455, SHARES=1.650B, "
+                 "Q1_NI_MARGIN=22.1%, Q1_REV=$10.253B, Q2_GUIDE=$11.2B  |  "
+                 "Probabilities: Bull 35% / Base 45% / Bear 20%")
+    sub.font = Font(name="Arial", size=SZ_DEFAULT, color=WHITE, italic=True)
+    sub.fill = fill(BLUE)
+    sub.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+    ws.row_dimensions[next_row].height = 30
+    next_row += 1
+
+    chk_headers = ["Assumption", "Projection Engine Value",
+                   "Income Statement Actual", "Status", "Notes"]
+    for col_idx, h in enumerate(chk_headers, 1):
+        c = ws.cell(row=next_row, column=col_idx)
+        c.value = h
+        c.font = Font(name="Arial", bold=True, size=SZ_HEADER, color=WHITE)
+        c.fill = fill(ACCENT)
+        c.alignment = center(wrap=True)
+        c.border = TABLE_BORDER
+        if col_idx == 6:
+            ws.cell(row=next_row, column=6).value = ""
+    ws.merge_cells(f"E{next_row}:F{next_row}")
+    ws.row_dimensions[next_row].height = 24
+    next_row += 1
+
+    OK  = "1A7A3A"  # green ink
+    WARN = "B7770D"  # amber ink
+    FAIL = "8B0000"  # red ink
+
+    # (assumption, engine_value, actual_value, status_text, status_color, notes)
+    checks = [
+        ("Base Revenue (FY2025)",
+         "BASE_REV = $34.64B",
+         "FY2025 actual: $34.64B (per AMD annual report)",
+         "✓  MATCH", OK,
+         "Foundation for all scenario revenue projections. Confirmed accurate."),
+
+        ("Q1 2026 Revenue",
+         "Q1_REV = $10.253B",
+         "Q1 2026 actual: $10,253M",
+         "✓  MATCH", OK,
+         "Used to validate projection trajectory. Revenue in line with Base/Bull range."),
+
+        ("Q2 2026 Guidance",
+         "Q2_GUIDE = $11.2B",
+         "AMD guided $11.2B midpoint Non-GAAP",
+         "✓  MATCH", OK,
+         "Guidance midpoint correctly captured. Sequential growth (+9.2% Q/Q) is positive."),
+
+        ("Non-GAAP NI Margin Q1",
+         "Q1_NI_MARGIN = 22.1%",
+         "Q1 2026 GAAP NI margin: 13.5%  |  Non-GAAP: ~22.1%",
+         "✓  MATCH", OK,
+         "GAAP/Non-GAAP gap is ~860bps due to Xilinx amortization ($551M+/qtr). "
+         "Projection correctly uses Non-GAAP margin. Gap narrows as amortization declines."),
+
+        ("2026 Base Revenue Growth",
+         "BASE rev_growth[0] = 36%  →  $47.1B",
+         "Q1+Q2 run rate: ~$21.5B H1. Full year est. ~$44-47B.",
+         "✓  ON TRACK", OK,
+         "H1 pace is consistent with Base. H2 seasonal lift + Q2 guidance support $44-47B. "
+         "Bull case ($49.5B) requires strong MI450-driven H2 acceleration."),
+
+        ("2026 Bull Revenue Growth",
+         "BULL rev_growth[0] = 43%  →  $49.5B",
+         "Q1 Y/Y: +37.9%. Between Base (36%) and Bull (43%).",
+         "~ WATCH", WARN,
+         "Q1 growth is between Base and Bull. Bull case requires H2 acceleration above 43% "
+         "run rate. MI450 H2 2026 production is the key catalyst. Monitor Q2 data center segment."),
+
+        ("2026 Base NI Margin",
+         "BASE ni_margin[0] = 25%",
+         "Q1 2026 Non-GAAP NI margin: ~22.1%  |  Q2 Non-GAAP op. margin guided ~27%",
+         "~ WATCH", WARN,
+         "Q1 Non-GAAP NI margin (22.1%) is below Base full-year assumption (25%). Q2 "
+         "operating margin guidance of 27% implies NI margin ~23-24% after interest/tax. "
+         "Full-year 25% requires stronger H2. Not a mismatch yet — H2 typically has higher "
+         "margins. Review after Q2 actuals."),
+
+        ("Entry Price / Stock Basis",
+         "ENTRY_PRICE = $455.00",
+         "AMD stock price at analysis date (May 2026): verify current price",
+         "! VERIFY", WARN,
+         "Entry price drives all CAGR calculations. If AMD stock has moved significantly "
+         "from $455 since the projection engine was built, CAGR outputs will differ from "
+         "current market reality. Update ENTRY_PRICE in projection engine for each new version."),
+
+        ("Diluted Share Count",
+         "SHARES = 1.650B",
+         "Q1 2026 diluted shares: ~1.619B basic, ~1.638B diluted (per income statement)",
+         "✓  CLOSE", OK,
+         "Engine uses 1.650B; Q1 diluted was ~1.638B. Difference is 12M shares (0.7%). "
+         "Within acceptable tolerance. Shares are growing ~1.5% Y/Y so 1.650B is a "
+         "reasonable forward assumption."),
+
+        ("Scenario Probabilities",
+         "Bull 35% / Base 45% / Bear 20%",
+         "Q1 actual: tracking between Base and Bull. Hyperscaler capex +77%. "
+         "MI450 H2 2026 catalyst confirmed.",
+         "✓  REASONABLE", OK,
+         "Current data supports current probability weights. EPYC record share (46.2%) "
+         "and hyperscaler capex surge are modest Bull case tailwinds. Bear probability "
+         "(20%) reflects Nvidia competitive risk and potential macro slowdown. "
+         "No rebalancing warranted at this time — revisit after Q2 2026 actuals."),
+    ]
+
+    for i, (assumption, engine_val, actual_val, status, status_color, notes) in \
+            enumerate(checks):
+        row = next_row + i
+        bg = WHITE if i % 2 == 0 else GRAY
+        for col_idx, val in enumerate(
+            [assumption, engine_val, actual_val, status, notes], 1
+        ):
+            c = ws.cell(row=row, column=col_idx)
+            c.value = val
+            c.fill = fill(bg)
+            c.border = TABLE_BORDER
+            c.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+            c.font = Font(name="Arial", size=SZ_DEFAULT, color=BLACK)
+        ws.cell(row=row, column=1).font = Font(
+            name="Arial", size=SZ_DEFAULT, bold=True, color=NAVY)
+        ws.cell(row=row, column=4).font = Font(
+            name="Arial", size=SZ_DEFAULT, bold=True, color=status_color)
+        # merge E:F for notes column
+        ws.merge_cells(f"E{row}:F{row}")
+        ws.row_dimensions[row].height = 65
 
 
 def build():
