@@ -381,8 +381,7 @@ def bullet_row(ws, row, text, bg, font_size=SZ_DEFAULT, color=BLACK):
 #                   and no additional highlight is needed.
 #    GROSS MARGIN specifically: color reflects whether Gross Profit grew
 #    faster than Net Revenue (expansion = green, contraction = red).
-#    actual_color = "green" when Gross Margin is expanding and above ~40%;
-#                   "amber" if below 40% even if expanding.
+#    actual_color matches yy_color — both green if expanding, red if contracting.
 #
 # 3. SUPPORT LINES (interest, tax, equity income, share counts)
 #    yy_color = None — no color applied; these are derived/reference lines
