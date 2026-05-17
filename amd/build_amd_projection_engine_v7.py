@@ -79,7 +79,7 @@ def cell(ws, row, col, val=None, bg=WHITE, fc=BLACK, bold=False,
 def rh(ws, row, h=14): ws.row_dimensions[row].height = h
 
 def est_row_height(text, col_chars=90, font_size=9):
-    """Estimate Excel row height in points for wrapped text in a 90-char-wide cell."""
+    """Estimate Excel row height for wrapped text, capped at 60pt for iPad stability."""
     lines, line_len = 1, 0
     for word in text.split():
         needed = len(word) + (1 if line_len > 0 else 0)
@@ -88,7 +88,7 @@ def est_row_height(text, col_chars=90, font_size=9):
             line_len = len(word)
         else:
             line_len += needed
-    return max(32, math.ceil(lines * font_size * 1.45) + 10)
+    return min(60, max(32, math.ceil(lines * font_size * 1.45) + 10))
 
 def compute(sc):
     revs, nis, epss, spls, sphs, cagrl, cagrh = [], [], [], [], [], [], []
@@ -773,7 +773,7 @@ def build_assumptions(wb):
         for i, (yr, pct, note) in enumerate(zip(YEARS, vals, notes)):
             bg = WHITE if i % 2 == 0 else GRAY
             cell(ws, ROW, 1, bg=bg)
-            cell(ws, ROW, 2, f"{yr} — {pct:.0%}", bg=bg, fc="0070C0", bold=True, align="left", wrap=True)
+            cell(ws, ROW, 2, f"{yr} — {pct:.0%}", bg=bg, fc="0070C0", bold=True, align="left")
             c = ws.cell(row=ROW, column=3)
             c.value = note
             c.font = Font(name="Arial", size=9, color=BLACK)
