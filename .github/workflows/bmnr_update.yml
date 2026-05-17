@@ -1,4 +1,4 @@
-name: BMNR Dashboard Auto-Update
+name: AMD Financials Auto-Update
 
 on:
   schedule:
