@@ -443,6 +443,262 @@ def fmt_val(val, is_pct, fmt_override):
         return f"${val:.1f}"
     return f"${val:,.0f}"
 
+def build_sources_tab(wb):
+    ws = wb.create_sheet("Data Sources")
+
+    ws.column_dimensions["A"].width = 20
+    ws.column_dimensions["B"].width = 38
+    ws.column_dimensions["C"].width = 13
+    ws.column_dimensions["D"].width = 52
+    ws.column_dimensions["E"].width = 42
+
+    ws.merge_cells("A1:E1")
+    t = ws["A1"]
+    t.value = "AMD Q1 2026 INCOME STATEMENT — DATA SOURCES"
+    t.font = Font(name="Arial", bold=True, size=SZ_TITLE, color=WHITE)
+    t.fill = fill(NAVY)
+    t.alignment = center()
+    ws.row_dimensions[1].height = 24
+
+    for col_idx, h in enumerate(
+        ["Category", "Source", "Date", "Key Data Used", "Reference / URL"], 1
+    ):
+        cell = ws.cell(row=2, column=col_idx)
+        cell.value = h
+        cell.font = Font(name="Arial", bold=True, size=SZ_HEADER, color=WHITE)
+        cell.fill = fill(ACCENT)
+        cell.alignment = center(wrap=True)
+        cell.border = TABLE_BORDER
+    ws.row_dimensions[2].height = 24
+
+    sources = [
+        ("Primary Data",
+         "AMD Q1 2026 Earnings Press Release",
+         "May 5, 2026",
+         "All Q1 2026 actuals: Revenue $10,253M, Gross Profit $5,416M, "
+         "Operating Income $1,476M, Net Income $1,383M, Diluted EPS $0.84. "
+         "Quarter ended March 28, 2026.",
+         "https://ir.amd.com/news-events/press-releases"),
+
+        ("Comparison Data",
+         "AMD Q4 2025 Earnings Press Release",
+         "Feb 2026",
+         "Q4 2025 figures used for Q/Q comparison column: Revenue $7,658M, "
+         "Gross Margin 54.0%, Operating Income $1,752M, EPS $0.69.",
+         "https://ir.amd.com/news-events/press-releases"),
+
+        ("Comparison Data",
+         "AMD Q1 2025 Earnings Press Release",
+         "Apr 2025",
+         "Q1 2025 figures used for all Y/Y change calculations: Revenue $7,438M, "
+         "Gross Margin 50.0%, Operating Income $806M, Net Income $710M, EPS $0.44.",
+         "https://ir.amd.com/news-events/press-releases"),
+
+        ("Guidance",
+         "AMD Q2 2026 Non-GAAP Guidance",
+         "May 5, 2026",
+         "Q2 2026 Non-GAAP Diluted EPS guidance midpoint: $0.96. "
+         "Non-GAAP operating margin guided ~27%. Used in Strengths and Key Metrics.",
+         "AMD Q1 2026 Earnings Call transcript / press release"),
+
+        ("Product Roadmap",
+         "AMD Instinct MI350 Launch",
+         "2025",
+         "MI350 now shipping. CDNA 4, 3nm, 288GB HBM3E. Fastest ramping product in "
+         "AMD history. Deployed at scale by Oracle Cloud. Referenced in R&D note and "
+         "Concerns competitive bullet.",
+         "datacenterdynamics.com — AMD launches Instinct MI350"),
+
+        ("Product Roadmap",
+         "AMD Instinct MI450 Sampling Confirmed",
+         "May 2026",
+         "AMD sampling MI450 to lead customers for H2 2026 production deployment. "
+         "CDNA 5, HBM4, 432GB memory (~50% more bandwidth vs MI350). Helios rack. "
+         "Used as near-term catalyst in Key Metrics Watch ③ and assessment.",
+         "wccftech.com — AMD sampling MI450 GPUs"),
+
+        ("Product Roadmap",
+         "AMD Instinct MI500 Roadmap",
+         "CES 2026",
+         "MI500 planned for 2027. CDNA 6, 2nm process, HBM4E. Two variants: "
+         "MI455X (training/inference) and MI430X (HPC/Sovereign AI). "
+         "Used in Letter Grade D scenario and forward-looking assessment.",
+         "wccftech.com — AMD 2026-2027 AI Roadmap MI400 & MI500"),
+
+        ("Market Data",
+         "EPYC Server CPU Revenue Share Q1 2026",
+         "May 2026",
+         "EPYC hit record 46.2% server CPU revenue share in Q1 2026 (from 28.8% Q4 2025). "
+         "AMD Data Center revenue $5.8B surpassed Intel Data Center $5.1B for first time. "
+         "Used in Strengths bullet, R&D note, and assessment.",
+         "wccftech.com — AMD EPYC Record 46.2% Server Revenue Share"),
+
+        ("Competitive Context",
+         "Nvidia Blackwell / Vera Rubin GPU Series",
+         "2024–2026",
+         "B200, B300, and Vera Rubin series referenced as the competitive benchmark "
+         "for AMD Instinct in Data Center GPU. Used in Concerns bullet and Key Metrics.",
+         "Public Nvidia earnings releases and product announcements"),
+
+        ("Script / Analysis",
+         "build_amd_income_v1.py",
+         "May 2026",
+         "All analysis, row coloring, letter grade framework, and narrative authored "
+         "in this session. Future quarterly updates: build_amd_income_v2.py, etc. "
+         "Never overwrite — always create a new version file.",
+         "GitHub: tonyvasquez1/bmnr-dashboard /amd/"),
+    ]
+
+    for i, (cat, src, date, data, url) in enumerate(sources):
+        row = 3 + i
+        bg = WHITE if i % 2 == 0 else GRAY
+        for col_idx, val in enumerate([cat, src, date, data, url], 1):
+            cell = ws.cell(row=row, column=col_idx)
+            cell.value = val
+            cell.fill = fill(bg)
+            cell.border = TABLE_BORDER
+            cell.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+            cell.font = Font(name="Arial", size=SZ_DEFAULT, color=BLACK)
+        ws.cell(row=row, column=1).font = Font(
+            name="Arial", size=SZ_DEFAULT, bold=True, color=NAVY)
+        ws.row_dimensions[row].height = 52
+
+
+def build_whats_new_tab(wb):
+    """
+    Template for quarterly update tracking.
+    Each new version (v2, v3, ...) should populate this tab with everything
+    discovered since the prior version: new results, guidance, product news,
+    market data, analyst changes. Review this tab FIRST before editing row data.
+    """
+    ws = wb.create_sheet("What's New")
+
+    ws.column_dimensions["A"].width = 20
+    ws.column_dimensions["B"].width = 40
+    ws.column_dimensions["C"].width = 32
+    ws.column_dimensions["D"].width = 32
+    ws.column_dimensions["E"].width = 30
+
+    ws.merge_cells("A1:E1")
+    t = ws["A1"]
+    t.value = ("AMD — WHAT'S NEW  |  Version: Q1 2026  |  "
+               "Script: build_amd_income_v1.py  |  Updated: May 2026")
+    t.font = Font(name="Arial", bold=True, size=SZ_TITLE, color=WHITE)
+    t.fill = fill(NAVY)
+    t.alignment = center()
+    ws.row_dimensions[1].height = 24
+
+    ws.merge_cells("A2:E2")
+    instr = ws["A2"]
+    instr.value = (
+        "HOW TO USE: In each quarterly update (v2, v3, ...), fill this tab with ALL new data, "
+        "guidance, and product news found since the prior version. Review this tab first — "
+        "then carry each item into the income statement data, notes, and narrative sections. "
+        "This tab is the audit trail for every change between versions."
+    )
+    instr.font = Font(name="Arial", size=SZ_SUBTITLE, color=WHITE, italic=True)
+    instr.fill = fill(BLUE)
+    instr.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+    ws.row_dimensions[2].height = 36
+
+    for col_idx, h in enumerate(
+        ["Category", "Item", "Prior State", "Current State (Q1 2026)", "Impact on Analysis"], 1
+    ):
+        cell = ws.cell(row=3, column=col_idx)
+        cell.value = h
+        cell.font = Font(name="Arial", bold=True, size=SZ_HEADER, color=WHITE)
+        cell.fill = fill(ACCENT)
+        cell.alignment = center(wrap=True)
+        cell.border = TABLE_BORDER
+    ws.row_dimensions[3].height = 24
+
+    # Category → ink color
+    cat_colors = {
+        "Financial Results": "1A5276",
+        "Guidance":          "1A7A3A",
+        "Product Roadmap":   "6C3483",
+        "Market Data":       "B7770D",
+        "Competitive":       "8B0000",
+    }
+
+    items = [
+        ("Financial Results",
+         "Net Revenue Q1 2026 actuals",
+         "Q4 2025: $7,658M",
+         "Q1 2026: $10,253M (+37.9% Y/Y). Essentially flat Q/Q despite seasonal pattern.",
+         "Revenue row updated; all Y/Y and Q/Q strings pre-calculated"),
+
+        ("Financial Results",
+         "Gross Margin expansion",
+         "Q1 2025: 50.0%  |  Q4 2025: 54.0%",
+         "Q1 2026: 53.0% (+300bps Y/Y, -100bps Q/Q). Data Center GPU mix is structural driver.",
+         "Gross Margin row updated; actual_color set green"),
+
+        ("Financial Results",
+         "Operating Income leverage confirmed",
+         "Q1 2025: $806M (10.8% margin)",
+         "Q1 2026: $1,476M (+83.1% Y/Y, 14.4% margin). 2x+ revenue growth rate.",
+         "Operating Income row updated; featured in assessment and Strengths"),
+
+        ("Financial Results",
+         "Diluted EPS Y/Y growth",
+         "Q1 2025: $0.44",
+         "Q1 2026: $0.84 (+90.9% Y/Y). Clean leverage; basic-diluted spread only 19M shares.",
+         "EPS row updated; minimal dilution noted in Strengths"),
+
+        ("Guidance",
+         "Q2 2026 Non-GAAP EPS guidance issued",
+         "No prior guidance (initial build)",
+         "$0.96 midpoint Non-GAAP Diluted EPS. Non-GAAP operating margin ~27%.",
+         "Key Metrics Watch ⑦ updated; Strengths bullet added"),
+
+        ("Product Roadmap",
+         "MI350 status corrected: shipping, not 'in development'",
+         "Incorrectly noted as 'in development'",
+         "MI350 launched 2025 and is the current shipping AI GPU. CDNA 4, 3nm, 288GB HBM3E.",
+         "R&D note corrected; Concerns bullet updated from MI300 → MI350"),
+
+        ("Product Roadmap",
+         "MI450 sampling confirmed (H2 2026)",
+         "Not previously documented",
+         "AMD sampling MI450 to lead customers. H2 2026 production. HBM4, 432GB memory.",
+         "Added to Key Metrics Watch ③; added to forward-looking assessment text"),
+
+        ("Product Roadmap",
+         "MI500 roadmap confirmed (2027)",
+         "Not previously documented",
+         "MI500 on 2027 roadmap. CDNA 6, 2nm, HBM4E. MI455X + MI430X variants.",
+         "Added to assessment; Letter Grade D scenario updated to MI350/MI450"),
+
+        ("Market Data",
+         "EPYC record 46.2% server CPU revenue share",
+         "Q4 2025: 28.8% server revenue share",
+         "Q1 2026: 46.2% revenue share (record). AMD Data Center $5.8B surpassed Intel $5.1B.",
+         "New Strengths bullet added; R&D note updated; assessment paragraph added"),
+
+        ("Competitive",
+         "Nvidia competitive benchmark updated",
+         "H200/B200 referenced in prior language",
+         "B200/B300/Vera Rubin is the correct current benchmark for forward-looking statements.",
+         "Concerns bullet and Key Metrics Watch ③ updated"),
+    ]
+
+    for i, (cat, item, prior, current, impact) in enumerate(items):
+        row = 4 + i
+        bg = WHITE if i % 2 == 0 else GRAY
+        for col_idx, val in enumerate([cat, item, prior, current, impact], 1):
+            cell = ws.cell(row=row, column=col_idx)
+            cell.value = val
+            cell.fill = fill(bg)
+            cell.border = TABLE_BORDER
+            cell.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+            cell.font = Font(name="Arial", size=SZ_DEFAULT, color=BLACK)
+        ink = cat_colors.get(cat, NAVY)
+        ws.cell(row=row, column=1).font = Font(
+            name="Arial", size=SZ_DEFAULT, bold=True, color=ink)
+        ws.row_dimensions[row].height = 52
+
+
 def build():
     wb = Workbook()
     ws = wb.active
@@ -733,6 +989,9 @@ def build():
     foot.alignment = Alignment(horizontal="left", wrap_text=True)
     ws.row_dimensions[next_row].height = 18
 
+    build_sources_tab(wb)
+    build_whats_new_tab(wb)
+
     out = "/mnt/user-data/outputs/AMD_Q1_2026_Income_Statement_v1.xlsx"
     wb.save(out)
     print(f"Saved: {out}")
@@ -759,6 +1018,10 @@ def self_test(out_path):
         ws = wb.active
         if ws.title != "Q1 2026 Income Statement":
             errors.append(f"FAIL: wrong sheet name '{ws.title}'")
+        if "Data Sources" not in wb.sheetnames:
+            errors.append("FAIL: 'Data Sources' tab missing")
+        if "What's New" not in wb.sheetnames:
+            errors.append("FAIL: 'What\\'s New' tab missing")
 
         found_revenue = found_10253 = found_grade = False
         for row in ws.iter_rows(values_only=True):
@@ -788,7 +1051,7 @@ def self_test(out_path):
     print(f"  File: {out_path}")
     print(f"  Size: {size:,} bytes")
     print(f"  Net Revenue $10,253M: confirmed")
-    print(f"  Sheet structure: confirmed")
+    print(f"  Tabs: Q1 2026 Income Statement + Data Sources + What's New")
     print(f"  Grade A−: confirmed")
     print("=" * 60)
     return True
