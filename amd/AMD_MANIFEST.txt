@@ -1,0 +1,83 @@
+══════════════════════════════════════════════════════════════════════════════
+AMD — SCRIPT MANIFEST
+READ THIS AT THE START OF EVERY AMD SESSION BEFORE TOUCHING ANYTHING
+Last updated: May 2026
+══════════════════════════════════════════════════════════════════════════════
+
+GITHUB — SOURCE OF TRUTH FOR ALL SCRIPTS
+─────────────────────────────────────────
+Repo: https://github.com/tonyvasquez1/bmnr-dashboard
+Path: /amd/
+
+SCRIPTS — PULL FROM GITHUB, NOT DRIVE
+──────────────────────────────────────
+File: amd/build_amd_projection_engine.py
+Size: 28722 bytes (if smaller it is a stub — do not use)
+Run:  python build_amd_projection_engine.py
+Output: AMD_5Year_Projection_v6.xlsx
+Self-test: prints SELF-TEST PASSED or FAILED
+
+File: amd/build_amd_simple.js  (income statement — already complete on Drive)
+Drive ID: 15RmUwcgcsNc_sc3YoD4S0P7SHkF10LNf
+Run: node build_amd_simple.js
+
+STARTUP CHECKLIST — DO THIS BEFORE ANYTHING ELSE
+──────────────────────────────────────────────────
+Step 1: Clone repo
+  git clone https://[TOKEN]@github.com/tonyvasquez1/bmnr-dashboard.git /tmp/repo
+
+Step 2: Verify script size EXACTLY
+  amd/build_amd_projection_engine.py must be 28722 bytes
+  If smaller — STOP. It is a stub. Tell Tony before proceeding.
+
+Step 3: Run script and confirm self-test passes
+  cd /tmp/repo/amd
+  python build_amd_projection_engine.py
+  Must print: SELF-TEST PASSED
+
+Step 4: Confirm baseline outputs match
+  Bull 2030: SPL=$3,073  SPH=$3,713  CAGR=+46.5%
+  Base 2030: SPL=$1,337  SPH=$1,504  CAGR=+24.1%
+  Bear 2030: SPL=$181    SPH=$238    CAGR=-16.8%
+  EV:        SPL=$1,713  SPH=$2,024  CAGR=+30.4%
+
+RULES — NO EXCEPTIONS EVER
+────────────────────────────
+1. NEVER rebuild from memory or scratch. Always pull from GitHub.
+2. NEVER start any task without Tony's explicit approval.
+3. NEVER change row structure, colors, tab names without Tony's approval.
+4. NEVER save unless self-test prints SELF-TEST PASSED.
+5. NEVER upload xlsx to Drive via API — present for download only.
+6. ALWAYS verify file size matches manifest before using.
+7. ALWAYS create new version file for updates — never overwrite.
+8. ALWAYS commit to GitHub after every change.
+
+PROJECTION ROW STRUCTURE — LOCKED
+───────────────────────────────────
+Exactly these rows, this order, no exceptions:
+REVENUE
+ REV GROWTH
+NET INCOME
+ NET INC. GROWTH
+ NET INC. MARGINS
+EPS (Non-GAAP)
+ PE LOW EST
+ PE HIGH EST
+SHARE PRICE LOW
+SHARE PRICE HIGH
+ CAGR LOW
+ CAGR HIGH
+
+BASELINE OUTPUTS — Q1 2026 (verify after every run)
+─────────────────────────────────────────────────────
+Bull (35%): SPL=$3,073  SPH=$3,713  CAGR=+46.5%/+52.2%
+Base (45%): SPL=$1,337  SPH=$1,504  CAGR=+24.1%/+27.0%
+Bear (20%): SPL=$181    SPH=$238    CAGR=-16.8%/-12.2%
+EV:         SPL=$1,713  SPH=$2,024  CAGR=+30.4%/+34.8%
+
+DRIVE FOLDERS (xlsx output files only — scripts live on GitHub)
+────────────────────────────────────────────────────────────────
+Master: https://drive.google.com/drive/folders/1i1GdOQGreQuxv2s6xoqILyY_XIqKuX5a
+Q1 2026: https://drive.google.com/drive/folders/1Df4g1sgPkwy_7BwBLjNTsYNDPh28RiWc
+Q2 2026: https://drive.google.com/drive/folders/1D_GOhT8kgZBTlVPA_7VXvO0-lR5ZyTbB
+══════════════════════════════════════════════════════════════════════════════
