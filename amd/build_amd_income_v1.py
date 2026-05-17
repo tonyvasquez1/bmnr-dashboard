@@ -123,8 +123,10 @@ ROWS = [
      2397, 2330, 1728, "amber", None, False,
      "+38.7% Y/Y — grew slightly faster than revenue (+37.9%). No operating leverage "
      "here, but the gap is thin (80bps). AMD must invest heavily in chip design to "
-     "stay competitive: MI350 and MI400/CDNA4 in development, EPYC Turin (Gen 5) ramping, "
-     "Zen 6 in development. R&D is the competitive lifeblood — cutting it would be fatal. "
+     "stay competitive: MI350 now shipping (CDNA 4, 3nm, 288GB HBM3E), MI450 sampling for "
+     "H2 2026 production (CDNA 5, HBM4, 432GB), MI500 on the 2027 roadmap (CDNA 6, 2nm); "
+     "EPYC Turin (Gen 5) at record 46.2% server revenue share; Zen 6 in development. "
+     "R&D is the competitive lifeblood — cutting it would be fatal. "
      "The concern is trajectory: R&D needs to grow slower than revenue over time to produce "
      "operating leverage. At +38.7% vs +37.9% revenue, the gap is essentially flat. "
      "Amber: matched revenue growth — no leverage, but not a breakdown either.",
@@ -596,11 +598,51 @@ def build():
     next_row += 1
 
     # ══════════════════════════════════════════════════════════════════════════
+    # OVERALL ASSESSMENT
+    # ══════════════════════════════════════════════════════════════════════════
+    next_row = section_header(ws, next_row, "▶  OVERALL ASSESSMENT", SECTION_BG)
+
+    ws.merge_cells(f"A{next_row}:H{next_row}")
+    grade_cell = ws[f"A{next_row}"]
+    grade_cell.value = "Quarter Grade:  A−"
+    grade_cell.font = Font(name="Arial", bold=True, size=SZ_GRADE, color=NAVY)
+    grade_cell.fill = fill(ASSESS_BG)
+    grade_cell.alignment = center()
+    ws.row_dimensions[next_row].height = 36
+    next_row += 1
+
+    assessment = (
+        "AMD delivered a strong operating quarter with operating leverage confirmed at every level that matters. "
+        "Gross Margin expanded +300bps Y/Y as the Data Center GPU mix shift drives a structural, repeatable "
+        "improvement in blended margins. Operating Income grew +83% on +38% revenue — more than double the "
+        "revenue growth rate. Net Income nearly doubled. Diluted EPS grew +91% with clean, minimal dilution. "
+        "These are not accident — they are the direct result of the MI300X ramp and EPYC server share gains "
+        "creating a higher-margin, faster-growing revenue base. EPYC reached a record 46.2% server CPU revenue "
+        "share in Q1 2026, and AMD's Data Center revenue of $5.8B passed Intel's $5.1B for the same quarter — "
+        "a structural shift in enterprise compute that compounds with every new socket win.\n\n"
+        "The one failure this quarter is MG&A: at +41.4% vs revenue +37.9%, the G&A cost line moved in the "
+        "wrong direction. Every other operating cost line grew slower than revenue. MG&A is the outlier and "
+        "the one item that keeps this from a clean A. If MG&A reverts to growing slower than revenue in Q2, "
+        "the operating leverage story is fully intact.\n\n"
+        "The GAAP/non-GAAP gap ($551M+ quarterly Xilinx amortization) creates an optics problem: "
+        "14.4% GAAP operating margin vs ~27% non-GAAP guided for Q2. As the Xilinx amortization "
+        "gradually declines, the GAAP picture will converge with the non-GAAP picture — a multi-year tailwind.\n\n"
+        "Gaming declining and Embedded recovering slowly are real headwinds, but they are overwhelmed by "
+        "the Data Center engine. The forward-looking catalyst stack is strong: MI350 is now shipping, "
+        "MI450 is sampling for H2 2026 production deployment, and MI500 (CDNA 6, 2nm) is on the 2027 roadmap. "
+        "EPYC CPU wins are increasingly a parallel growth engine alongside GPU. AMD is increasingly a "
+        "Data Center company, and any deceleration in that segment would have outsized impact on the numbers."
+    )
+    next_row = bullet_row(ws, next_row, assessment, ASSESS_BG)
+    next_row += 1
+
+    # ══════════════════════════════════════════════════════════════════════════
     # STRENGTHS
     # ══════════════════════════════════════════════════════════════════════════
     next_row = section_header(ws, next_row, "▶  STRENGTHS", "1A7A3A")
     for s in [
         "✓  Net Revenue +37.9% Y/Y to $10.25B — essentially flat Q/Q despite typical Q1 seasonal weakness. Demand strength across Data Center and Client confirmed.",
+        "✓  EPYC CPU record 46.2% server revenue share in Q1 2026 — AMD Data Center revenue ($5.8B) surpassed Intel ($5.1B) for the first time. CPU wins are a compounding, parallel growth engine.",
         "✓  Gross Margin expanded +300bps Y/Y (50% → 53%) — Data Center GPU mix shift driving structural, repeatable gross margin improvement.",
         "✓  Gross Profit +45.0% Y/Y — grew 700bps faster than revenue. Dollar earning power expanding rapidly.",
         "✓  Operating Income +83.1% Y/Y — more than double the revenue growth rate. GAAP operating margin: 10.8% → 14.4% (+360bps Y/Y). Textbook operating leverage.",
@@ -626,47 +668,12 @@ def build():
         "✗  Q/Q Operating Income declined ($1,752M → $1,476M, -15.8%). Seasonal pattern, but Q1 to Q4 progression needs to recover strongly.",
         "✗  Gaming segment declining — consumer GPU and semi-custom both down Y/Y. No near-term catalyst for reversal; Nvidia's consumer GPU lineup is dominant.",
         "✗  Embedded recovering slowly from trough — not yet contributing meaningfully to revenue growth or margin mix improvement.",
-        "✗  Nvidia competition: MI300 series is competitive but Nvidia maintains commanding Data Center GPU lead with H200/B200/B300 series. AMD must execute flawlessly to continue gaining share.",
+        "✗  Nvidia competition: MI350 is competitive but Nvidia maintains a commanding Data Center GPU lead with B200/B300/Vera Rubin series. MI450 (H2 2026) is the next shot at closing the gap.",
         "✗  GAAP vs Non-GAAP gap remains large: GAAP operating margin ~14.4% vs guided non-GAAP ~27%. The $551M+ quarterly Xilinx amortization continues to suppress reported GAAP margins significantly.",
         "✗  Other income volatile: Q4 2025 $358M → Q1 2026 $165M. Some earnings contribution is dependent on equity gains and licensing settlements, not core operations.",
     ]:
         next_row = bullet_row(ws, next_row, c, CONCERN_BG)
 
-    next_row += 1
-
-    # ══════════════════════════════════════════════════════════════════════════
-    # OVERALL ASSESSMENT
-    # ══════════════════════════════════════════════════════════════════════════
-    next_row = section_header(ws, next_row, "▶  OVERALL ASSESSMENT", SECTION_BG)
-
-    ws.merge_cells(f"A{next_row}:H{next_row}")
-    grade_cell = ws[f"A{next_row}"]
-    grade_cell.value = "Quarter Grade:  A−"
-    grade_cell.font = Font(name="Arial", bold=True, size=SZ_GRADE, color=NAVY)
-    grade_cell.fill = fill(ASSESS_BG)
-    grade_cell.alignment = center()
-    ws.row_dimensions[next_row].height = 36
-    next_row += 1
-
-    assessment = (
-        "AMD delivered a strong operating quarter with operating leverage confirmed at every level that matters. "
-        "Gross Margin expanded +300bps Y/Y as the Data Center GPU mix shift drives a structural, repeatable "
-        "improvement in blended margins. Operating Income grew +83% on +38% revenue — more than double the "
-        "revenue growth rate. Net Income nearly doubled. Diluted EPS grew +91% with clean, minimal dilution. "
-        "These are not accident — they are the direct result of the MI300X ramp and EPYC server share gains "
-        "creating a higher-margin, faster-growing revenue base.\n\n"
-        "The one failure this quarter is MG&A: at +41.4% vs revenue +37.9%, the G&A cost line moved in the "
-        "wrong direction. Every other operating cost line grew slower than revenue. MG&A is the outlier and "
-        "the one item that keeps this from a clean A. If MG&A reverts to growing slower than revenue in Q2, "
-        "the operating leverage story is fully intact.\n\n"
-        "The GAAP/non-GAAP gap ($551M+ quarterly Xilinx amortization) creates an optics problem: "
-        "14.4% GAAP operating margin vs ~27% non-GAAP guided for Q2. As the Xilinx amortization "
-        "gradually declines, the GAAP picture will converge with the non-GAAP picture — a multi-year tailwind.\n\n"
-        "Gaming declining and Embedded recovering slowly are real headwinds, but they are overwhelmed by "
-        "the Data Center engine. AMD is increasingly a Data Center company, and any deceleration in that "
-        "segment would have outsized impact on the overall numbers."
-    )
-    next_row = bullet_row(ws, next_row, assessment, ASSESS_BG)
     next_row += 1
 
     # ══════════════════════════════════════════════════════════════════════════
@@ -686,8 +693,8 @@ def build():
                 "momentum slows materially. Operating income growth falls to near revenue growth rate."),
         ("C",   "Data Center share loss to Nvidia becomes visible in segment revenue. Revenue growth below 10%. "
                 "Gross margin contracts below 50%. MG&A and R&D both growing faster than revenue."),
-        ("D",   "Fundamental competitive breakdown: Nvidia wins major hyperscaler contracts away from MI300. "
-                "EPYC market share reversal vs Intel. Revenue decline. Operating leverage reverses."),
+        ("D",   "Fundamental competitive breakdown: Nvidia wins major hyperscaler contracts away from MI350/MI450. "
+                "EPYC server share reversal vs Intel after record 46.2% Q1 2026 peak. Revenue decline. Operating leverage reverses."),
     ]:
         next_row = bullet_row(ws, next_row, f"{grade}   {desc}", ASSESS_BG)
 
@@ -702,7 +709,7 @@ def build():
     for m in [
         "① MG&A as % of Revenue — Q1 was elevated (revenue growth outpaced). Must show reversal. Most important single cost line to watch.",
         "② Non-GAAP Operating Margin — Q2 guided ~27%. Above 27.5% = outperform. Below 26.5% = concern.",
-        "③ Data Center Segment Revenue — must maintain sequential and Y/Y growth momentum. MI300X/MI350 ramp vs Nvidia H200/B200 competitive dynamics.",
+        "③ Data Center Segment Revenue — must maintain sequential and Y/Y growth momentum. MI350 is the current product; MI450 sampling for H2 2026 is the next catalyst. Nvidia B200/B300/Vera Rubin is the competitive benchmark. EPYC CPU share at record 46.2% is a parallel engine to watch.",
         "④ Gross Margin Trajectory — Q1: 53%. Can AMD reach 55%+ as Data Center mix grows? Each 100bps = ~$100M additional gross profit per quarter.",
         "⑤ Gaming Segment Stabilization — any sequential recovery would remove a headwind.",
         "⑥ R&D as % of Revenue — Q1: 23.4%. Needs to decline over time to generate R&D operating leverage.",
