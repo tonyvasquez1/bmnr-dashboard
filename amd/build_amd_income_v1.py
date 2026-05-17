@@ -1,32 +1,43 @@
 # ══════════════════════════════════════════════════════════════════════════════
-# ADVANCED MICRO DEVICES, INC. (AMD) — SIMPLE INCOME STATEMENT ANALYSIS
-# build_amd_simple_v2.py
+# ADVANCED MICRO DEVICES, INC. (AMD) — INCOME STATEMENT ANALYSIS
+# build_amd_income_v1.py
 # Q1 2026 | Quarter Ended March 28, 2026 | Reported May 5, 2026
-# v2: Python/openpyxl xlsx replacing the original JS/docx version
 # ══════════════════════════════════════════════════════════════════════════════
 
 from openpyxl import Workbook
-from openpyxl.styles import Font, PatternFill, Alignment
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 
 # ── COLOR PALETTE ─────────────────────────────────────────────────────────────
-NAVY       = "1A1A2E"
-BLUE       = "1F4E79"
-ACCENT     = "2E75B6"
-WHITE      = "FFFFFF"
-GRAY       = "F2F2F2"
-GREEN      = "00B050"
-AMBER      = "FF8C00"
-RED        = "C00000"
-GREEN_LT   = "E8F5E9"
-AMBER_LT   = "FFF3E0"
-RED_LT     = "FFEBEE"
-MEASURE_BG = "EBF3FB"
-BLACK      = "000000"
-MUTED      = "666666"
-SECTION_BG = "1F4E79"
+NAVY        = "1A1A2E"
+BLUE        = "1F4E79"
+ACCENT      = "2E75B6"
+WHITE       = "FFFFFF"
+GRAY        = "F2F2F2"
+GREEN       = "00B050"
+AMBER       = "FF8C00"
+RED         = "C00000"
+GREEN_LT    = "E8F5E9"
+AMBER_LT    = "FFF3E0"
+RED_LT      = "FFEBEE"
+MEASURE_BG  = "EBF3FB"
+BLACK       = "000000"
+MUTED       = "666666"
+SECTION_BG  = "1F4E79"
 STRENGTH_BG = "E8F5E9"
 CONCERN_BG  = "FFEBEE"
 ASSESS_BG   = "FFF8E1"
+
+# ── BORDER STYLE (applied to all data table cells) ────────────────────────────
+_SIDE = Side(style="thin", color="CCCCCC")
+TABLE_BORDER = Border(left=_SIDE, right=_SIDE, top=_SIDE, bottom=_SIDE)
+
+# ── FONT SIZES ────────────────────────────────────────────────────────────────
+SZ_DEFAULT  = 10   # all body text
+SZ_TITLE    = 14   # main title (row 1)
+SZ_SUBTITLE = 10   # subtitle (row 2)
+SZ_HEADER   = 12   # column headers row + column A labels + section headers
+SZ_GRADE    = 18   # letter grade display
+SZ_FOOTER   =  8   # footer small print
 
 # ── PRIORITY ROWS (bold line item cell) ───────────────────────────────────────
 PRIORITY = {
@@ -37,13 +48,13 @@ PRIORITY = {
 }
 
 # ── ROW DATA ──────────────────────────────────────────────────────────────────
-# (label, q1_2026, q4_2025, q1_2025, yy_color, actual_color, is_pct, note,
-#  what_it_measures, num_fmt_override)
+# (label, q1_2026, q4_2025, q1_2025, yy_color, actual_color, is_pct,
+#  note, what_it_measures, num_fmt_override)
 #
 # yy_color:        "green"|"amber"|"red"|None  → Y/Y Change + Y/Y % cells
 # actual_color:    "green"|"amber"|"red"|None  → Q1 2026 actual cell only
 # is_pct:          True = margin/% row (Y/Y shown in bps)
-# num_fmt_override: None=auto | "$" | "#,##0" for shares | explicit string
+# num_fmt_override: None=auto | "#,##0" for shares | explicit format string
 
 ROWS = [
     # ── REVENUE ───────────────────────────────────────────────────────────────
@@ -103,7 +114,7 @@ ROWS = [
      "than Gaming GPUs or Embedded. As Data Center becomes a larger revenue share, "
      "blended gross margin expands structurally. Management long-term target: approach "
      "Nvidia-like margins as the MI300 series matures. Current 53% vs Nvidia's ~75%+ "
-     "signals significant further expansion potential if AMD continues gaining Data Center share.",
+     "signals significant further expansion potential if AMD continues gaining share.",
      "Production efficiency; % of each revenue dollar retained after COGS",
      None),
 
@@ -312,37 +323,40 @@ ROWS = [
 # G: Notes        H: What This Measures
 
 COL_WIDTHS = {
-    "A": 38,   # Line Item
-    "B": 14,   # Y/Y Change
-    "C": 10,   # Y/Y %
-    "D": 13,   # Q1 2026
-    "E": 13,   # Q4 2025
-    "F": 13,   # Q1 2025
-    "G": 90,   # Notes
-    "H": 40,   # What This Measures
+    "A": 38,
+    "B": 14,
+    "C": 10,
+    "D": 13,
+    "E": 13,
+    "F": 13,
+    "G": 90,
+    "H": 40,
 }
 
 def fill(hex_color):
     return PatternFill("solid", start_color=hex_color, fgColor=hex_color)
 
+def center(wrap=False):
+    return Alignment(horizontal="center", vertical="center", wrap_text=wrap)
+
 def section_header(ws, row, text, bg, cols=8):
     ws.merge_cells(f"A{row}:{chr(64+cols)}{row}")
     cell = ws[f"A{row}"]
     cell.value = text
-    cell.font = Font(name="Arial", bold=True, size=10, color=WHITE)
+    cell.font = Font(name="Arial", bold=True, size=SZ_HEADER, color=WHITE)
     cell.fill = fill(bg)
-    cell.alignment = Alignment(horizontal="left", vertical="center", indent=1)
-    ws.row_dimensions[row].height = 18
+    cell.alignment = center()
+    ws.row_dimensions[row].height = 20
     return row + 1
 
-def bullet_row(ws, row, text, bg, indent=2, font_size=9, color=BLACK):
+def bullet_row(ws, row, text, bg, font_size=SZ_DEFAULT, color=BLACK):
     ws.merge_cells(f"A{row}:H{row}")
     cell = ws[f"A{row}"]
     cell.value = text
     cell.font = Font(name="Arial", size=font_size, color=color)
     cell.fill = fill(bg)
     cell.alignment = Alignment(horizontal="left", vertical="top",
-                               wrap_text=True, indent=indent)
+                               wrap_text=True, indent=2)
     ws.row_dimensions[row].height = max(15, 13 + len(text) // 10)
     return row + 1
 
@@ -352,10 +366,10 @@ def auto_fmt(val, is_pct):
     if val is None:
         return "@"
     if abs(val) < 5:
-        return '$#,##0.00'   # EPS
+        return '$#,##0.00'
     if abs(val) < 100:
         return '$#,##0.0'
-    return '$#,##0'          # large millions
+    return '$#,##0'
 
 def build():
     wb = Workbook()
@@ -365,35 +379,38 @@ def build():
     for col_letter, width in COL_WIDTHS.items():
         ws.column_dimensions[col_letter].width = width
 
-    # ── Title ─────────────────────────────────────────────────────────────────
+    # ── Row 1: Title ──────────────────────────────────────────────────────────
     ws.merge_cells("A1:H1")
     t = ws["A1"]
     t.value = "ADVANCED MICRO DEVICES, INC. (AMD) — Q1 2026 INCOME STATEMENT ANALYSIS"
-    t.font = Font(name="Arial", bold=True, size=13, color=WHITE)
+    t.font = Font(name="Arial", bold=True, size=SZ_TITLE, color=WHITE)
     t.fill = fill(NAVY)
-    t.alignment = Alignment(horizontal="center", vertical="center")
-    ws.row_dimensions[1].height = 22
+    t.alignment = center()
+    ws.row_dimensions[1].height = 24
 
+    # ── Row 2: Subtitle ───────────────────────────────────────────────────────
     ws.merge_cells("A2:H2")
     s = ws["A2"]
     s.value = ("Quarter Ended March 28, 2026  |  Reported May 5, 2026  |  "
-               "Source: AMD Q1 2026 Earnings Press Release  |  GAAP figures in millions except per-share amounts")
-    s.font = Font(name="Arial", size=9, color=WHITE)
+               "Source: AMD Q1 2026 Earnings Press Release  |  "
+               "GAAP figures in millions except per-share amounts")
+    s.font = Font(name="Arial", size=SZ_SUBTITLE, color=WHITE)
     s.fill = fill(BLUE)
-    s.alignment = Alignment(horizontal="center", vertical="center")
-    ws.row_dimensions[2].height = 15
+    s.alignment = center(wrap=True)
+    ws.row_dimensions[2].height = 18
 
-    # ── Column headers ─────────────────────────────────────────────────────────
+    # ── Row 3: Column headers ─────────────────────────────────────────────────
     headers = ["Line Item", "Y/Y Change ($M)", "Y/Y %",
                "Q1 2026 ($M)", "Q4 2025 ($M)", "Q1 2025 ($M)",
                "Notes", "What This Measures"]
     for col_idx, h in enumerate(headers, 1):
         cell = ws.cell(row=3, column=col_idx)
         cell.value = h
-        cell.font = Font(name="Arial", bold=True, size=9, color=WHITE)
+        cell.font = Font(name="Arial", bold=True, size=SZ_HEADER, color=WHITE)
         cell.fill = fill(ACCENT)
-        cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
-    ws.row_dimensions[3].height = 28
+        cell.alignment = center(wrap=True)
+        cell.border = TABLE_BORDER
+    ws.row_dimensions[3].height = 30
 
     yy_map = {
         "green": (GREEN, GREEN_LT),
@@ -409,7 +426,7 @@ def build():
 
         row = DATA_START + i
         is_priority = label.strip() in PRIORITY
-        is_indent = label.startswith("  ")
+        is_sub      = label.startswith("  ")
         bg = WHITE if i % 2 == 0 else GRAY
 
         def fmt(val):
@@ -417,22 +434,23 @@ def build():
                 return fmt_override
             return auto_fmt(val, is_pct)
 
-        # A — Line Item
+        # ── A: Line Item ──────────────────────────────────────────────────────
         a = ws.cell(row=row, column=1)
-        a.value = label
-        a.font = Font(name="Arial", bold=is_priority and not is_indent,
-                      size=9 if not is_indent else 8,
-                      color=MUTED if is_indent else BLACK,
-                      italic=is_indent)
+        a.value = label.strip()
+        a.font = Font(name="Arial",
+                      bold=is_priority and not is_sub,
+                      italic=is_sub,
+                      size=SZ_HEADER,
+                      color=MUTED if is_sub else BLACK)
         a.fill = fill(bg)
-        a.alignment = Alignment(horizontal="left", vertical="center",
-                                indent=3 if is_indent else 1)
+        a.alignment = center()
+        a.border = TABLE_BORDER
 
-        # B — Y/Y Change (formula)
+        # ── B: Y/Y Change ─────────────────────────────────────────────────────
         b = ws.cell(row=row, column=2)
-        if is_indent or (q1_py is None):
+        if is_sub or q1_py is None:
             b.value = "—"
-            b.font = Font(name="Arial", size=9, color=MUTED)
+            b.font = Font(name="Arial", size=SZ_DEFAULT, color=MUTED)
             b.fill = fill(bg)
         else:
             b.value = f"=D{row}-F{row}"
@@ -445,13 +463,14 @@ def build():
             else:
                 b.number_format = '+$#,##0;-$#,##0;"-"'
 
-        b.alignment = Alignment(horizontal="right", vertical="center")
+        b.alignment = center()
+        b.border = TABLE_BORDER
 
-        # C — Y/Y %
+        # ── C: Y/Y % ──────────────────────────────────────────────────────────
         c = ws.cell(row=row, column=3)
-        if is_indent or (q1_py is None):
+        if is_sub or q1_py is None:
             c.value = "—"
-            c.font = Font(name="Arial", size=9, color=MUTED)
+            c.font = Font(name="Arial", size=SZ_DEFAULT, color=MUTED)
             c.fill = fill(bg)
         else:
             if is_pct:
@@ -460,79 +479,86 @@ def build():
             else:
                 c.value = f'=IF(F{row}<>0,(D{row}-F{row})/ABS(F{row}),"N/A")'
                 c.number_format = '+0.0%;-0.0%;"-"'
-        c.alignment = Alignment(horizontal="right", vertical="center")
+
+        c.alignment = center()
+        c.border = TABLE_BORDER
 
         # Apply Y/Y color to B and C
-        if not is_indent and q1_py is not None and yy_color in yy_map:
+        if not is_sub and q1_py is not None and yy_color in yy_map:
             ink, bg_yy = yy_map[yy_color]
             for col in [2, 3]:
                 cell = ws.cell(row=row, column=col)
                 cell.fill = fill(bg_yy)
-                cell.font = Font(name="Arial", size=9, color=ink, bold=True)
-        elif not is_indent and (b.value != "—"):
+                cell.font = Font(name="Arial", size=SZ_DEFAULT, color=ink, bold=True)
+        elif b.value != "—":
             for col in [2, 3]:
                 cell = ws.cell(row=row, column=col)
                 cell.fill = fill(bg)
-                cell.font = Font(name="Arial", size=9, color=BLACK)
+                cell.font = Font(name="Arial", size=SZ_DEFAULT, color=BLACK)
 
-        # D — Q1 2026 actual
+        # ── D: Q1 2026 actual ─────────────────────────────────────────────────
         d = ws.cell(row=row, column=4)
         d.value = q1
         d.number_format = fmt(q1)
-        d.alignment = Alignment(horizontal="right", vertical="center")
+        d.alignment = center()
+        d.border = TABLE_BORDER
         if actual_color in yy_map:
             ink, bg_ac = yy_map[actual_color]
             d.fill = fill(bg_ac)
-            d.font = Font(name="Arial", size=9, color=ink, bold=True)
+            d.font = Font(name="Arial", size=SZ_DEFAULT, color=ink, bold=True)
         else:
             d.fill = fill(bg)
-            d.font = Font(name="Arial", size=9, bold=is_priority and not is_indent,
-                          color=BLACK)
+            d.font = Font(name="Arial", size=SZ_DEFAULT,
+                          bold=is_priority and not is_sub, color=BLACK)
 
-        # E — Q4 2025
+        # ── E: Q4 2025 ────────────────────────────────────────────────────────
         e = ws.cell(row=row, column=5)
         if q4 is None:
             e.value = "—"
-            e.font = Font(name="Arial", size=9, color=MUTED)
+            e.font = Font(name="Arial", size=SZ_DEFAULT, color=MUTED)
         else:
             e.value = q4
             e.number_format = fmt(q4)
-            e.font = Font(name="Arial", size=9, color=BLACK)
+            e.font = Font(name="Arial", size=SZ_DEFAULT, color=BLACK)
         e.fill = fill(bg)
-        e.alignment = Alignment(horizontal="right", vertical="center")
+        e.alignment = center()
+        e.border = TABLE_BORDER
 
-        # F — Q1 2025
+        # ── F: Q1 2025 ────────────────────────────────────────────────────────
         f = ws.cell(row=row, column=6)
         if q1_py is None:
             f.value = "—"
-            f.font = Font(name="Arial", size=9, color=MUTED)
+            f.font = Font(name="Arial", size=SZ_DEFAULT, color=MUTED)
         else:
             f.value = q1_py
             f.number_format = fmt(q1_py)
-            f.font = Font(name="Arial", size=9, color=BLACK)
+            f.font = Font(name="Arial", size=SZ_DEFAULT, color=BLACK)
         f.fill = fill(bg)
-        f.alignment = Alignment(horizontal="right", vertical="center")
+        f.alignment = center()
+        f.border = TABLE_BORDER
 
-        # G — Notes
+        # ── G: Notes ──────────────────────────────────────────────────────────
         g = ws.cell(row=row, column=7)
         g.value = note
-        g.font = Font(name="Arial", size=8, color="333333")
+        g.font = Font(name="Arial", size=SZ_DEFAULT, color="333333")
         g.fill = fill(bg)
-        g.alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
+        g.alignment = Alignment(horizontal="center", vertical="center",
+                                wrap_text=True)
+        g.border = TABLE_BORDER
 
-        # H — What This Measures
+        # ── H: What This Measures ─────────────────────────────────────────────
         h = ws.cell(row=row, column=8)
         h.value = measure
-        h.font = Font(name="Arial", size=8, color="1F4E79", italic=True)
+        h.font = Font(name="Arial", size=SZ_DEFAULT, color="1F4E79", italic=True)
         h.fill = fill(MEASURE_BG)
-        h.alignment = Alignment(horizontal="left", vertical="center",
-                                wrap_text=True, indent=1)
+        h.alignment = center(wrap=True)
+        h.border = TABLE_BORDER
 
         ws.row_dimensions[row].height = max(45, min(180, 12 + note.count(" ") * 1.4))
 
     ws.freeze_panes = "B4"
 
-    # ── Spacer after table ────────────────────────────────────────────────────
+    # ── Spacer ────────────────────────────────────────────────────────────────
     next_row = DATA_START + len(ROWS) + 1
     ws.row_dimensions[next_row].height = 10
     next_row += 1
@@ -541,7 +567,7 @@ def build():
     # STRENGTHS
     # ══════════════════════════════════════════════════════════════════════════
     next_row = section_header(ws, next_row, "▶  STRENGTHS", "1A7A3A")
-    strengths = [
+    for s in [
         "✓  Net Revenue +37.9% Y/Y to $10.25B — essentially flat Q/Q despite typical Q1 seasonal weakness. Demand strength across Data Center and Client confirmed.",
         "✓  Gross Margin expanded +300bps Y/Y (50% → 53%) — Data Center GPU mix shift driving structural, repeatable gross margin improvement.",
         "✓  Gross Profit +45.0% Y/Y — grew 700bps faster than revenue. Dollar earning power expanding rapidly.",
@@ -553,8 +579,7 @@ def build():
         "✓  Balance sheet strength: ~$5.1B cash, ~$1.7B long-term debt — fortress balance sheet enabling R&D investment and share repurchases simultaneously.",
         "✓  Share count nearly stable: diluted shares +1.5% Y/Y — EPS growth closely tracks net income growth without material dilution headwinds.",
         "✓  Non-GAAP diluted EPS Q2 2026 guided at $0.96 midpoint — implies continued strong growth with management confidence in the trajectory.",
-    ]
-    for s in strengths:
+    ]:
         next_row = bullet_row(ws, next_row, s, STRENGTH_BG)
 
     next_row += 1
@@ -563,7 +588,7 @@ def build():
     # CONCERNS
     # ══════════════════════════════════════════════════════════════════════════
     next_row = section_header(ws, next_row, "▶  CONCERNS", "8B0000")
-    concerns = [
+    for c in [
         "✗  MG&A +41.4% Y/Y — fastest growing cost line, outpacing revenue (+37.9%) by 350bps. Primary operating leverage failure point this quarter. Needs to reverse direction.",
         "✗  R&D +38.7% Y/Y — essentially matched revenue growth (+37.9%). No operating leverage in the innovation engine yet. Must grow meaningfully slower than revenue over time.",
         "✗  Q/Q Operating Income declined ($1,752M → $1,476M, -15.8%). Seasonal pattern, but Q1 to Q4 progression needs to recover strongly.",
@@ -572,8 +597,7 @@ def build():
         "✗  Nvidia competition: MI300 series is competitive but Nvidia maintains commanding Data Center GPU lead with H200/B200/B300 series. AMD must execute flawlessly to continue gaining share.",
         "✗  GAAP vs Non-GAAP gap remains large: GAAP operating margin ~14.4% vs guided non-GAAP ~27%. The $551M+ quarterly Xilinx amortization continues to suppress reported GAAP margins significantly.",
         "✗  Other income volatile: Q4 2025 $358M → Q1 2026 $165M. Some earnings contribution is dependent on equity gains and licensing settlements, not core operations.",
-    ]
-    for c in concerns:
+    ]:
         next_row = bullet_row(ws, next_row, c, CONCERN_BG)
 
     next_row += 1
@@ -583,17 +607,16 @@ def build():
     # ══════════════════════════════════════════════════════════════════════════
     next_row = section_header(ws, next_row, "▶  OVERALL ASSESSMENT", SECTION_BG)
 
-    grade_text = "A−"
     ws.merge_cells(f"A{next_row}:H{next_row}")
     grade_cell = ws[f"A{next_row}"]
-    grade_cell.value = f"Quarter Grade:  {grade_text}"
-    grade_cell.font = Font(name="Arial", bold=True, size=14, color=NAVY)
+    grade_cell.value = "Quarter Grade:  A−"
+    grade_cell.font = Font(name="Arial", bold=True, size=SZ_GRADE, color=NAVY)
     grade_cell.fill = fill(ASSESS_BG)
-    grade_cell.alignment = Alignment(horizontal="center", vertical="center")
-    ws.row_dimensions[next_row].height = 28
+    grade_cell.alignment = center()
+    ws.row_dimensions[next_row].height = 36
     next_row += 1
 
-    assessment_text = (
+    assessment = (
         "AMD delivered a strong operating quarter with operating leverage confirmed at every level that matters. "
         "Gross Margin expanded +300bps Y/Y as the Data Center GPU mix shift drives a structural, repeatable "
         "improvement in blended margins. Operating Income grew +83% on +38% revenue — more than double the "
@@ -605,22 +628,22 @@ def build():
         "the one item that keeps this from a clean A. If MG&A reverts to growing slower than revenue in Q2, "
         "the operating leverage story is fully intact.\n\n"
         "The GAAP/non-GAAP gap ($551M+ quarterly Xilinx amortization) creates an optics problem: "
-        "14.4% GAAP operating margin vs ~27% non-GAAP guided for Q2 is a large gap that sophisticated "
-        "investors understand but retail investors often find confusing. As the Xilinx amortization "
+        "14.4% GAAP operating margin vs ~27% non-GAAP guided for Q2. As the Xilinx amortization "
         "gradually declines, the GAAP picture will converge with the non-GAAP picture — a multi-year tailwind.\n\n"
         "Gaming declining and Embedded recovering slowly are real headwinds, but they are overwhelmed by "
-        "the Data Center engine. The concentration risk is worth monitoring: AMD is increasingly a Data Center "
-        "company, and any deceleration in that segment would have outsized impact on the overall numbers."
+        "the Data Center engine. AMD is increasingly a Data Center company, and any deceleration in that "
+        "segment would have outsized impact on the overall numbers."
     )
-    next_row = bullet_row(ws, next_row, assessment_text, ASSESS_BG, indent=2, font_size=9)
+    next_row = bullet_row(ws, next_row, assessment, ASSESS_BG)
     next_row += 1
 
     # ══════════════════════════════════════════════════════════════════════════
     # LETTER GRADE FRAMEWORK
     # ══════════════════════════════════════════════════════════════════════════
-    next_row = section_header(ws, next_row, "▶  LETTER GRADE FRAMEWORK — AMD (Q1 2026 BASELINE)", SECTION_BG)
-
-    grades = [
+    next_row = section_header(ws, next_row,
+                              "▶  LETTER GRADE FRAMEWORK — AMD (Q1 2026 BASELINE)",
+                              SECTION_BG)
+    for grade, desc in [
         ("A",   "MG&A < revenue growth for 2+ consecutive quarters. Non-GAAP operating margin expands to 30%+. "
                 "Gross Margin reaches 55%+ as Data Center mix grows. R&D leverage achieved. Gaming stabilizes."),
         ("A−",  "Current quarter: Operating Income +83% on +38% revenue. Net Income +95%. EPS +91%. "
@@ -633,11 +656,8 @@ def build():
                 "Gross margin contracts below 50%. MG&A and R&D both growing faster than revenue."),
         ("D",   "Fundamental competitive breakdown: Nvidia wins major hyperscaler contracts away from MI300. "
                 "EPYC market share reversal vs Intel. Revenue decline. Operating leverage reverses."),
-    ]
-    for grade, desc in grades:
-        next_row = bullet_row(ws, next_row,
-                              f"{grade}   {desc}",
-                              ASSESS_BG, indent=2, font_size=9)
+    ]:
+        next_row = bullet_row(ws, next_row, f"{grade}   {desc}", ASSESS_BG)
 
     next_row += 1
 
@@ -647,45 +667,41 @@ def build():
     next_row = section_header(ws, next_row,
                               "▶  KEY METRICS TO WATCH — Q2 2026 (Expected Late July / Early August 2026)",
                               SECTION_BG)
-
-    metrics = [
-        "① MG&A as % of Revenue — Q1 was elevated at 12.2% (vs revenue growth outpaced). Must show reversal. Declining MG&A % = operating leverage resuming. Most important single cost line to watch.",
-        "② Non-GAAP Operating Margin — Q2 guided ~27%. Above 27.5% = outperform. Below 26.5% = concern. This is management's primary profitability KPI and the market's pricing anchor.",
-        "③ Data Center Segment Revenue — must maintain sequential and Y/Y growth momentum. MI300X/MI350 ramp trajectory vs Nvidia H200/B200 competitive dynamics is the defining question.",
-        "④ Gross Margin Trajectory — Q1: 53%. Q4 guidance and sequential trend matter. Can AMD reach 55%+ as Data Center mix grows? Each 100bps = ~$100M additional gross profit per quarter.",
-        "⑤ Gaming Segment Stabilization — any sequential recovery in gaming GPU or semi-custom would remove a headwind. Continued decline is manageable but limits upside.",
-        "⑥ R&D as % of Revenue — Q1: 23.4%. Needs to decline over time to generate R&D operating leverage. MI350 sampling and CDNA4 development keep near-term R&D spend elevated.",
-        "⑦ Non-GAAP Diluted EPS vs $0.96 Guidance — beat confirms execution; miss on a guided quarter is more impactful than a miss on a non-guided quarter.",
-        "⑧ Embedded Segment Recovery — Xilinx-based Embedded revenue trough may be passing. Any inflection here would be incremental to the Data Center growth story.",
-        "⑨ Cash and Share Repurchase Activity — AMD generates strong free cash flow. Buyback velocity signals management's confidence in the stock at current valuations.",
-    ]
-    for m in metrics:
-        next_row = bullet_row(ws, next_row, m, WHITE, indent=2, font_size=9)
+    for m in [
+        "① MG&A as % of Revenue — Q1 was elevated (revenue growth outpaced). Must show reversal. Most important single cost line to watch.",
+        "② Non-GAAP Operating Margin — Q2 guided ~27%. Above 27.5% = outperform. Below 26.5% = concern.",
+        "③ Data Center Segment Revenue — must maintain sequential and Y/Y growth momentum. MI300X/MI350 ramp vs Nvidia H200/B200 competitive dynamics.",
+        "④ Gross Margin Trajectory — Q1: 53%. Can AMD reach 55%+ as Data Center mix grows? Each 100bps = ~$100M additional gross profit per quarter.",
+        "⑤ Gaming Segment Stabilization — any sequential recovery would remove a headwind.",
+        "⑥ R&D as % of Revenue — Q1: 23.4%. Needs to decline over time to generate R&D operating leverage.",
+        "⑦ Non-GAAP Diluted EPS vs $0.96 Guidance — beat confirms execution; guidance miss is more impactful on a guided quarter.",
+        "⑧ Embedded Segment Recovery — any inflection would be incremental to the Data Center growth story.",
+        "⑨ Cash and Share Repurchase Activity — buyback velocity signals management confidence in the stock.",
+    ]:
+        next_row = bullet_row(ws, next_row, m, WHITE)
 
     # ── Footer ────────────────────────────────────────────────────────────────
     next_row += 1
     ws.merge_cells(f"A{next_row}:H{next_row}")
     foot = ws[f"A{next_row}"]
     foot.value = (
-        "Source: AMD Q1 2026 Earnings Press Release, May 5, 2026  |  "
-        "GAAP figures only  |  Millions of dollars except per-share amounts  |  "
-        "Analysis built: May 2026  |  Script: build_amd_simple_v2.py  |  "
-        "Not investment advice."
+        "Source: AMD Q1 2026 Earnings Press Release, May 5, 2026  |  GAAP figures only  |  "
+        "Millions of dollars except per-share amounts  |  Analysis: May 2026  |  "
+        "Script: build_amd_income_v1.py  |  Not investment advice."
     )
-    foot.font = Font(name="Arial", size=7, color=MUTED, italic=True)
+    foot.font = Font(name="Arial", size=SZ_FOOTER, color=MUTED, italic=True)
     foot.fill = fill(WHITE)
     foot.alignment = Alignment(horizontal="left", wrap_text=True)
     ws.row_dimensions[next_row].height = 18
 
-    out = "/mnt/user-data/outputs/AMD_Q1_2026_Income_Statement_v2.xlsx"
+    out = "/mnt/user-data/outputs/AMD_Q1_2026_Income_Statement_v1.xlsx"
     wb.save(out)
     print(f"Saved: {out}")
     return out
 
 
 # ==============================================================================
-# SELF-TEST
-# DO NOT REMOVE — proves the script is complete and working before saving
+# SELF-TEST — DO NOT REMOVE
 # ==============================================================================
 def self_test(out_path):
     import os
@@ -698,33 +714,25 @@ def self_test(out_path):
     else:
         size = os.path.getsize(out_path)
         if size < 15000:
-            errors.append(f"FAIL: file too small ({size} bytes) — engine may be incomplete")
+            errors.append(f"FAIL: file too small ({size} bytes)")
 
         wb = load_workbook(out_path, data_only=True)
         ws = wb.active
         if ws.title != "Q1 2026 Income Statement":
             errors.append(f"FAIL: wrong sheet name '{ws.title}'")
 
-        found_revenue = False
-        found_10253 = False
-        found_grade = False
+        found_revenue = found_10253 = found_grade = False
         for row in ws.iter_rows(values_only=True):
             for cell in row:
                 if cell:
                     cv = str(cell)
-                    if "Net Revenue" in cv:
-                        found_revenue = True
-                    if "10253" in cv or "10,253" in cv:
-                        found_10253 = True
-                    if "A−" in cv or "A-" in cv:
-                        found_grade = True
+                    if "Net Revenue" in cv:        found_revenue = True
+                    if "10253" in cv or "10,253" in cv: found_10253 = True
+                    if "A−" in cv or "A-" in cv:   found_grade  = True
 
-        if not found_revenue:
-            errors.append("FAIL: 'Net Revenue' row not found")
-        if not found_10253:
-            errors.append("FAIL: Q1 2026 Revenue $10,253M not found — data block may be wrong")
-        if not found_grade:
-            errors.append("FAIL: Grade 'A−' not found — assessment section may be missing")
+        if not found_revenue: errors.append("FAIL: 'Net Revenue' row not found")
+        if not found_10253:   errors.append("FAIL: Q1 2026 Revenue $10,253M not found")
+        if not found_grade:   errors.append("FAIL: Grade 'A−' not found")
 
     if errors:
         print("\n" + "=" * 60)
@@ -734,17 +742,17 @@ def self_test(out_path):
             print(f"  {e}")
         print("=" * 60)
         return False
-    else:
-        size = os.path.getsize(out_path)
-        print("\n" + "=" * 60)
-        print("SELF-TEST PASSED — safe to save to Drive")
-        print(f"  File: {out_path}")
-        print(f"  Size: {size:,} bytes")
-        print(f"  Net Revenue $10,253M: confirmed")
-        print(f"  Sheet structure: confirmed")
-        print(f"  Grade A−: confirmed")
-        print("=" * 60)
-        return True
+
+    size = os.path.getsize(out_path)
+    print("\n" + "=" * 60)
+    print("SELF-TEST PASSED — safe to save to Drive")
+    print(f"  File: {out_path}")
+    print(f"  Size: {size:,} bytes")
+    print(f"  Net Revenue $10,253M: confirmed")
+    print(f"  Sheet structure: confirmed")
+    print(f"  Grade A−: confirmed")
+    print("=" * 60)
+    return True
 
 
 if __name__ == "__main__":

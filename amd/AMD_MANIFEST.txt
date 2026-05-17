@@ -1,7 +1,7 @@
 ══════════════════════════════════════════════════════════════════════════════
 AMD — SCRIPT MANIFEST
 READ THIS AT THE START OF EVERY AMD SESSION BEFORE TOUCHING ANYTHING
-Last updated: May 2026
+Last updated: May 2026 (v2: new naming convention, style refresh)
 ══════════════════════════════════════════════════════════════════════════════
 
 GITHUB — SOURCE OF TRUTH FOR ALL SCRIPTS
@@ -11,31 +11,33 @@ Path: /amd/
 
 SCRIPTS — PULL FROM GITHUB, NOT DRIVE
 ──────────────────────────────────────
-File: amd/build_amd_projection_engine.py
-Size: 28722 bytes (if smaller it is a stub — do not use)
+File: amd/build_amd_income_v1.py  (income statement — Q1 2026)
+Size: 15473 bytes output (if xlsx smaller than 15000 bytes it is corrupt — do not use)
+Run:  python build_amd_income_v1.py
+Output: AMD_Q1_2026_Income_Statement_v1.xlsx
+Self-test: prints SELF-TEST PASSED or FAILED
+Note: next quarterly update → build_amd_income_v2.py (never overwrite)
+
+File: amd/build_amd_projection_engine.py  (5-year projection)
+Size: 28772 bytes (if smaller it is a stub — do not use)
 Run:  python build_amd_projection_engine.py
 Output: AMD_5Year_Projection_v6.xlsx
 Self-test: prints SELF-TEST PASSED or FAILED
-
-File: amd/build_amd_simple.js  (income statement)
-Size: 16985 bytes (if smaller it is a stub — do not use)
-Drive ID: 15RmUwcgcsNc_sc3YoD4S0P7SHkF10LNf
-Run: node build_amd_simple.js
-Output: AMD_Q1_2026_Simple.docx
 
 STARTUP CHECKLIST — DO THIS BEFORE ANYTHING ELSE
 ──────────────────────────────────────────────────
 Step 1: Clone repo
   git clone https://[TOKEN]@github.com/tonyvasquez1/bmnr-dashboard.git /tmp/repo
 
-Step 2: Verify script size EXACTLY
-  amd/build_amd_projection_engine.py must be 28722 bytes
-  If smaller — STOP. It is a stub. Tell Tony before proceeding.
+Step 2: Verify script sizes
+  amd/build_amd_income_v1.py        — self-test confirms output ≥15000 bytes
+  amd/build_amd_projection_engine.py — must be 28772 bytes (if smaller, STOP)
 
-Step 3: Run script and confirm self-test passes
+Step 3: Run scripts and confirm self-tests pass
   cd /tmp/repo/amd
+  python build_amd_income_v1.py
   python build_amd_projection_engine.py
-  Must print: SELF-TEST PASSED
+  Both must print: SELF-TEST PASSED
 
 Step 4: Confirm baseline outputs match
   Bull 2030: SPL=$3,073  SPH=$3,713  CAGR=+46.5%
