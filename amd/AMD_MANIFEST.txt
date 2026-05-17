@@ -17,9 +17,11 @@ Run:  python build_amd_projection_engine.py
 Output: AMD_5Year_Projection_v6.xlsx
 Self-test: prints SELF-TEST PASSED or FAILED
 
-File: amd/build_amd_simple.js  (income statement — already complete on Drive)
+File: amd/build_amd_simple.js  (income statement)
+Size: 16985 bytes (if smaller it is a stub — do not use)
 Drive ID: 15RmUwcgcsNc_sc3YoD4S0P7SHkF10LNf
 Run: node build_amd_simple.js
+Output: AMD_Q1_2026_Simple.docx
 
 STARTUP CHECKLIST — DO THIS BEFORE ANYTHING ELSE
 ──────────────────────────────────────────────────
