@@ -11,6 +11,7 @@
 # HOW TO RUN: python build_amd_projection_engine_v7.py
 # ==============================================================================
 import math
+import os
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment
 
@@ -1348,7 +1349,7 @@ def build():
 
     wb.active = wb["Inputs"]
 
-    out = "/mnt/user-data/outputs/AMD_5Year_Projection_v12.xlsx"
+    out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "AMD_5Year_Projection_v12.xlsx")
     wb.save(out)
 
     bull = compute(BULL); base = compute(BASE); bear = compute(BEAR)
