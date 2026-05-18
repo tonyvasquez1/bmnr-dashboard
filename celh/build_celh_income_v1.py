@@ -1098,10 +1098,11 @@ def build_forward_outlook_tab(wb):
          "⚠ CELSIUS brand must show double-digit organic growth as acquisition laps begin.",
          BLUE_S if hasattr(__builtins__, 'BLUE_S') else "D6E4F0"),
         ("Phase 3 ⚡", "Q1 2027",
-         "-8% to -18% Y/Y",
+         "-8% to -20% Y/Y",
          "THE DANGER QUARTER. Comparing against inflated $782.6M. "
-         "Even a healthy business ($640-720M normalized) will print negative Y/Y. "
-         "Market may panic without proper framing from management.",
+         "If CELSIUS stays at 6% organic: ~$626M reported = -20% Y/Y (see Section 2B). "
+         "If CELSIUS reaccelerates to 12%: ~$720M = -8% Y/Y. "
+         "Either way the reported number is negative — a +9% normalized business looks broken.",
          "🚨 Management MUST pre-frame Q1 2027 comp on Q4 2026 call or stock will crater.",
          RED_LT),
         ("Phase 4", "2027+ (fully lapped)",
@@ -1140,6 +1141,116 @@ def build_forward_outlook_tab(wb):
         ws.row_dimensions[r].height = max(42, 14 + len(reality) // 7)
 
     ROW += len(phases) + 1
+
+    # ── SECTION 2B: Q1 2027 Detailed Scenario ─────────────────────────────────
+    ws.merge_cells(f"A{ROW}:H{ROW}")
+    sh2b = ws[f"A{ROW}"]
+    sh2b.value = "▶  SECTION 2B — Q1 2027 DETAILED SCENARIO: PERCEPTION vs REALITY GAP (CELSIUS organic at 6%)"
+    sh2b.font = Font(name="Arial", bold=True, size=10, color=WHITE)
+    sh2b.fill = fill("8B0000")
+    sh2b.alignment = Alignment(horizontal="left", vertical="center", indent=1)
+    ws.row_dimensions[ROW].height = 18
+    ROW += 1
+
+    ws.merge_cells(f"A{ROW}:H{ROW}")
+    ex2b = ws[f"A{ROW}"]
+    ex2b.value = (
+        "If CELSIUS organic growth stays at 6% through Q1 2027, the component table below shows what each "
+        "brand contributes and the resulting perception vs reality gap. "
+        "The reported Y/Y will look like a business in serious decline. "
+        "The normalized Y/Y will show a business that grew +9%. "
+        "The 29-point gap between those two numbers is the core forward risk."
+    )
+    ex2b.font = Font(name="Arial", size=8, color=BLACK, italic=True)
+    ex2b.fill = fill(ASSESS_BG)
+    ex2b.alignment = Alignment(horizontal="left", vertical="top", wrap_text=True, indent=2)
+    ws.row_dimensions[ROW].height = 40
+    ROW += 1
+
+    # Component table header
+    for col_idx, h in enumerate(
+        ["", "Component", "Q1 2026 Reported", "Q1 2026 Normalized",
+         "Q1 2027 Est.", "vs Reported", "vs Normalized", "Assumption"], 1
+    ):
+        c = ws.cell(row=ROW, column=col_idx)
+        c.value = h
+        c.font = Font(name="Arial", bold=True, size=9, color=WHITE)
+        c.fill = fill(ACCENT)
+        c.alignment = center(wrap=True)
+        c.border = TABLE_BORDER
+    ws.row_dimensions[ROW].height = 28
+    ROW += 1
+
+    q127_rows = [
+        ("CELSIUS brand",  "$325M",  "~$325M",  "~$345M",  "+6%",   "+6%",   "Organic at 6% — no reacceleration assumed"),
+        ("Alani Nu",       "$368M",  "~$158M",  "~$174M",  "-53%",  "+10%",  "~$500M pre-acq annual rate + PepsiCo lift; ~$210M Q1 loading unwinds"),
+        ("Rockstar",       "$67M",   "~$67M",   "~$58M",   "-13%",  "-13%",  "Continuing -13% retail tracked channel decline"),
+        ("International",  "$35M",   "~$35M",   "~$49M",   "+40%",  "+40%",  "Decelerating from 55% but organic growth continues"),
+        ("TOTAL",          "$782M",  "~$572M",  "~$626M",  "-20%",  "+9%",   "29-point gap: market sees -20%, business did +9%"),
+    ]
+
+    for i, (label, rep, norm, est, vs_rep, vs_norm, note) in enumerate(q127_rows):
+        r = ROW + i
+        is_total = label == "TOTAL"
+        bg = NAVY if is_total else (WHITE if i % 2 == 0 else GRAY)
+        fc = WHITE if is_total else BLACK
+
+        ws.cell(row=r, column=1).fill = fill(bg)
+
+        for col_idx, val in enumerate([label, rep, norm, est], 2):
+            c = ws.cell(row=r, column=col_idx)
+            c.value = val
+            c.font = Font(name="Arial", bold=is_total, size=9, color=fc)
+            c.fill = fill(bg)
+            c.alignment = Alignment(
+                horizontal="left" if col_idx == 2 else "center",
+                vertical="center")
+            c.border = TABLE_BORDER
+
+        for col_idx, (val, positive_is_good) in enumerate(
+            [(vs_rep, False), (vs_norm, True)], 6
+        ):
+            c = ws.cell(row=r, column=col_idx)
+            c.value = val
+            if is_total:
+                ink = WHITE
+            elif positive_is_good:
+                ink = GREEN if not val.startswith("-") else RED
+            else:
+                ink = RED if val.startswith("-") else GREEN
+            c.font = Font(name="Arial", bold=is_total, size=9, color=ink)
+            c.fill = fill(bg)
+            c.alignment = center()
+            c.border = TABLE_BORDER
+
+        nc = ws.cell(row=r, column=8)
+        nc.value = note
+        nc.font = Font(name="Arial", size=8,
+                       color=fc if is_total else "333333",
+                       italic=not is_total, bold=is_total)
+        nc.fill = fill(bg)
+        nc.alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
+        nc.border = TABLE_BORDER
+        ws.row_dimensions[r].height = 28
+
+    ROW += len(q127_rows)
+
+    # Callout box
+    ws.merge_cells(f"A{ROW}:H{ROW}")
+    callout = ws[f"A{ROW}"]
+    callout.value = (
+        "⚡  KEY TAKEAWAY: The market will see $626M vs $782.6M = -20% Y/Y and likely sell the stock. "
+        "The business actually grew +9% on a normalized basis. "
+        "This 29-point gap between perception and reality is why management MUST proactively frame "
+        "the Q1 2027 comp on the Q4 2026 earnings call. "
+        "Without pre-disclosure, a healthy business will look broken. "
+        "This risk must be reflected in the projection engine scenarios."
+    )
+    callout.font = Font(name="Arial", bold=True, size=9, color=WHITE)
+    callout.fill = fill("8B0000")
+    callout.alignment = Alignment(horizontal="left", vertical="top", wrap_text=True, indent=2)
+    ws.row_dimensions[ROW].height = 48
+    ROW += 2
 
     # ── SECTION 3: Normalized Grade Framework ─────────────────────────────────
     ws.merge_cells(f"A{ROW}:H{ROW}")
