@@ -76,22 +76,35 @@ PRIORITY = {
 ROWS = [
     # ── REVENUE ───────────────────────────────────────────────────────────────
     ("Revenue",
-     782.6, None, 329.3, "green", None, False,
-     "138% growth primarily acquisition-driven (Alani Nu +$368M, Rockstar +$67M); "
-     "organic CELSIUS brand grew only +6% Y/Y. Alani Nu distributor loading into "
-     "PepsiCo system inflated Q1 — one-time inventory build, not pure consumer demand. "
-     "Real organic growth test comes Q3-Q4 2026 when acquisitions are lapped. "
-     "If CELSIUS brand not back to double digits by then, that is when the alarm sounds.",
-     "Top-line scale; total dollars sold across all brands and geographies",
+     782.6, None, 329.3, "amber", None, False,
+     "Amber despite +138% Y/Y because the headline overstates growth quality on two levels. "
+     "Level 1 — inorganic: virtually all Y/Y growth comes from acquisitions (Alani Nu +$368M, "
+     "Rockstar +$67M); organic CELSIUS brand grew only +6% Y/Y. "
+     "Level 2 — loading inflation: Alani Nu's $368M Q1 contribution is itself distorted by "
+     "a one-time PepsiCo distributor loading event (DSD network stocking before consumer "
+     "pull-through begins). True Alani Nu sustainable run rate is ~$140-180M/quarter based on "
+     "pre-acquisition ~$500M annual revenue + distribution expansion lift. That implies "
+     "~$190-230M of Q1 Alani Nu revenue was loading, not consumer demand. "
+     "Normalized Q1 revenue ex-loading: ~$550-600M — a very different picture than $782.6M. "
+     "Real organic growth test comes Q3-Q4 2026 when acquisitions lap. "
+     "Amber is the right signal: revenue grew, but the quality and durability are unconfirmed.",
+     "Top-line scale; amber = growth is real but heavily distorted by acquisitions + loading",
      None),
 
     ("  North America",
      747.3, None, 306.5, "amber", None, False,
-     "Acquisition-driven; CELSIUS brand organic growth only ~6% Y/Y. "
-     "Alani Nu ($368M) + Rockstar ($67M) account for ~$435M of the $441M Y/Y increase. "
-     "Alani Nu distributor loading into PepsiCo system may have pulled forward demand — "
-     "a one-time inventory build that may not fully repeat in Q2.",
-     "Domestic scale; ~95% of total revenue",
+     "Decomposition of $747.3M: CELSIUS organic ~$325M (+6% on $306.5M prior year) + "
+     "Alani Nu ~$368M + Rockstar ~$67M. Acquisitions account for ~$422M of the $441M Y/Y gain. "
+     "The Alani Nu figure is heavily distorted by one-time distributor loading — PepsiCo's DSD "
+     "network stocking up before Alani Nu hits consumer shelves. "
+     "Pre-acquisition Alani Nu ran ~$500M annually (~$125M/quarter of consumer pull-through); "
+     "with PepsiCo distribution expansion, sustainable rate is ~$140-180M/quarter. "
+     "That implies ~$190-230M (~55-60%) of the $368M Q1 Alani Nu revenue was loading, not demand. "
+     "Projected Q2 North America normalized: ~$525-585M "
+     "(CELSIUS ~$325-340M + Alani Nu normalized ~$140-180M + Rockstar ~$60-65M). "
+     "A Q2 print above $560M is encouraging; below $500M confirms significant inflation. "
+     "Management gave no Q2 revenue guidance — notable absence that aligns with this risk.",
+     "Domestic scale; ~95% of revenue; normalized Q2 run rate ~$525-585M ex-loading",
      None),
 
     ("  International",
