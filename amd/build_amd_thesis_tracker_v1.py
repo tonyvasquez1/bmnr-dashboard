@@ -1086,7 +1086,8 @@ def build():
 
     wb.active = 0
 
-    out = "/mnt/user-data/outputs/AMD_Thesis_Tracker_v1.xlsx"
+    import os
+    out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "AMD_Thesis_Tracker_v1.xlsx")
     wb.save(out)
     print(f"Saved: {out}")
     return out, score
