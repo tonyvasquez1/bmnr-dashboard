@@ -19,7 +19,7 @@ QUARTER      = "Q1 2026"
 PERIOD_END   = "March 31, 2026"
 REPORT_DATE  = "May 7, 2026"
 GENERATED    = "May 2026"
-GRADE        = "B+"
+GRADE        = "B"
 SCRIPT_NAME  = "build_celh_income_v1.py"
 OUTPUT_NAME  = "CELH_Q1_2026_Income_Statement_v1.xlsx"
 PRESS_URL    = (
@@ -604,22 +604,28 @@ def build_income_tab(wb):
     next_row += 1
 
     assessment = (
-        "Celsius delivered a strong operational quarter but the headline numbers require careful interpretation. "
-        "Record revenue of $783M and Adj. EBITDA of $195.5M are genuinely impressive — and the operating leverage "
-        "story (SG&A, S&M, and G&A all growing slower than revenue) is real and confirmed. "
-        "The Adj. EPS beat of +37-41% vs consensus signals the market was underpricing the earnings power of the combined portfolio.\n\n"
-        "However two structural issues prevent a higher grade: (1) Organic CELSIUS brand growth of only +6% means "
-        "the entire revenue growth narrative is acquisition-funded. The real test is Q3-Q4 2026 when the "
-        "acquisition anniversaries lap and organic growth becomes visible. "
-        "(2) The PepsiCo preferred stock structure permanently redirects ~$25M per quarter from common shareholders "
-        "and the $696.5M term loan adds $11.8M quarterly interest drag — both are structural, not transient.\n\n"
-        "The gross margin recovery path (orbit model, freight optimization, raw material alignment) is credible "
-        "but Q2 is guided flat and the commodity environment adds uncertainty. "
-        "Rockstar's -13% retail decline is a yellow flag. "
-        "The legal overhang ($88.2M accrued) adds noise.\n\n"
-        "Bottom line: Celsius is executing well on integration and demonstrating real operating leverage at scale. "
-        "The portfolio is stronger than a year ago. But the organic growth question and the capital structure "
-        "complexity make this a 'show me' story for the next two quarters."
+        "Grade: B. Downgraded from B+ on the basis of three structural issues that B+ does not adequately capture.\n\n"
+        "Issue 1 — Revenue quality: The headline +138% Y/Y is an optical illusion. "
+        "Organic CELSIUS brand grew only +6%. The remaining growth is inorganic (acquisitions) "
+        "and inflated further by a one-time PepsiCo distributor loading event. "
+        "Normalized Q1 revenue ex-loading is approximately $550-600M — 25-30% below the reported $782.6M. "
+        "B+ implies the top-line momentum is real and durable. It is not, yet.\n\n"
+        "Issue 2 — The Q1 2027 comp trap: Q1 2026's inflated $782.6M base creates a structural problem. "
+        "Even if the underlying business grows normally in Q1 2027 (~$640-720M normalized), "
+        "it will print as -8% to -18% Y/Y revenue decline. "
+        "That number will create market confusion and potential multiple compression "
+        "unless management actively frames it. B+ does not adequately flag this landmine.\n\n"
+        "Issue 3 — Capital structure: The combined preferred + debt structure permanently redirects "
+        "~$136M annually before common shareholders see a dollar "
+        "($47M annualized interest on $696.5M term loan + ~$100M preferred distributions). "
+        "This is not a transient integration cost — it is the ongoing price of the acquisition strategy "
+        "and will persist until the debt is retired and preferred is converted or bought out.\n\n"
+        "What B+ requires and what is currently unproven: CELSIUS brand organic reacceleration to double digits, "
+        "gross margin trajectory back toward 50%, and Q1 2027 framed cleanly vs the inflated base. "
+        "The operational execution this quarter was genuinely strong — integration, operating leverage, "
+        "and the consensus beat are all confirmed positives. "
+        "But execution alone is not enough when the forward setup contains these landmines. "
+        "See the Forward Outlook tab for the full phase-by-phase growth rate analysis."
     )
     next_row = bullet_row(ws, next_row, assessment, ASSESS_BG)
 
@@ -628,18 +634,26 @@ def build_income_tab(wb):
     # LETTER GRADE FRAMEWORK
     next_row = section_header(ws, next_row,
                               f"▶  LETTER GRADE FRAMEWORK — {COMPANY} ({TICKER})", SECTION_BG)
+    # Grade framework anchored to NORMALIZED growth rates, not the 138% optical illusion.
+    # Normalized portfolio growth = CELSIUS organic + Alani Nu maturation + Rockstar + International.
     for grade, desc in [
-        ("A",  "Organic CELSIUS brand growth reaccelerates to double digits. Gross margin returns to 50%+. "
-               "Adj. EBITDA margin expands above 27%. No adverse PepsiCo agreement changes. Rockstar stabilizes."),
-        (f"B+  [{QUARTER} — current]",
-               "Strong operational execution, confirmed operating leverage, major consensus beat. "
-               "Acquisition integration on track. Organic growth question unresolved. Capital structure complexity persists."),
-        ("B",  "Gross margin recovery stalls at 48-49%. CELSIUS brand organic growth stays mid-single digits. "
-               "Operating leverage continues but Adj. EBITDA margin plateaus. Legal overhang partially resolved."),
-        ("C",  "Gross margin deteriorates below 47%. CELSIUS brand loses market share. Alani Nu revenue normalizes "
-               "sharply post-distributor loading. Rockstar continues declining. Adj. EBITDA margin contracts."),
-        ("D",  "PepsiCo commercial agreement renegotiated adversely. Major customer concentration event. "
-               "Legal liability exceeds accruals materially. Acquisition synergies fail to materialize."),
+        ("A",  "Normalized portfolio growth 25%+. CELSIUS brand organic reaccelerates to double digits. "
+               "Gross margin returns to 50%+. Adj. EBITDA margin above 27%. "
+               "Q1 2027 comp trap framed cleanly by management. Rockstar stabilizes or sells at value."),
+        ("B+", "Normalized portfolio growth 15-25%. CELSIUS brand organic 8-12%. "
+               "Gross margin recovering toward 50% with visible trajectory. "
+               "Q1 2027 decline acknowledged and contextualized. Capital structure drag manageable."),
+        (f"B   [{QUARTER} — current]",
+               "Normalized portfolio growth 8-15%. Operational execution strong, operating leverage confirmed. "
+               "But organic CELSIUS only +6%, Q1 revenue inflated by ~$190-230M loading, "
+               "Q1 2027 comp trap unaddressed, and ~$136M annual capital structure drag structural. "
+               "Show-me quarter: organic reacceleration not yet demonstrated."),
+        ("C",  "Normalized portfolio growth below 8% or flat. CELSIUS brand loses shelf share. "
+               "Alani Nu revenue normalizes sharply below $120M/quarter. Gross margin stays below 48%. "
+               "Adj. EBITDA margin contracts. Legal settlement exceeds accruals."),
+        ("D",  "Normalized revenue declines. PepsiCo commercial agreement renegotiated adversely. "
+               "Organic CELSIUS growth negative. Legal liability materially exceeds $88.2M accrual. "
+               "Acquisition synergies reverse. Debt covenant pressure."),
     ]:
         next_row = bullet_row(ws, next_row, f"{grade}   {desc}", ASSESS_BG)
 
@@ -924,6 +938,325 @@ def build_whats_new_tab(wb):
 
 
 # ==============================================================================
+# TAB 4 — FORWARD OUTLOOK
+# ==============================================================================
+def build_forward_outlook_tab(wb):
+    ws = wb.create_sheet("Forward Outlook")
+
+    ws.column_dimensions["A"].width = 2
+    ws.column_dimensions["B"].width = 28
+    ws.column_dimensions["C"].width = 15
+    ws.column_dimensions["D"].width = 15
+    ws.column_dimensions["E"].width = 15
+    ws.column_dimensions["F"].width = 15
+    ws.column_dimensions["G"].width = 15
+    ws.column_dimensions["H"].width = 46
+
+    # Title
+    ws.merge_cells("A1:H1")
+    t = ws["A1"]
+    t.value = f"{COMPANY} ({TICKER}) — FORWARD GROWTH OUTLOOK & NORMALIZED REVENUE ANALYSIS"
+    t.font = Font(name="Arial", bold=True, size=SZ_TITLE, color=WHITE)
+    t.fill = fill(NAVY)
+    t.alignment = center()
+    ws.row_dimensions[1].height = 24
+
+    ws.merge_cells("A2:H2")
+    s = ws["A2"]
+    s.value = (f"Why {GRADE} and not B+  |  Phase-by-phase growth rate analysis  |  "
+               f"Grade framework anchored to normalized growth, not the {Q1_REVENUE:.0f}M reported figure  |  "
+               f"See Income Statement tab for line-item detail")
+    s.font = Font(name="Arial", size=9, color=WHITE)
+    s.fill = fill(BLUE)
+    s.alignment = Alignment(horizontal="left", vertical="center", indent=1)
+    ws.row_dimensions[2].height = 16
+
+    ROW = 3
+
+    # ── SECTION 1: Revenue Decomposition ──────────────────────────────────────
+    ws.merge_cells(f"A{ROW}:H{ROW}")
+    sh = ws[f"A{ROW}"]
+    sh.value = "▶  SECTION 1 — Q1 2026 REVENUE: REPORTED vs NORMALIZED"
+    sh.font = Font(name="Arial", bold=True, size=10, color=WHITE)
+    sh.fill = fill(SECTION_BG)
+    sh.alignment = Alignment(horizontal="left", vertical="center", indent=1)
+    ws.row_dimensions[ROW].height = 18
+    ROW += 1
+
+    # Sub-header explaining the loading concept
+    ws.merge_cells(f"A{ROW}:H{ROW}")
+    ex = ws[f"A{ROW}"]
+    ex.value = (
+        "Distributor loading = PepsiCo's DSD network stocking up with Alani Nu inventory before consumer "
+        "pull-through begins. This is a one-time event: revenue recognized when product ships to distributors, "
+        "not when consumers buy it. True demand = consumer pull-through rate, which is much lower in Q1."
+    )
+    ex.font = Font(name="Arial", size=8, color=BLACK, italic=True)
+    ex.fill = fill(ASSESS_BG)
+    ex.alignment = Alignment(horizontal="left", vertical="top", wrap_text=True, indent=2)
+    ws.row_dimensions[ROW].height = 36
+    ROW += 1
+
+    # Table header
+    hdrs = ["", "Component", "Q1 2026 Reported ($M)", "Est. Loading ($M)",
+            "Normalized ($M)", "", "", "Notes"]
+    for col_idx, h in enumerate(hdrs, 1):
+        c = ws.cell(row=ROW, column=col_idx)
+        c.value = h
+        c.font = Font(name="Arial", bold=True, size=9, color=WHITE)
+        c.fill = fill(ACCENT)
+        c.alignment = center(wrap=True)
+        c.border = TABLE_BORDER
+    ws.merge_cells(f"F{ROW}:G{ROW}")
+    ws.row_dimensions[ROW].height = 28
+    ROW += 1
+
+    decomp_rows = [
+        ("CELSIUS brand (organic)", 325, 0, 325,
+         "+6% Y/Y organic on $306.5M Q1 2025 base. No loading effect — direct-to-consumer brand."),
+        ("Alani Nu", 368, 210, 158,
+         "~$500M annual pre-acquisition rate = ~$125M/quarter consumer pull. "
+         "PepsiCo distribution expansion adds ~$30-55M lift → ~$140-180M sustainable. "
+         "Implies ~$190-230M loading; midpoint ~$210M used here."),
+        ("Rockstar", 67, 0, 67,
+         "Retail tracked channels -13% Y/Y. No loading effect; acquisition is a declining brand."),
+        ("International", 35, 0, 35,
+         "Organic +55% Y/Y. No loading — direct consumer markets. Clean growth signal."),
+        ("TOTAL", 782, 210, 572, "Normalized total implies ~27% reported figure was one-time loading."),
+    ]
+
+    for i, (label, reported, loading, normalized, note) in enumerate(decomp_rows):
+        r = ROW + i
+        is_total = label == "TOTAL"
+        bg = NAVY if is_total else (WHITE if i % 2 == 0 else GRAY)
+        fc = WHITE if is_total else BLACK
+
+        for col_idx, val in enumerate([label, reported, loading, normalized], 2):
+            c = ws.cell(row=r, column=col_idx)
+            c.value = val if col_idx == 2 else f"${val:,}M" if not is_total else f"~${val:,}M"
+            c.font = Font(name="Arial", bold=is_total, size=9, color=fc)
+            c.fill = fill(bg)
+            c.alignment = Alignment(
+                horizontal="left" if col_idx == 2 else "center",
+                vertical="center")
+            c.border = TABLE_BORDER
+
+        # loading cell — color amber if nonzero
+        lc = ws.cell(row=r, column=4)
+        if loading > 0 and not is_total:
+            lc.font = Font(name="Arial", bold=True, size=9, color=AMBER)
+            lc.fill = fill(AMBER_LT)
+        elif is_total:
+            lc.font = Font(name="Arial", bold=True, size=9, color=WHITE)
+
+        ws.cell(row=r, column=1).fill = fill(bg)
+        ws.merge_cells(f"F{r}:G{r}")
+        nc = ws.cell(row=r, column=8)
+        nc.value = note
+        nc.font = Font(name="Arial", size=8, color=fc if is_total else "333333", italic=not is_total)
+        nc.fill = fill(bg)
+        nc.alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
+        nc.border = TABLE_BORDER
+        ws.row_dimensions[r].height = max(28, 14 + len(note) // 8)
+
+    ROW += len(decomp_rows) + 1
+
+    # ── SECTION 2: Phase-by-Phase Growth ──────────────────────────────────────
+    ws.merge_cells(f"A{ROW}:H{ROW}")
+    sh2 = ws[f"A{ROW}"]
+    sh2.value = "▶  SECTION 2 — PHASE-BY-PHASE FORWARD GROWTH RATE ANALYSIS"
+    sh2.font = Font(name="Arial", bold=True, size=10, color=WHITE)
+    sh2.fill = fill(SECTION_BG)
+    sh2.alignment = Alignment(horizontal="left", vertical="center", indent=1)
+    ws.row_dimensions[ROW].height = 18
+    ROW += 1
+
+    # Phase table header
+    phase_hdrs = ["", "Phase", "Period", "Y/Y Growth (reported)", "Y/Y Growth (reality)", "", "", "Key Risk / Watch"]
+    for col_idx, h in enumerate(phase_hdrs, 1):
+        c = ws.cell(row=ROW, column=col_idx)
+        c.value = h
+        c.font = Font(name="Arial", bold=True, size=9, color=WHITE)
+        c.fill = fill(ACCENT)
+        c.alignment = center(wrap=True)
+        c.border = TABLE_BORDER
+    ws.merge_cells(f"F{ROW}:G{ROW}")
+    ws.row_dimensions[ROW].height = 28
+    ROW += 1
+
+    phases = [
+        ("Phase 1", "Q2 2026",
+         "+60-80% Y/Y",
+         "Significant sequential decline ($747M → ~$570-630M NA). "
+         "Y/Y looks high only because Q2 2025 was pre-acquisition.",
+         "⚠ Did Alani Nu loading reverse sharply? Watch Alani Nu sequential revenue.",
+         GREEN_LT),
+        ("Phase 2", "Q3–Q4 2026",
+         "+40-60% Y/Y",
+         "Still elevated Y/Y because comps are pre-acquisition. "
+         "But sequential should stabilize as loading fully clears by Q3.",
+         "⚠ CELSIUS brand must show double-digit organic growth as acquisition laps begin.",
+         BLUE_S if hasattr(__builtins__, 'BLUE_S') else "D6E4F0"),
+        ("Phase 3 ⚡", "Q1 2027",
+         "-8% to -18% Y/Y",
+         "THE DANGER QUARTER. Comparing against inflated $782.6M. "
+         "Even a healthy business ($640-720M normalized) will print negative Y/Y. "
+         "Market may panic without proper framing from management.",
+         "🚨 Management MUST pre-frame Q1 2027 comp on Q4 2026 call or stock will crater.",
+         RED_LT),
+        ("Phase 4", "2027+ (fully lapped)",
+         "~15-25% Y/Y",
+         "Sustainable blended rate: CELSIUS organic 10-15% + Alani Nu maturation 10-20% "
+         "+ Rockstar flat/-5% + International 40-60% (small). "
+         "This is the real business growth rate once all noise clears.",
+         "✓ If CELSIUS organic is back to double digits by Q2 2027, the thesis is intact.",
+         GREEN_LT),
+    ]
+
+    for i, (phase, period, reported_yy, reality, risk, bg) in enumerate(phases):
+        r = ROW + i
+        ws.cell(row=r, column=1).fill = fill(bg)
+
+        for col_idx, val in enumerate([phase, period, reported_yy, reality], 2):
+            c = ws.cell(row=r, column=col_idx)
+            c.value = val
+            bold = (col_idx == 2 or col_idx == 3)
+            fc = RED if "Phase 3" in phase and col_idx == 4 else BLACK
+            c.font = Font(name="Arial", bold=bold, size=9, color=fc)
+            c.fill = fill(bg)
+            c.alignment = Alignment(
+                horizontal="center" if col_idx in [2, 3, 4] else "left",
+                vertical="top", wrap_text=True)
+            c.border = TABLE_BORDER
+
+        ws.merge_cells(f"F{r}:G{r}")
+        rc = ws.cell(row=r, column=8)
+        rc.value = risk
+        rc.font = Font(name="Arial", size=8, color=BLACK)
+        rc.fill = fill(bg)
+        rc.alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
+        rc.border = TABLE_BORDER
+
+        ws.row_dimensions[r].height = max(42, 14 + len(reality) // 7)
+
+    ROW += len(phases) + 1
+
+    # ── SECTION 3: Normalized Grade Framework ─────────────────────────────────
+    ws.merge_cells(f"A{ROW}:H{ROW}")
+    sh3 = ws[f"A{ROW}"]
+    sh3.value = "▶  SECTION 3 — GRADE FRAMEWORK ANCHORED TO NORMALIZED GROWTH (not 138% optical)"
+    sh3.font = Font(name="Arial", bold=True, size=10, color=WHITE)
+    sh3.fill = fill(SECTION_BG)
+    sh3.alignment = Alignment(horizontal="left", vertical="center", indent=1)
+    ws.row_dimensions[ROW].height = 18
+    ROW += 1
+
+    ws.merge_cells(f"A{ROW}:H{ROW}")
+    note_cell = ws[f"A{ROW}"]
+    note_cell.value = (
+        "Grading against 138% would be meaningless — that number cannot repeat (no more acquisitions of this scale, "
+        "loading clears). The framework below grades future quarters against normalized portfolio growth: "
+        "the rate the combined CELSIUS + Alani Nu + Rockstar + International business can organically sustain."
+    )
+    note_cell.font = Font(name="Arial", size=8, color=BLACK, italic=True)
+    note_cell.fill = fill(ASSESS_BG)
+    note_cell.alignment = Alignment(horizontal="left", vertical="top", wrap_text=True, indent=2)
+    ws.row_dimensions[ROW].height = 36
+    ROW += 1
+
+    grade_rows = [
+        ("A",   "25%+ normalized", "CELSIUS organic double digits + Alani Nu maturing + International scaling. "
+                "Gross margin 50%+. Q1 2027 framed cleanly. Rockstar stabilizes.", GREEN_LT),
+        ("B+",  "15-25% normalized", "CELSIUS organic 8-12%. Gross margin recovering visibly. "
+                "Q1 2027 decline acknowledged. Capital structure drag manageable.", "D6E4F0"),
+        (f"B ← {QUARTER}", "8-15% normalized", "Current standing. Strong Q1 execution but organic only +6%, "
+                "loading inflates the headline, Q1 2027 trap unaddressed, "
+                "$136M annual capital structure drag structural.", ASSESS_BG),
+        ("C",   "0-8% normalized", "CELSIUS brand stalls or loses share. Alani Nu below $120M/quarter. "
+                "Gross margin stuck below 48%. Adj. EBITDA margin contracts.", AMBER_LT),
+        ("D",   "Negative normalized", "Revenue declines on organic basis. PepsiCo agreement adverse change. "
+                "Legal settlement blowout. Debt covenant pressure.", RED_LT),
+    ]
+
+    for i, (grade, growth, desc, bg) in enumerate(grade_rows):
+        r = ROW + i
+        is_current = "←" in grade
+        ws.cell(row=r, column=1).fill = fill(bg)
+
+        for col_idx, val in enumerate([grade, growth, desc], 2):
+            c = ws.cell(row=r, column=col_idx)
+            c.value = val
+            c.font = Font(name="Arial", bold=(col_idx <= 3 or is_current), size=9,
+                          color=NAVY if is_current else BLACK)
+            c.fill = fill(bg)
+            c.alignment = Alignment(
+                horizontal="center" if col_idx <= 3 else "left",
+                vertical="top", wrap_text=True)
+            c.border = TABLE_BORDER
+
+        if col_idx == 4:  # desc occupies col 4 only; merge rest
+            ws.merge_cells(f"D{r}:H{r}")
+        else:
+            ws.merge_cells(f"D{r}:H{r}")
+            dc = ws.cell(row=r, column=4)
+            dc.value = desc
+            dc.font = Font(name="Arial", bold=is_current, size=9,
+                           color=NAVY if is_current else BLACK)
+            dc.fill = fill(bg)
+            dc.alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
+            dc.border = TABLE_BORDER
+
+        ws.row_dimensions[r].height = max(28, 14 + len(desc) // 8)
+
+    ROW += len(grade_rows) + 1
+
+    # ── SECTION 4: What to Watch ───────────────────────────────────────────────
+    ws.merge_cells(f"A{ROW}:H{ROW}")
+    sh4 = ws[f"A{ROW}"]
+    sh4.value = "▶  SECTION 4 — WHAT TO WATCH TO UPGRADE FROM B TO B+"
+    sh4.font = Font(name="Arial", bold=True, size=10, color=WHITE)
+    sh4.fill = fill("1A7A3A")
+    sh4.alignment = Alignment(horizontal="left", vertical="center", indent=1)
+    ws.row_dimensions[ROW].height = 18
+    ROW += 1
+
+    upgrade_items = [
+        "① CELSIUS brand organic growth ≥8% in Q2 2026 — the single biggest unlock. "
+         "Shows the core brand is recovering independent of acquisition noise.",
+        "② Alani Nu quarterly revenue stabilizes at $140M+ for two consecutive quarters — "
+         "confirms loading has cleared and true consumer demand is solid.",
+        "③ Gross margin prints above 49% in Q2 or Q3 2026 — shows the orbit model and freight "
+         "optimization are working, not just promised.",
+        "④ Management explicitly pre-frames the Q1 2027 comp on the Q4 2026 earnings call — "
+         "proactive disclosure prevents the market from panicking at a technical Y/Y decline.",
+        "⑤ Adj. EBITDA margin expands to 26%+ — confirms operating leverage is widening, "
+         "not plateauing at the Q1 2026 level.",
+    ]
+    for item in upgrade_items:
+        ws.merge_cells(f"A{ROW}:H{ROW}")
+        c = ws[f"A{ROW}"]
+        c.value = item
+        c.font = Font(name="Arial", size=9, color=BLACK)
+        c.fill = fill(WHITE if ROW % 2 == 0 else GRAY)
+        c.alignment = Alignment(horizontal="left", vertical="top", wrap_text=True, indent=2)
+        ws.row_dimensions[ROW].height = max(18, 14 + len(item) // 12)
+        ROW += 1
+
+    # Footer
+    ws.merge_cells(f"A{ROW}:H{ROW}")
+    foot = ws[f"A{ROW}"]
+    foot.value = (
+        f"Analysis built: {GENERATED}  |  Script: {SCRIPT_NAME}  |  "
+        "All revenue figures in $M  |  Normalized figures are estimates based on "
+        "pre-acquisition run rates and distribution expansion modeling  |  Not investment advice."
+    )
+    foot.font = Font(name="Arial", size=SZ_FOOTER, color=MUTED, italic=True)
+    foot.fill = fill(WHITE)
+    foot.alignment = Alignment(horizontal="left", wrap_text=True)
+    ws.row_dimensions[ROW].height = 18
+
+
+# ==============================================================================
 # BUILD
 # ==============================================================================
 def build():
@@ -933,10 +1266,12 @@ def build():
     build_income_tab(wb)
     build_data_sources_tab(wb)
     build_whats_new_tab(wb)
+    build_forward_outlook_tab(wb)
 
     wb["Q1 2026 Income Statement"].sheet_properties.tabColor = "1A1A2E"  # navy
     wb["Data Sources"].sheet_properties.tabColor             = "006B6B"  # teal
     wb["What's New"].sheet_properties.tabColor               = "E67300"  # orange
+    wb["Forward Outlook"].sheet_properties.tabColor          = "6B2D8B"  # purple
 
     wb.active = wb["Q1 2026 Income Statement"]
 
@@ -966,7 +1301,7 @@ def self_test(out_path):
         wb = load_workbook(out_path, data_only=True)
 
         # Tab presence
-        for tab in ["Q1 2026 Income Statement", "Data Sources", "What's New"]:
+        for tab in ["Q1 2026 Income Statement", "Data Sources", "What's New", "Forward Outlook"]:
             if tab not in wb.sheetnames:
                 errors.append(f"FAIL: tab '{tab}' missing")
 
@@ -1021,6 +1356,20 @@ def self_test(out_path):
             if not found_pepsico_wn:  errors.append("FAIL: What's New — PepsiCo item missing")
             if not found_v1:          errors.append("FAIL: What's New — build_celh_income_v1 script reference missing")
 
+        if "Forward Outlook" in wb.sheetnames:
+            ws_fo = wb["Forward Outlook"]
+            found_phase3 = found_q1_2027 = found_normalized = False
+            for row in ws_fo.iter_rows(values_only=True):
+                for cell in row:
+                    if cell:
+                        cv = str(cell)
+                        if "Phase 3" in cv:   found_phase3    = True
+                        if "2027" in cv:      found_q1_2027   = True
+                        if "normalized" in cv.lower(): found_normalized = True
+            if not found_phase3:    errors.append("FAIL: Forward Outlook — Phase 3 section missing")
+            if not found_q1_2027:   errors.append("FAIL: Forward Outlook — Q1 2027 analysis missing")
+            if not found_normalized: errors.append("FAIL: Forward Outlook — normalized analysis missing")
+
     if errors:
         print("\n" + "=" * 60)
         print("SELF-TEST FAILED — DO NOT SAVE TO DRIVE")
@@ -1035,7 +1384,7 @@ def self_test(out_path):
     print("SELF-TEST PASSED — safe to save to Drive")
     print(f"  File: {out_path}")
     print(f"  Size: {size:,} bytes")
-    print(f"  Tabs: Q1 2026 Income Statement + Data Sources + What's New — all confirmed")
+    print(f"  Tabs: Q1 2026 Income Statement + Data Sources + What's New + Forward Outlook — all confirmed")
     print(f"  Revenue ${Q1_REVENUE:.1f}M: confirmed")
     print(f"  Grade {GRADE}: confirmed")
     print(f"  Alani Nu / PepsiCo / Rockstar: confirmed in all three tabs")
