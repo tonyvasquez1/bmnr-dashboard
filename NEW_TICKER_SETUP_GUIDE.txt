@@ -1,0 +1,202 @@
+══════════════════════════════════════════════════════════════════════════════
+BMNR DASHBOARD — NEW TICKER SETUP GUIDE
+How to get the same output files, protections, and checks for any new stock
+══════════════════════════════════════════════════════════════════════════════
+
+WHAT YOU WILL GET AT THE END
+──────────────────────────────
+For every new ticker (e.g. NVDA, TSLA, AAPL):
+  {TICKER}/build_{ticker}_income_v1.py        ← income statement script
+  {TICKER}/build_{ticker}_projection_v1.py    ← 5-year projection script
+  {TICKER}/run_{ticker}.py                    ← one command runs everything
+  {TICKER}/{TICKER}_MANIFEST.txt              ← source of truth, Rule 9 enforced
+  {TICKER}/{TICKER}_Q{N}_{YYYY}_Income_Statement_v1.xlsx
+  {TICKER}/{TICKER}_5Year_Projection_v1.xlsx
+
+Both scripts:
+  - Script-relative output paths (works anywhere, no hardcoded /mnt/... paths)
+  - DATA BLOCK at top (update one section each quarter, nothing else)
+  - Self-test that prints SELF-TEST PASSED before saving
+  - MANIFEST-compliant (file sizes, baseline outputs, all 9 rules)
+
+══════════════════════════════════════════════════════════════════════════════
+STEP 1 — INFORMATION TO GATHER BEFORE STARTING
+══════════════════════════════════════════════════════════════════════════════
+
+Have these ready before you open a Claude session:
+
+COMPANY BASICS
+  □ Ticker symbol (e.g. NVDA)
+  □ Full company name (e.g. NVIDIA Corporation)
+  □ Most recent quarter reported (e.g. Q1 2026)
+  □ Quarter end date (e.g. March 31, 2026)
+  □ Earnings report date (e.g. May 28, 2026)
+  □ Link to the earnings press release PDF (from investor relations page)
+
+KEY FINANCIALS (from the press release)
+  □ Revenue ($M)
+  □ Gross profit ($M) and gross margin (%)
+  □ Operating income ($M)
+  □ Net income ($M)
+  □ Adjusted EBITDA ($M) and margin (%) — or operating income if EBITDA not reported
+  □ Adjusted EPS
+  □ Prior year same quarter revenue ($M) — for Y/Y comparison
+  □ Segment breakdown if available (e.g. North America / International)
+
+PROJECTION INPUTS
+  □ Full prior fiscal year revenue ($M) — base for projections
+  □ Current stock price ($)
+  □ Shares outstanding fully diluted (millions)
+  □ Valuation method: EV/EBITDA (consumer/beverage companies)
+                   or P/E (semiconductor/tech companies like AMD)
+
+ANY ONE-TIME ITEMS TO CALL OUT
+  □ Acquisitions, loading events, write-downs, divestitures
+  □ Anything that makes the headline number misleading
+
+══════════════════════════════════════════════════════════════════════════════
+STEP 2 — THE STARTER PROMPT (copy and paste this at the start of every session)
+══════════════════════════════════════════════════════════════════════════════
+
+--- COPY FROM HERE ---
+
+I am building a financial analysis dashboard. The pattern and rules are
+established in the repo tonyvasquez1/bmnr-dashboard. Before starting,
+read these reference files to understand the exact structure required:
+
+  celh/CELH_MANIFEST.txt
+  celh/build_celh_income_v1.py
+  celh/build_celh_projection_final.py
+  celh/run_celh.py
+
+Then set up [TICKER] — [COMPANY NAME] — using the exact same pattern:
+
+TICKER INFO:
+  Ticker:       [TICKER]
+  Company:      [FULL COMPANY NAME]
+  Quarter:      [Q# YYYY]
+  Period end:   [Month DD, YYYY]
+  Report date:  [Month DD, YYYY]
+  Press URL:    [PASTE URL HERE]
+
+KEY FINANCIALS ($M unless noted):
+  Revenue:         $[X]M     Prior year Q same quarter: $[X]M
+  Gross profit:    $[X]M     Gross margin: [X]%
+  Operating income: $[X]M
+  Adj. EBITDA:     $[X]M     Margin: [X]%
+  Adj. EPS:        $[X]
+  Segment breakdown: [paste if available]
+
+PROJECTION INPUTS:
+  FY prior year revenue: $[X]M
+  Current stock price:   $[X]
+  Shares (fully diluted): [X]M
+  Valuation method:      [EV/EBITDA or P/E]
+
+ONE-TIME ITEMS:
+  [describe anything unusual, or write "none"]
+
+DELIVERABLES REQUIRED (same as CELH setup):
+  1. {ticker}/build_{ticker}_income_v1.py
+       - DATA BLOCK at top
+       - Tabs: Income Statement / Data Sources / What's New / Forward Outlook
+       - Script-relative output paths
+       - SELF-TEST PASSED check before save
+  2. {ticker}/build_{ticker}_projection_v1.py
+       - DATA BLOCK at top
+       - Bull / Base / Bear scenarios with probability weights
+       - Script-relative output paths
+       - SELF-TEST PASSED check before save
+  3. {ticker}/run_{ticker}.py
+       - Installs deps, runs both scripts, reports output file sizes
+  4. {ticker}/{TICKER}_MANIFEST.txt
+       - All 9 rules including Rule 9 (update manifest when anything changes)
+       - Exact file sizes, baseline outputs, color palette, naming convention
+       - Change log starting from v1
+
+After creating all files, run python3 {ticker}/run_{ticker}.py and confirm
+both self-tests pass before committing. Commit and push all files including
+the generated xlsx outputs.
+
+--- COPY TO HERE ---
+
+══════════════════════════════════════════════════════════════════════════════
+STEP 3 — QUESTIONS CLAUDE WILL WALK YOU THROUGH
+══════════════════════════════════════════════════════════════════════════════
+
+After Claude reads the files and builds the first draft, expect to review:
+
+INCOME STATEMENT
+  □ Y/Y color for each line: green (beat), amber (grew but quality uncertain),
+    red (miss), gray (flat) — Claude will propose, you approve
+  □ Letter grade: A / B / C — Claude will explain the reasoning, you choose
+  □ Any one-time items that should be called out in What's New tab
+  □ Forward Outlook section — growth phases, upgrade triggers
+
+PROJECTION
+  □ Bull / Base / Bear revenue growth assumptions — does the range feel right?
+  □ Margin expansion assumptions — realistic or too aggressive?
+  □ EV or P/E multiple range — compare to sector peers
+  □ Probability weights (e.g. 30% Bull / 45% Base / 25% Bear)
+
+══════════════════════════════════════════════════════════════════════════════
+STEP 4 — HOW TO USE THE FILES EACH QUARTER
+══════════════════════════════════════════════════════════════════════════════
+
+QUARTERLY UPDATE PROMPT (paste at start of update session):
+
+--- COPY FROM HERE ---
+
+Read {ticker}/{TICKER}_MANIFEST.txt first, then pull the current scripts.
+This is a quarterly update for [TICKER]:
+
+New quarter:   [Q# YYYY]
+Period end:    [Month DD, YYYY]
+Report date:   [Month DD, YYYY]
+Press URL:     [URL]
+
+Updated financials:
+  Revenue:         $[X]M     Prior year same quarter: $[X]M
+  Gross profit:    $[X]M     Gross margin: [X]%
+  Adj. EBITDA:     $[X]M     Margin: [X]%
+  Adj. EPS:        $[X]
+
+One-time items this quarter: [describe or "none"]
+
+Steps required:
+  1. Create build_{ticker}_income_v2.py (increment — never overwrite v1)
+  2. Update DATA BLOCK only — do not touch structure or formatting
+  3. Run python3 {ticker}/run_{ticker}.py — self-test must pass
+  4. Update run_{ticker}.py scripts list for the new version
+  5. Update {TICKER}_MANIFEST.txt per Rule 9 (new sizes, new baseline, change log)
+  6. Commit and push all files
+
+--- COPY TO HERE ---
+
+══════════════════════════════════════════════════════════════════════════════
+THE 9 RULES (enforced in every manifest — know these)
+══════════════════════════════════════════════════════════════════════════════
+
+1. NEVER rebuild from memory or scratch. Always pull from GitHub.
+2. NEVER start any task without your explicit approval.
+3. NEVER save a script to Drive unless self-test printed SELF-TEST PASSED.
+4. NEVER upload xlsx to Drive via API — present for download only.
+5. NEVER change row structure, colors, or formatting without your approval.
+6. ALWAYS verify file sizes match manifest before using any script.
+7. ALWAYS run self-test and show you the output before declaring done.
+8. ALWAYS create a new version file for updates — never overwrite.
+9. UPDATE THE MANIFEST immediately whenever anything changes — scripts,
+   outputs, scores, assumptions, rules, file sizes, or output paths.
+
+══════════════════════════════════════════════════════════════════════════════
+REFERENCE FILES (always available in the repo)
+══════════════════════════════════════════════════════════════════════════════
+
+Repo: https://github.com/tonyvasquez1/bmnr-dashboard
+CELH reference: celh/CELH_MANIFEST.txt   (full example of a complete manifest)
+CELH income:    celh/build_celh_income_v1.py
+CELH projection: celh/build_celh_projection_final.py
+CELH runner:    celh/run_celh.py
+
+These are the gold standard. Every new ticker follows this exact structure.
+══════════════════════════════════════════════════════════════════════════════
