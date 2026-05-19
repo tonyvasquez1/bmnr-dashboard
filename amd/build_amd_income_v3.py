@@ -11,6 +11,7 @@
 #     Output: AMD_Q1_2026_Income_Statement_v3.xlsx
 # ══════════════════════════════════════════════════════════════════════════════
 
+import os
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 
@@ -1259,7 +1260,7 @@ def build():
 
     wb.active = wb["Q1 2026 Income Statement"]
 
-    out = "/mnt/user-data/outputs/AMD_Q1_2026_Income_Statement_v3.xlsx"
+    out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "AMD_Q1_2026_Income_Statement_v3.xlsx")
     wb.save(out)
     print(f"Saved: {out}")
     return out

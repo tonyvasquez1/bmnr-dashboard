@@ -28,7 +28,7 @@ Scripts live on GitHub. Excel files are build artifacts (generated locally, neve
 python amd/run_amd.py
 ```
 
-That's it. The runner auto-installs dependencies (`openpyxl`, `requests`) and generates both files into the `amd/` folder.
+That's it. The runner auto-installs dependencies (`openpyxl`, `requests`) and generates all three files into the `amd/` folder.
 
 ---
 
@@ -36,11 +36,44 @@ That's it. The runner auto-installs dependencies (`openpyxl`, `requests`) and ge
 
 | File | Script | Size | Description |
 |------|--------|------|-------------|
+| `AMD_Q1_2026_Income_Statement_v3.xlsx` | `build_amd_income_v3.py` | ~27 KB | Q1 2026 earnings summary |
 | `AMD_5Year_Projection_v12.xlsx` | `build_amd_projection_engine_v7.py` | ~29 KB | 5-year Bull/Base/Bear scenario model |
 | `AMD_Thesis_Tracker_v1.xlsx` | `build_amd_thesis_tracker_v1.py` | ~18 KB | Fundamentals-driven exit signal tool |
-| `AMD_Q1_2026_Income_Statement_v3.xlsx` | `build_amd_income_v3.py` | ~15 KB | Q1 2026 earnings summary |
 
 > Excel files are excluded from git (`.gitignore`). Always regenerate from scripts.
+
+---
+
+## Q1 2026 Income Statement — Key Figures
+
+**Quarter: Q1 2026 | Grade: A− | Script: `build_amd_income_v3.py`**
+
+| Line Item | Q1 2026 | Q4 2025 | Q1 2025 | Signal |
+|-----------|---------|---------|---------|--------|
+| Net Revenue | $10,253M | $10,270M | $7,438M | +37.9% Y/Y, flat Q/Q |
+| Total Cost of Sales | $4,837M | $4,693M | $3,702M | Growing slower than revenue |
+| Gross Profit | $5,416M | $5,577M | $3,736M | |
+| Gross Margin | 52.8% | 54.0% | 50.2% | +260bps Y/Y |
+| Operating Income | $1,476M | $1,752M | $806M | +83% Y/Y |
+| GAAP Op Margin | 14.4% | 17.1% | 10.8% | Xilinx amortization drag |
+| Net Income | $1,383M | $1,088M | $710M | +95% Y/Y |
+| Diluted EPS | $0.84 | $0.69 | $0.44 | +90.9% Y/Y |
+| Non-GAAP NI Margin | 22.1% | — | — | Base case target: 25% |
+
+**Q2 2026 Guidance:** Revenue $11.2B midpoint | Non-GAAP EPS $0.96 midpoint | Non-GAAP op margin ~27%
+
+### Income Statement Tabs
+
+1. **Q1 2026 Income Statement** — full GAAP P&L with Y/Y and Q/Q comparisons, color-coded signals, and analyst notes on every line
+2. **What's New** — all 5 confirmed deals, coherence check vs projection engine
+3. **Data Sources** — cited sources for all figures
+
+### Key Takeaways
+
+- Data Center is the engine: revenue, margin expansion, and EPS growth all driven by MI300X/MI325X GPU ramp + EPYC server share gains
+- GAAP margins depressed by ~$551M/quarter non-cash Xilinx amortization (declining over time — structural tailwind)
+- Non-GAAP NI margin of 22.1% is below the Base case target of 25% — margin expansion still in progress
+- EPS growing (+91% Y/Y) materially faster than revenue (+38% Y/Y) = operating leverage confirmed
 
 ---
 
