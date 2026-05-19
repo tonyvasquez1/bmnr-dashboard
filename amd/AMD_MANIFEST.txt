@@ -1,60 +1,74 @@
 ══════════════════════════════════════════════════════════════════════════════
 AMD — SCRIPT MANIFEST
 READ THIS AT THE START OF EVERY AMD SESSION BEFORE TOUCHING ANYTHING
-Last updated: May 2026 (v2: new naming convention, style refresh)
+Last updated: May 2026 (v3: updated all scripts, outputs, rules, thesis tracker added)
 ══════════════════════════════════════════════════════════════════════════════
 
 GITHUB — SOURCE OF TRUTH FOR ALL SCRIPTS
 ─────────────────────────────────────────
-Repo: https://github.com/tonyvasquez1/bmnr-dashboard
-Path: /amd/
+Repo:   https://github.com/tonyvasquez1/bmnr-dashboard
+Branch: claude/setup-amd-financials-q7F3t
+Path:   /amd/
 
-SCRIPTS — PULL FROM GITHUB, NOT DRIVE
-──────────────────────────────────────
-File: amd/build_amd_income_v1.py  (income statement — Q1 2026)
-Size: 15473 bytes output (if xlsx smaller than 15000 bytes it is corrupt — do not use)
-Run:  python build_amd_income_v1.py
-Output: AMD_Q1_2026_Income_Statement_v1.xlsx
-Self-test: prints SELF-TEST PASSED or FAILED
-Note: next quarterly update → build_amd_income_v2.py (never overwrite)
+SCRIPTS — CURRENT VERSIONS
+───────────────────────────
+File:   amd/build_amd_income_v3.py  (Q1 2026 income statement)
+Output: AMD_Q1_2026_Income_Statement_v3.xlsx  (~27 KB)
+Self-test verifies: Revenue $10,253M, Grade A−, all 5 deals, 3 tabs
+Note: next quarterly update → build_amd_income_v4.py (never overwrite v3)
 
-File: amd/build_amd_projection_engine.py  (5-year projection)
-Size: 28772 bytes (if smaller it is a stub — do not use)
-Run:  python build_amd_projection_engine.py
-Output: AMD_5Year_Projection_v6.xlsx
-Self-test: prints SELF-TEST PASSED or FAILED
+File:   amd/build_amd_projection_engine_v7.py  (5-year projection)
+Output: AMD_5Year_Projection_v12.xlsx  (~29 KB)
+Self-test verifies: Bull SPL=$2,897, Base SPL=$1,261, all 5 deals, 6 tabs
+Note: next update → build_amd_projection_engine_v8.py (never overwrite v7)
+
+File:   amd/build_amd_thesis_tracker_v1.py  (exit signal tool)
+Output: AMD_Thesis_Tracker_v1.xlsx  (~18 KB)
+Self-test verifies: score in range, all 7 tabs, weights sum to 100
+Note: update DATA BLOCK each quarter — bump to v2 only for structural changes
+
+File:   amd/run_amd.py  (one-command runner — generates all three files)
+Run:    python amd/run_amd.py
+Note:   auto-installs openpyxl and requests; saves files to amd/ folder
 
 STARTUP CHECKLIST — DO THIS BEFORE ANYTHING ELSE
 ──────────────────────────────────────────────────
-Step 1: Clone repo
-  git clone https://[TOKEN]@github.com/tonyvasquez1/bmnr-dashboard.git /tmp/repo
+Step 1: Pull latest from GitHub
+  git fetch origin claude/setup-amd-financials-q7F3t
+  git checkout claude/setup-amd-financials-q7F3t
 
-Step 2: Verify script sizes
-  amd/build_amd_income_v1.py        — self-test confirms output ≥15000 bytes
-  amd/build_amd_projection_engine.py — must be 28772 bytes (if smaller, STOP)
+Step 2: Run all scripts and confirm self-tests pass
+  python amd/run_amd.py
+  All three must print: SELF-TEST PASSED
 
-Step 3: Run scripts and confirm self-tests pass
-  cd /tmp/repo/amd
-  python build_amd_income_v1.py
-  python build_amd_projection_engine.py
-  Both must print: SELF-TEST PASSED
+Step 3: Confirm baseline outputs match this manifest exactly
+  Income:     Revenue $10,253M | Grade A− | Non-GAAP NI margin 22.1%
+  Projection: Bull SPL=$2,897  Base SPL=$1,261  Bear SPL=$171  EV SPL=$1,834
+  Tracker:    Score 76/100 — HOLD
 
-Step 4: Confirm baseline outputs match
-  Bull 2030: SPL=$3,073  SPH=$3,713  CAGR=+46.5%
-  Base 2030: SPL=$1,337  SPH=$1,504  CAGR=+24.1%
-  Bear 2030: SPL=$181    SPH=$238    CAGR=-16.8%
-  EV:        SPL=$1,713  SPH=$2,024  CAGR=+30.4%
+  If any output differs from above — STOP. Do not proceed. Tell Tony.
 
-RULES — NO EXCEPTIONS EVER
-────────────────────────────
-1. NEVER rebuild from memory or scratch. Always pull from GitHub.
-2. NEVER start any task without Tony's explicit approval.
-3. NEVER change row structure, colors, tab names without Tony's approval.
-4. NEVER save unless self-test prints SELF-TEST PASSED.
-5. NEVER upload xlsx to Drive via API — present for download only.
-6. ALWAYS verify file size matches manifest before using.
-7. ALWAYS create new version file for updates — never overwrite.
-8. ALWAYS commit to GitHub after every change.
+BASELINE OUTPUTS — Q1 2026 (verify after every run)
+─────────────────────────────────────────────────────
+Projection — 2030 outputs:
+  Bull (45%): SPL=$2,897  SPH=$3,501  CAGR=+44.8%/+50.4%
+  Base (40%): SPL=$1,261  SPH=$1,418  CAGR=+22.6%/+25.5%
+  Bear (15%): SPL=$171    SPH=$224    CAGR=-17.8%/-13.2%
+  EV:         SPL=$1,834  SPH=$2,176  CAGR=+32.1%/+36.8%
+
+Thesis Tracker — current score:
+  76/100 — HOLD | Exit threshold: 50 | Watch threshold: 65
+  Lowest scoring condition: ROCm Production Adoption (6/10, weight 18%)
+
+CONFIRMED DEALS (all incorporated — do not re-add)
+────────────────────────────────────────────────────
+  OpenAI    6GW  MI450 Series          Score 8/10
+  Meta      6GW  Custom MI450-based    Score 8/10
+  Oracle    ~5GW MI300X cluster        In Assumptions
+  HUMAIN    $10B / 500MW Sovereign AI  Score 7/10
+  DoE/ORNL  Lux AI + Discovery        Score 7/10
+
+  Shares: 1.750B (1.650B actual + ~100M net warrant dilution)
 
 PROJECTION ROW STRUCTURE — LOCKED
 ───────────────────────────────────
@@ -72,16 +86,48 @@ SHARE PRICE HIGH
  CAGR LOW
  CAGR HIGH
 
-BASELINE OUTPUTS — Q1 2026 (verify after every run)
-─────────────────────────────────────────────────────
-Bull (35%): SPL=$3,073  SPH=$3,713  CAGR=+46.5%/+52.2%
-Base (45%): SPL=$1,337  SPH=$1,504  CAGR=+24.1%/+27.0%
-Bear (20%): SPL=$181    SPH=$238    CAGR=-16.8%/-12.2%
-EV:         SPL=$1,713  SPH=$2,024  CAGR=+30.4%/+34.8%
+RULES — NO EXCEPTIONS EVER
+────────────────────────────
+1.  NEVER rebuild from memory or scratch. Always pull from GitHub.
+2.  NEVER start any task without Tony's explicit approval.
+3.  NEVER change row structure, colors, tab names without Tony's approval.
+4.  NEVER save unless self-test prints SELF-TEST PASSED.
+5.  NEVER upload xlsx to Drive via API — present for download only.
+6.  ALWAYS verify self-test output matches this manifest before proceeding.
+7.  ALWAYS create a new version file for updates — never overwrite.
+8.  ALWAYS commit to GitHub after every change.
+9.  ALWAYS update this manifest immediately when anything changes —
+      scripts, outputs, deals, scores, probabilities, rules, or file sizes.
+      A manifest that does not reflect current state is worse than no manifest.
 
-DRIVE FOLDERS (xlsx output files only — scripts live on GitHub)
-────────────────────────────────────────────────────────────────
-Master: https://drive.google.com/drive/folders/1i1GdOQGreQuxv2s6xoqILyY_XIqKuX5a
-Q1 2026: https://drive.google.com/drive/folders/1Df4g1sgPkwy_7BwBLjNTsYNDPh28RiWc
-Q2 2026: https://drive.google.com/drive/folders/1D_GOhT8kgZBTlVPA_7VXvO0-lR5ZyTbB
+NAMING CONVENTION
+──────────────────
+  build_{ticker}_{type}_v{n}.py
+  Examples: build_amd_projection_engine_v7.py, build_amd_income_v3.py
+
+  Quarterly updates increment v{n}. Never overwrite a prior version.
+
+SCRIPT COLOR PALETTE — LOCKED
+───────────────────────────────
+  NAVY    = 1A1A2E   (headers)
+  BLUE    = 1F4E79   (section backgrounds)
+  ACCENT  = 2E75B6   (highlights)
+  WHITE   = FFFFFF
+  GRAY    = F5F7FA   (alternating rows)
+  GREEN_S = E8F5E9   (Bull scenario)
+  BLUE_S  = D6E4F0   (Base scenario)
+  RED_S   = FDEDEC   (Bear scenario)
+
+CHANGE LOG
+───────────────────────────────────────────────────────────────────────────
+v1  Initial manifest
+v2  New naming convention (build_{ticker}_{type}_v{n}.py), style refresh
+v3  May 2026 — full update:
+      - Scripts updated to income_v3, projection_engine_v7, thesis_tracker_v1
+      - run_amd.py added (one-command runner for all three files)
+      - Probabilities updated: Bull 45% / Base 40% / Bear 15%
+      - All 5 confirmed deals incorporated (OpenAI/Meta/Oracle/HUMAIN/DoE)
+      - Baseline outputs updated to v12 projection results
+      - Thesis tracker added with score 76/100
+      - Rule 9 added: manifest must be updated on every change
 ══════════════════════════════════════════════════════════════════════════════
