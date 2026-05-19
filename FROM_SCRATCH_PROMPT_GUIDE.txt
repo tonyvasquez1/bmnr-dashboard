@@ -1,0 +1,232 @@
+══════════════════════════════════════════════════════════════════════════════
+BMNR DASHBOARD — FROM SCRATCH PROMPT GUIDE
+The exact prompts that built AMD and CELH, in order, from nothing
+══════════════════════════════════════════════════════════════════════════════
+
+NOTE: These are the prompts that shaped the entire system. Once CLAUDE.md
+exists in the repo, future tickers only need the one-word prompt at the end.
+This document exists so you could rebuild everything from zero if needed.
+
+══════════════════════════════════════════════════════════════════════════════
+PHASE 1 — BUILDING THE FIRST TICKER (AMD — THE GOLD STANDARD)
+══════════════════════════════════════════════════════════════════════════════
+
+PROMPT 1 — Establish the pattern and research the company
+──────────────────────────────────────────────────────────
+"I'm building a financial analysis dashboard for stocks I follow.
+Start with AMD. Research the most recent earnings — find the press
+release, pull all financials, segment breakdown, shares outstanding,
+and current stock price. Build an income statement in Excel with:
+  - A DATA BLOCK at the top of the script for easy quarterly updates
+  - Y/Y color indicators: green = beat, red = miss, amber = grew but
+    quality uncertain, gray = flat
+  - A letter grade (A/B/C) with written reasoning
+  - Tabs: Income Statement / Data Sources / What's New
+  - A self-test that prints SELF-TEST PASSED before saving the file
+  - Output saved to the same folder as the script (not a hardcoded path)
+Save as build_amd_income_v1.py in an amd/ folder."
+
+PROMPT 2 — Review the income statement together
+─────────────────────────────────────────────────
+"Show me the earnings statement so we can go through it together."
+
+  [Review each line. Ask about anything that looks unusual.]
+
+PROMPT 3 — Challenge any one-time items
+─────────────────────────────────────────
+"[Line item] looks large. Is any of that one-time or non-recurring?
+What would the number look like without it?"
+
+  [If yes: "Should that line be amber instead of green given that?"]
+
+PROMPT 4 — Agree on the letter grade
+──────────────────────────────────────
+"What would be a reasonable expected growth rate going forward?
+Walk me through the grade — what would it take to get to A vs B?"
+
+  [Pick the grade. Example: "Definitely B. Explain why in the file."]
+
+PROMPT 5 — Capture the analysis in a Forward Outlook tab
+──────────────────────────────────────────────────────────
+"I want all this analysis captured in the file — growth phases,
+what the normalized numbers look like, and what would trigger an
+upgrade. Add a Forward Outlook tab. Also flag the Q1 2027 comp trap
+if there is one and quantify it."
+
+PROMPT 6 — Build the projection
+─────────────────────────────────
+"Now build the 5-year projection. Use the same DATA BLOCK pattern.
+Bull / Base / Bear scenarios with probability weights.
+Use P/E for AMD (semiconductor). Show share price low/high and CAGR
+for each scenario and a probability-weighted EV target.
+Self-test must pass. Save to the amd/ folder."
+
+  [Review scenarios together. Adjust growth rates and multiples
+   until they feel realistic.]
+
+PROMPT 7 — Add the thesis tracker (AMD-specific, optional for others)
+───────────────────────────────────────────────────────────────────────
+"Build a thesis tracker — a scoring tool that tells me when to exit.
+Score the key conditions (deal execution, ROCm adoption, margin
+expansion, etc.) on a 1-10 scale with weights. Show HOLD / WATCH /
+EXIT signal. Self-test must pass."
+
+PROMPT 8 — Wire it all together
+─────────────────────────────────
+"Create run_amd.py that installs dependencies, runs all three scripts,
+and reports the output file sizes. One command should generate
+everything."
+
+PROMPT 9 — Create the manifest
+────────────────────────────────
+"Create AMD_MANIFEST.txt with:
+  - All current script names and exact file sizes
+  - Baseline outputs to verify after every run
+  - All rules including: never rebuild from scratch, never overwrite
+    versions, never upload xlsx via API, always self-test first,
+    always update this manifest when anything changes (Rule 9)
+  - Color palette, naming convention, change log
+This is the source of truth for every future AMD session."
+
+══════════════════════════════════════════════════════════════════════════════
+PHASE 2 — BUILDING THE SECOND TICKER (CELH — USING AMD AS REFERENCE)
+══════════════════════════════════════════════════════════════════════════════
+
+PROMPT 10 — Start the second ticker using the first as the pattern
+───────────────────────────────────────────────────────────────────
+"Read amd/AMD_MANIFEST.txt, amd/run_amd.py, amd/build_amd_income_v3.py,
+and amd/build_amd_projection_engine_v7.py to understand the pattern.
+Then set up CELH — Celsius Holdings — the same way. Research the most
+recent earnings, pull all financials. Build all four deliverables
+following AMD as the gold standard:
+  celh/build_celh_income_v1.py
+  celh/build_celh_projection_v1.py
+  celh/run_celh.py
+  celh/CELH_MANIFEST.txt
+Note: CELH is a consumer beverage company — use EV/EBITDA not P/E."
+
+  [Then follow prompts 2-5 above for the income statement review,
+   grade, one-time items, and Forward Outlook tab.]
+
+  [Then follow prompt 6 for the projection — substituting EV/EBITDA.]
+
+══════════════════════════════════════════════════════════════════════════════
+PHASE 3 — LOCKING IN THE SYSTEM (DO ONCE, NEVER REPEAT)
+══════════════════════════════════════════════════════════════════════════════
+
+PROMPT 11 — Fix any infrastructure gaps
+─────────────────────────────────────────
+"Fix output paths to be script-relative in all scripts, create the
+run_{ticker}.py runner, and update the manifest to match current state
+with Rule 9. Run the scripts and confirm both self-tests pass before
+committing."
+
+PROMPT 12 — Create CLAUDE.md so future sessions need zero setup
+────────────────────────────────────────────────────────────────
+"Create a CLAUDE.md file at the repo root. It should tell Claude to
+read the setup guide and all reference files at the start of every
+session. If I give Claude a ticker symbol it should: research the
+company without asking me for any data, determine the right valuation
+method, build all four deliverables following CELH as the gold
+standard, run the self-tests, present the grade and Y/Y colors for
+my approval, then commit and push everything. All 9 rules apply."
+
+PROMPT 13 — Create the setup guide
+────────────────────────────────────
+"Create NEW_TICKER_SETUP_GUIDE.txt at the repo root. Two prompts:
+one for new tickers, one for quarterly updates. Each prompt should
+list all files to read first and tell Claude not to begin until it
+has read them all. Claude does all the research — I only provide
+the ticker symbol."
+
+══════════════════════════════════════════════════════════════════════════════
+PHASE 4 — EVERY NEW TICKER FROM HERE (ONE WORD)
+══════════════════════════════════════════════════════════════════════════════
+
+PROMPT 14 — New ticker (this is all you need from now on)
+──────────────────────────────────────────────────────────
+"NVDA"
+
+  Claude reads CLAUDE.md automatically, researches the company,
+  determines EV/EBITDA vs P/E vs sum-of-parts, builds all four
+  files, runs self-tests, and pauses only to get your approval
+  on the grade and Y/Y colors before committing.
+
+PROMPT 15 — Quarterly update
+──────────────────────────────
+"Update CELH"   (or "Update AMD", "Update NVDA", etc.)
+
+  Claude reads the existing manifest, researches the new quarter,
+  creates new version files, updates DATA BLOCK only, runs self-tests,
+  presents any grade/color changes for approval, updates manifest
+  per Rule 9, commits and pushes.
+
+══════════════════════════════════════════════════════════════════════════════
+KEY DECISIONS MADE ALONG THE WAY (understand these for any new ticker)
+══════════════════════════════════════════════════════════════════════════════
+
+VALUATION METHOD
+  EV/EBITDA  → consumer brands, beverages, retail (CELH, Monster)
+  P/E        → semiconductors, fabless chip, mature tech (AMD, NVDA)
+  Sum-of-parts → fintech/bank hybrids, conglomerates (SoFi, Google)
+  P/Book     → pure banks and insurers (JPM, BAC)
+
+Y/Y COLOR RULES
+  green  → beat expectations, durable growth
+  amber  → grew but quality uncertain (loading events, one-time items,
+            inorganic revenue, channel fill)
+  red    → miss or decline
+  gray   → flat or not meaningful Y/Y
+
+GRADE LOGIC
+  A  → strong across the board, durable growth, no structural drags
+  B  → good headline numbers but at least one structural concern
+       (e.g. organic growth weaker than reported, comp trap ahead,
+        capital structure drag, margin questions)
+  C  → meaningful problems — declining revenue, margin compression,
+        thesis under pressure
+
+RULE 9 (the most important rule)
+  Update the manifest in the same commit as any code change.
+  A manifest that doesn't reflect current state is worse than
+  no manifest — it gives false confidence.
+
+══════════════════════════════════════════════════════════════════════════════
+WHAT YOU GET FOR EVERY TICKER
+══════════════════════════════════════════════════════════════════════════════
+
+  {ticker}/build_{ticker}_income_v1.py
+    Tabs: Income Statement / Data Sources / What's New / Forward Outlook
+    Tab colors: navy / teal / orange / purple (locked)
+    Y/Y indicators: green / amber / red / gray (locked)
+    Grade with written rationale
+    Script-relative output path, self-test
+
+  {ticker}/build_{ticker}_projection_v1.py
+    Tabs: Inputs / Projection / Probability Weighted
+    Bull / Base / Bear with probability weights
+    Share price low/high and CAGR per scenario
+    Probability-weighted EV target
+    Script-relative output path, self-test
+
+  {ticker}/run_{ticker}.py
+    Installs deps, runs all scripts, reports file sizes
+
+  {ticker}/{TICKER}_MANIFEST.txt
+    Source of truth — all 9 rules, file sizes, baseline outputs,
+    color palette, naming convention, change log
+
+══════════════════════════════════════════════════════════════════════════════
+REFERENCE FILES IN THE REPO (gold standard — never delete)
+══════════════════════════════════════════════════════════════════════════════
+  CLAUDE.md                         ← auto-loads at every session start
+  NEW_TICKER_SETUP_GUIDE.txt        ← this system explained simply
+  celh/CELH_MANIFEST.txt            ← CELH source of truth
+  celh/build_celh_income_v1.py      ← income pattern reference
+  celh/build_celh_projection_final.py  ← projection pattern reference
+  celh/run_celh.py                  ← runner pattern reference
+  amd/AMD_MANIFEST.txt              ← AMD source of truth (Rule 9 origin)
+  amd/build_amd_income_v3.py        ← most complete income reference
+  amd/build_amd_projection_engine_v7.py  ← most complete projection ref
+  amd/run_amd.py                    ← runner reference
+══════════════════════════════════════════════════════════════════════════════
