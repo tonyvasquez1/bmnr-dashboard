@@ -62,12 +62,18 @@ STEP 2 — THE STARTER PROMPT (copy and paste this at the start of every session
 
 I am building a financial analysis dashboard. The pattern and rules are
 established in the repo tonyvasquez1/bmnr-dashboard. Before starting,
-read these reference files to understand the exact structure required:
+fetch and read ALL of the following files so you have complete context
+before writing a single line of code:
 
+  NEW_TICKER_SETUP_GUIDE.txt
   celh/CELH_MANIFEST.txt
+  celh/run_celh.py
   celh/build_celh_income_v1.py
   celh/build_celh_projection_final.py
-  celh/run_celh.py
+  celh/build_celsius_simple_v4_final.py
+
+Do not begin any implementation until you have read every file above and
+confirmed you understand the structure, rules, and naming conventions.
 
 Then set up [TICKER] — [COMPANY NAME] — using the exact same pattern:
 
@@ -147,7 +153,16 @@ QUARTERLY UPDATE PROMPT (paste at start of update session):
 
 --- COPY FROM HERE ---
 
-Read {ticker}/{TICKER}_MANIFEST.txt first, then pull the current scripts.
+Fetch and read ALL of the following files before doing anything else:
+
+  {ticker}/{TICKER}_MANIFEST.txt
+  {ticker}/run_{ticker}.py
+  {ticker}/build_{ticker}_income_v[current].py
+  {ticker}/build_{ticker}_projection_v[current].py
+
+Do not begin any changes until you have confirmed file sizes match the
+manifest and understand the current state of all scripts.
+
 This is a quarterly update for [TICKER]:
 
 New quarter:   [Q# YYYY]
