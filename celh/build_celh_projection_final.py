@@ -6,8 +6,11 @@
 # Data centered. Gold rows for share price. Scenario color fills for growth/CAGR
 # NO yellow on data rows. Whole dollars only.
 # ==============================================================================
+import os
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment
+
+_HERE = os.path.dirname(os.path.abspath(__file__))
 
 # ── DATA BLOCK ─────────────────────────────────────────────────────────────────
 VERSION      = "v1 — Q1 2026 Baseline"
@@ -587,7 +590,7 @@ def build():
     wb["Projection"].sheet_properties.tabColor        = "1A7A3A"  # green
     wb["Probability Weighted"].sheet_properties.tabColor = "7B2D8B"  # purple
 
-    out = "/mnt/user-data/outputs/CELH_5Year_Projection_v3.xlsx"
+    out = os.path.join(_HERE, "CELH_5Year_Projection_v3.xlsx")
     wb.save(out)
 
     # Print key outputs
@@ -656,7 +659,7 @@ def self_test(out_path):
 
 if __name__ == "__main__":
     build()
-    out = "/mnt/user-data/outputs/CELH_5Year_Projection_v3.xlsx"
+    out = os.path.join(_HERE, "CELH_5Year_Projection_v3.xlsx")
     passed = self_test(out)
     if not passed:
         import sys

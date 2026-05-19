@@ -9,8 +9,11 @@
 # Next quarterly update → build_celh_income_v2.py (never overwrite this file)
 # ══════════════════════════════════════════════════════════════════════════════
 
+import os
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+
+_HERE = os.path.dirname(os.path.abspath(__file__))
 
 # ── DATA BLOCK — update these values each quarter ──────────────────────────────
 TICKER       = "CELH"
@@ -1386,7 +1389,7 @@ def build():
 
     wb.active = wb["Q1 2026 Income Statement"]
 
-    out = f"/mnt/user-data/outputs/{OUTPUT_NAME}"
+    out = os.path.join(_HERE, OUTPUT_NAME)
     wb.save(out)
     print(f"Saved: {out}")
     return out
