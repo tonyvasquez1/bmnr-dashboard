@@ -215,6 +215,11 @@
     font-style: italic;
     opacity: 0.75;
   }
+  .gloss-tag {
+    font-weight: normal;
+    color: var(--muted);
+    font-size: 0.9em;
+  }
   .pill-readonly.inactive {
     color: var(--muted);
     border-color: var(--border);
@@ -462,7 +467,7 @@
 <body>
 <div id="app">
   <h1>Spanish Flashcards</h1>
-  <details class="mood-panel" id="pillsPanelDetails" open>
+  <details class="mood-panel" id="pillsPanelDetails">
     <summary id="pillsSummary">Verbs</summary>
     <div class="mood-actions">
       <button id="selectAllPills">Select all</button>
@@ -1729,53 +1734,53 @@ const PERSONS_IMP = ["Tú","Usted","Nosotros","Ustedes"];
 // If a verb isn't in that list at all (e.g. beber), give it a high placeholder
 // like 900+ so it sorts to the end of its group rather than guessing a real number.
 const VERB_META = {
-  ser: { label: "Ser", type: "irregular", rank: 1 },
-  estar: { label: "Estar", type: "irregular", rank: 3 },
-  tener: { label: "Tener", type: "irregular", rank: 4 },
-  hacer: { label: "Hacer", type: "irregular", rank: 5 },
-  poder: { label: "Poder", type: "irregular", rank: 6 },
-  decir: { label: "Decir", type: "irregular", rank: 7 },
-  ir: { label: "Ir", type: "irregular", rank: 8 },
-  dar: { label: "Dar", type: "irregular", rank: 10 },
-  saber: { label: "Saber", type: "irregular", rank: 11 },
-  querer: { label: "Querer", type: "irregular", rank: 12 },
-  poner: { label: "Poner", type: "irregular", rank: 16 },
-  venir: { label: "Venir", type: "irregular", rank: 26 },
-  salir: { label: "Salir", type: "irregular", rank: 28 },
-  llegar: { label: "Llegar", type: "regular", conj: "ar", rank: 13 },
-  pasar: { label: "Pasar", type: "regular", conj: "ar", rank: 14 },
-  quedar: { label: "Quedar", type: "regular", conj: "ar", rank: 18 },
-  hablar: { label: "Hablar", type: "regular", conj: "ar", rank: 20 },
-  tomar: { label: "Tomar", type: "regular", conj: "ar", rank: 30 },
-  mirar: { label: "Mirar", type: "regular", conj: "ar", rank: 35 },
-  trabajar: { label: "Trabajar", type: "regular", conj: "ar", rank: 42 },
-  necesitar: { label: "Necesitar", type: "regular", conj: "ar", rank: 58 },
-  estudiar: { label: "Estudiar", type: "regular", conj: "ar", rank: 85 },
-  comprar: { label: "Comprar", type: "regular", conj: "ar", rank: 117 },
-  leer: { label: "Leer", type: "regular", conj: "er", rank: 61 },
-  correr: { label: "Correr", type: "regular", conj: "er", rank: 89 },
-  comer: { label: "Comer", type: "regular", conj: "er", rank: 106 },
-  aprender: { label: "Aprender", type: "regular", conj: "er", rank: 116 },
-  beber: { label: "Beber", type: "regular", conj: "er", rank: 900 },
-  vivir: { label: "Vivir", type: "regular", conj: "ir", rank: 32 },
-  escribir: { label: "Escribir", type: "regular", conj: "ir", rank: 43 },
-  recibir: { label: "Recibir", type: "regular", conj: "ir", rank: 49 },
-  abrir: { label: "Abrir", type: "regular", conj: "ir", rank: 66 },
-  decidir: { label: "Decidir", type: "regular", conj: "ir", rank: 102 },
-  haber: { label: "Haber", type: "irregular", rank: 2 },
-  ver: { label: "Ver", type: "irregular", rank: 9 },
-  deber: { label: "Deber", type: "regular", conj: "er", rank: 15 },
-  creer: { label: "Creer", type: "regular", conj: "er", rank: 19 },
-  llevar: { label: "Llevar", type: "regular", conj: "ar", rank: 21 },
-  dejar: { label: "Dejar", type: "regular", conj: "ar", rank: 22 },
-  llamar: { label: "Llamar", type: "regular", conj: "ar", rank: 25 },
-  seguir: { label: "Seguir", type: "regular", conj: "ir", rank: 23, quirk: "e→i" },
-  encontrar: { label: "Encontrar", type: "regular", conj: "ar", rank: 24, quirk: "o→ue" },
-  pensar: { label: "Pensar", type: "regular", conj: "ar", rank: 27, quirk: "e→ie" },
-  volver: { label: "Volver", type: "regular", conj: "er", rank: 29, quirk: "o→ue" },
+  ser: { label: "Ser", type: "irregular", rank: 1, gloss: "to be" },
+  estar: { label: "Estar", type: "irregular", rank: 3, gloss: "to be" },
+  tener: { label: "Tener", type: "irregular", rank: 4, gloss: "to have" },
+  hacer: { label: "Hacer", type: "irregular", rank: 5, gloss: "to do / make" },
+  poder: { label: "Poder", type: "irregular", rank: 6, gloss: "to be able to / can" },
+  decir: { label: "Decir", type: "irregular", rank: 7, gloss: "to say / tell" },
+  ir: { label: "Ir", type: "irregular", rank: 8, gloss: "to go" },
+  dar: { label: "Dar", type: "irregular", rank: 10, gloss: "to give" },
+  saber: { label: "Saber", type: "irregular", rank: 11, gloss: "to know" },
+  querer: { label: "Querer", type: "irregular", rank: 12, gloss: "to want / love" },
+  poner: { label: "Poner", type: "irregular", rank: 16, gloss: "to put / place" },
+  venir: { label: "Venir", type: "irregular", rank: 26, gloss: "to come" },
+  salir: { label: "Salir", type: "irregular", rank: 28, gloss: "to leave / go out" },
+  llegar: { label: "Llegar", type: "regular", conj: "ar", rank: 13, gloss: "to arrive" },
+  pasar: { label: "Pasar", type: "regular", conj: "ar", rank: 14, gloss: "to pass / spend (time)" },
+  quedar: { label: "Quedar", type: "regular", conj: "ar", rank: 18, gloss: "to remain / stay / fit" },
+  hablar: { label: "Hablar", type: "regular", conj: "ar", rank: 20, gloss: "to speak" },
+  tomar: { label: "Tomar", type: "regular", conj: "ar", rank: 30, gloss: "to take / drink" },
+  mirar: { label: "Mirar", type: "regular", conj: "ar", rank: 35, gloss: "to look / watch" },
+  trabajar: { label: "Trabajar", type: "regular", conj: "ar", rank: 42, gloss: "to work" },
+  necesitar: { label: "Necesitar", type: "regular", conj: "ar", rank: 58, gloss: "to need" },
+  estudiar: { label: "Estudiar", type: "regular", conj: "ar", rank: 85, gloss: "to study" },
+  comprar: { label: "Comprar", type: "regular", conj: "ar", rank: 117, gloss: "to buy" },
+  leer: { label: "Leer", type: "regular", conj: "er", rank: 61, gloss: "to read" },
+  correr: { label: "Correr", type: "regular", conj: "er", rank: 89, gloss: "to run" },
+  comer: { label: "Comer", type: "regular", conj: "er", rank: 106, gloss: "to eat" },
+  aprender: { label: "Aprender", type: "regular", conj: "er", rank: 116, gloss: "to learn" },
+  beber: { label: "Beber", type: "regular", conj: "er", rank: 900, gloss: "to drink" },
+  vivir: { label: "Vivir", type: "regular", conj: "ir", rank: 32, gloss: "to live" },
+  escribir: { label: "Escribir", type: "regular", conj: "ir", rank: 43, gloss: "to write" },
+  recibir: { label: "Recibir", type: "regular", conj: "ir", rank: 49, gloss: "to receive" },
+  abrir: { label: "Abrir", type: "regular", conj: "ir", rank: 66, gloss: "to open" },
+  decidir: { label: "Decidir", type: "regular", conj: "ir", rank: 102, gloss: "to decide" },
+  haber: { label: "Haber", type: "irregular", rank: 2, gloss: "to have (auxiliary)" },
+  ver: { label: "Ver", type: "irregular", rank: 9, gloss: "to see" },
+  deber: { label: "Deber", type: "regular", conj: "er", rank: 15, gloss: "should / to owe" },
+  creer: { label: "Creer", type: "regular", conj: "er", rank: 19, gloss: "to believe" },
+  llevar: { label: "Llevar", type: "regular", conj: "ar", rank: 21, gloss: "to carry / wear / take" },
+  dejar: { label: "Dejar", type: "regular", conj: "ar", rank: 22, gloss: "to leave / let" },
+  llamar: { label: "Llamar", type: "regular", conj: "ar", rank: 25, gloss: "to call" },
+  seguir: { label: "Seguir", type: "regular", conj: "ir", rank: 23, quirk: "e→i", gloss: "to follow / continue" },
+  encontrar: { label: "Encontrar", type: "regular", conj: "ar", rank: 24, quirk: "o→ue", gloss: "to find" },
+  pensar: { label: "Pensar", type: "regular", conj: "ar", rank: 27, quirk: "e→ie", gloss: "to think" },
+  volver: { label: "Volver", type: "regular", conj: "er", rank: 29, quirk: "o→ue", gloss: "to return" },
 };
 function verbMeta(key) {
-  return VERB_META[key] || { label: key.charAt(0).toUpperCase() + key.slice(1), type: "regular", rank: 9999 };
+  return VERB_META[key] || { label: key.charAt(0).toUpperCase() + key.slice(1), type: "regular", rank: 9999, gloss: "" };
 }
 function rankLabel(meta) {
   return meta.rank >= 900 ? "unranked" : String(meta.rank);
@@ -2785,7 +2790,7 @@ function renderVerbPanel() {
     };
     const lbl = document.createElement("label");
     lbl.htmlFor = "verb-" + key;
-    lbl.innerHTML = meta.label + " (" + rankLabel(meta) + ")" + (meta.quirk ? ' <span class="quirk-tag">' + meta.quirk + '</span>' : "");
+    lbl.innerHTML = meta.label + " (" + rankLabel(meta) + ")" + (meta.quirk ? ' <span class="quirk-tag">' + meta.quirk + '</span>' : "") + (meta.gloss ? ' <span class="gloss-tag">— ' + meta.gloss + '</span>' : "");
     wrap.appendChild(cb);
     wrap.appendChild(lbl);
 
