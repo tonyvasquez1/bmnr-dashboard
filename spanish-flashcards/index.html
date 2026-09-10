@@ -45,10 +45,12 @@
   }
   .controls {
     display: flex;
-    gap: 8px;
+    gap: 10px;
+    row-gap: 10px;
     margin-bottom: 12px;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: center;
   }
   .verb-btn {
     background: var(--card);
@@ -65,6 +67,37 @@
     color: #1c1c1e;
     border-color: var(--accent);
     font-weight: bold;
+  }
+  .btn-review {
+    background: var(--good);
+    color: #fff;
+    border: 1px solid var(--good);
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .btn-review.active {
+    background: #4d8a58;
+    border-color: #4d8a58;
+  }
+  .btn-reset {
+    background: var(--bad);
+    color: #fff;
+    border: 1px solid var(--bad);
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .mastered-label {
+    color: var(--muted);
+    font-size: 0.85rem;
+    white-space: nowrap;
   }
   details.mood-panel {
     background: var(--card);
@@ -232,7 +265,7 @@
   .score {
     text-align: center;
     margin-top: 16px;
-    font-size: 0.9rem;
+    font-size: 1.35rem;
     color: var(--muted);
   }
   .score span { color: var(--text); font-weight: bold; }
@@ -1102,7 +1135,7 @@ function renderReviewControls() {
   const el = document.getElementById("reviewControls");
   el.innerHTML = "";
   const btn = document.createElement("button");
-  btn.className = "verb-btn" + (reviewMissedMode ? " active" : "");
+  btn.className = "btn-review" + (reviewMissedMode ? " active" : "");
   btn.textContent = "Review Missed (" + missedIds.size + ")";
   btn.onclick = () => {
     reviewMissedMode = !reviewMissedMode;
@@ -1110,17 +1143,13 @@ function renderReviewControls() {
   };
   el.appendChild(btn);
   const masteredLabel = document.createElement("span");
-  masteredLabel.style.color = "var(--muted)";
-  masteredLabel.style.fontSize = "0.82rem";
-  masteredLabel.style.alignSelf = "center";
+  masteredLabel.className = "mastered-label";
   masteredLabel.textContent = "Mastered: " + masteredIds.size;
   el.appendChild(masteredLabel);
 
   if (missedIds.size > 0 || masteredIds.size > 0) {
     const resetBtn = document.createElement("button");
-    resetBtn.className = "verb-btn";
-    resetBtn.style.color = "var(--bad)";
-    resetBtn.style.borderColor = "var(--bad)";
+    resetBtn.className = "btn-reset";
     resetBtn.textContent = "Reset Progress";
     resetBtn.onclick = () => {
       if (confirm("Clear all missed and mastered tracking? This can't be undone.")) {
