@@ -300,21 +300,6 @@
   <h1>Spanish Flashcards</h1>
   <div class="controls" id="verbFilters"></div>
 
-  <div class="controls" id="reviewControls"></div>
-  <div class="mood-row" id="hideMasteredRow" style="justify-content:center; margin-bottom:14px;">
-    <input type="checkbox" id="toggleHideMastered">
-    <label for="toggleHideMastered">Don't repeat cards I've gotten correct</label>
-  </div>
-
-  <details class="mood-panel" open>
-    <summary>Select tenses / moods</summary>
-    <div class="mood-actions">
-      <button id="selectAllMoods">Select all</button>
-      <button id="clearAllMoods">Clear all</button>
-    </div>
-    <div class="mood-grid" id="moodGrid"></div>
-  </details>
-
   <div class="progress" id="progressLabel"></div>
   <div class="card" id="card">
     <div class="tag" id="cardTag"></div>
@@ -342,10 +327,27 @@
       </div>
     </div>
   </div>
+
+  <details class="mood-panel" open>
+    <summary>Select tenses / moods</summary>
+    <div class="mood-actions">
+      <button id="selectAllMoods">Select all</button>
+      <button id="clearAllMoods">Clear all</button>
+    </div>
+    <div class="mood-grid" id="moodGrid"></div>
+  </details>
+
   <div class="bottom-row">
     <button class="action btn-next" id="shuffleBtn">Shuffle</button>
     <button class="action btn-next" id="nextBtn">Skip →</button>
   </div>
+
+  <div class="controls" id="reviewControls"></div>
+  <div class="mood-row" id="hideMasteredRow" style="justify-content:center; margin-bottom:14px;">
+    <input type="checkbox" id="toggleHideMastered">
+    <label for="toggleHideMastered">Don't repeat cards I've gotten correct</label>
+  </div>
+
   <div class="score" id="scoreLabel"></div>
 </div>
 
@@ -371,7 +373,7 @@ const NONPERSON_MOODS = [
   ["participio","Participio"],
 ];
 const ALL_MOODS = MOODS.concat(NONPERSON_MOODS);
-const DEFAULT_ON = new Set(["presente"]);
+const DEFAULT_ON = new Set(ALL_MOODS.map(m => m[0]));
 
 const GERUNDIOS = { ser: "siendo", estar: "estando", ir: "yendo" };
 const PARTICIPIOS = { ser: "sido", estar: "estado", ir: "ido" };
