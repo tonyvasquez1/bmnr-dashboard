@@ -80,8 +80,19 @@
     color: var(--accent);
     font-weight: bold;
     list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
   details.mood-panel summary::-webkit-details-marker { display: none; }
+  details.mood-panel summary::after {
+    content: "▾";
+    font-size: 0.85rem;
+    transition: transform 0.15s ease;
+  }
+  details.mood-panel[open] summary::after {
+    transform: rotate(180deg);
+  }
   .mood-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -328,7 +339,7 @@
     </div>
   </div>
 
-  <details class="mood-panel" open>
+  <details class="mood-panel">
     <summary>Select tenses / moods</summary>
     <div class="mood-actions">
       <button id="selectAllMoods">Select all</button>
@@ -769,36 +780,106 @@ function cardId(verb, mood, en) {
   return verb + "|" + mood + "|" + en;
 }
 
-async function loadMissed() {
-  try {
-    const raw = localStorage.getItem("spanish_flashcards_missed_ids");
-    if (raw) missedIds = new Set(JSON.parse(raw));
-  } catch (e) {
-    missedIds = new Set();
+function debugLog(msg) {
+  console.log("[flashcards]", msg);
+}
+
+// Storage abstraction: use Claude's window.storage when running inside Claude's
+// preview (localStorage may not behave the same way there); fall back to
+// localStorage when running standalone (e.g. hosted on GitHub Pages / added to
+// Home Screen), where window.storage doesn't exist at all.
+const hasClaudeStorage = (typeof window !== "undefined" && window.storage &&
+  typeof window.storage.get === "function" && typeof window.storage.set === "function");
+
+debugLog("Storage backend detected: " + (hasClaudeStorage ? "window.storage (Claude)" : "localStorage (standalone)"));
+
+let claudeStorageBroken = false;
+
+async function storageGet(key) {
+  if (hasClaudeStorage && !claudeStorageBroken) {
+    try {
+      const res = await window.storage.get(key, false);
+      debugLog("GET " + key + " via window.storage: found value");
+      return res ? res.value : null;
+    } catch (e) {
+      debugLog("GET " + key + " via window.storage: not found / error - " + e.message);
+      return null;
+    }
+  } else {
+    try {
+      const v = localStorage.getItem(key);
+      debugLog("GET " + key + " via localStorage: " + (v ? "found value" : "null"));
+      return v;
+    } catch (e) {
+      debugLog("GET " + key + " via localStorage FAILED: " + e.message);
+      return null;
+    }
+  }
+}
+
+async function storageSet(key, value) {
+  if (hasClaudeStorage && !claudeStorageBroken) {
+    try {
+      await window.storage.set(key, value, false);
+      debugLog("SAVED " + key + " via window.storage OK");
+      return;
+    } catch (e) {
+      debugLog("window.storage SET failed (" + e.message + ") - switching to localStorage for this session");
+      claudeStorageBroken = true;
+      // fall through to localStorage below
+    }
   }
   try {
-    const raw2 = localStorage.getItem("spanish_flashcards_mastered_ids");
-    if (raw2) masteredIds = new Set(JSON.parse(raw2));
+    localStorage.setItem(key, value);
+    debugLog("SAVED " + key + " via localStorage OK");
   } catch (e) {
-    masteredIds = new Set();
+    debugLog("SAVE " + key + " via localStorage FAILED: " + e.message);
+  }
+}
+
+async function loadPreferences() {
+  const rawV = await storageGet("spanish_flashcards_active_verbs");
+  if (rawV) {
+    try {
+      const parsed = JSON.parse(rawV);
+      if (Array.isArray(parsed) && parsed.length > 0) activeVerbs = parsed;
+    } catch (e) { /* keep defaults */ }
+  }
+  const rawM = await storageGet("spanish_flashcards_active_moods");
+  if (rawM) {
+    try {
+      const parsed = JSON.parse(rawM);
+      if (Array.isArray(parsed)) activeMoods = new Set(parsed);
+    } catch (e) { /* keep defaults */ }
+  }
+}
+
+function saveActiveVerbs() {
+  storageSet("spanish_flashcards_active_verbs", JSON.stringify(activeVerbs));
+}
+
+function saveActiveMoods() {
+  storageSet("spanish_flashcards_active_moods", JSON.stringify([...activeMoods]));
+}
+
+async function loadMissed() {
+  const raw = await storageGet("spanish_flashcards_missed_ids");
+  if (raw) {
+    try { missedIds = new Set(JSON.parse(raw)); } catch (e) { missedIds = new Set(); }
+  }
+  const raw2 = await storageGet("spanish_flashcards_mastered_ids");
+  if (raw2) {
+    try { masteredIds = new Set(JSON.parse(raw2)); } catch (e) { masteredIds = new Set(); }
   }
   storageReady = true;
 }
 
 async function saveMissed() {
-  try {
-    localStorage.setItem("spanish_flashcards_missed_ids", JSON.stringify([...missedIds]));
-  } catch (e) {
-    // storage save failed (e.g. private browsing); state still works for this session
-  }
+  await storageSet("spanish_flashcards_missed_ids", JSON.stringify([...missedIds]));
 }
 
 async function saveMastered() {
-  try {
-    localStorage.setItem("spanish_flashcards_mastered_ids", JSON.stringify([...masteredIds]));
-  } catch (e) {
-    // storage save failed; state still works for this session
-  }
+  await storageSet("spanish_flashcards_mastered_ids", JSON.stringify([...masteredIds]));
 }
 
 
@@ -985,6 +1066,7 @@ function renderVerbFilters() {
     if (isActive) btn.classList.add("active");
     btn.onclick = () => {
       activeVerbs = key === "all" ? ["ser","estar","ir"] : [key];
+      saveActiveVerbs();
       renderVerbFilters();
       buildDeck();
     };
@@ -1004,6 +1086,7 @@ function renderMoodGrid() {
     cb.checked = activeMoods.has(key);
     cb.onchange = () => {
       if (cb.checked) activeMoods.add(key); else activeMoods.delete(key);
+      saveActiveMoods();
       buildDeck();
     };
     const lbl = document.createElement("label");
@@ -1063,19 +1146,22 @@ document.getElementById("toggleNote").onchange = (e) => { showNote = e.target.ch
 document.getElementById("toggleHideMastered").onchange = (e) => { hideMastered = e.target.checked; buildDeck(); };
 document.getElementById("selectAllMoods").onclick = () => {
   activeMoods = new Set(ALL_MOODS.map(m => m[0]));
+  saveActiveMoods();
   renderMoodGrid();
   buildDeck();
 };
 document.getElementById("clearAllMoods").onclick = () => {
   activeMoods = new Set();
+  saveActiveMoods();
   renderMoodGrid();
   buildDeck();
 };
 
 (async function init() {
+  await loadPreferences();
+  await loadMissed();
   renderVerbFilters();
   renderMoodGrid();
-  await loadMissed();
   buildDeck();
 })();
 
