@@ -138,6 +138,95 @@
     gap: 7px;
     font-size: 0.78rem;
   }
+  .sub-panel {
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+    margin-top: 10px;
+  }
+  .sub-panel summary {
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: var(--text);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 0;
+  }
+  .sub-panel summary::-webkit-details-marker { display: none; }
+  .sub-panel summary::after {
+    content: "▾";
+    font-size: 0.75rem;
+    color: var(--muted);
+    transition: transform 0.15s ease;
+  }
+  .sub-panel[open] > summary::after {
+    transform: rotate(180deg);
+  }
+  .sub-panel .mood-grid {
+    padding: 6px 0 4px;
+  }
+  .sub-sub-panel {
+    margin-left: 14px;
+    border-top: 1px solid var(--border);
+    padding-top: 6px;
+    margin-top: 8px;
+  }
+  .sub-sub-panel summary {
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: var(--muted);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px 0;
+  }
+  .sub-sub-panel summary::-webkit-details-marker { display: none; }
+  .sub-sub-panel summary::after {
+    content: "▾";
+    font-size: 0.68rem;
+    transition: transform 0.15s ease;
+  }
+  .sub-sub-panel[open] > summary::after {
+    transform: rotate(180deg);
+  }
+  .sub-sub-panel .mood-grid {
+    padding: 4px 0 2px;
+  }
+  #verbPills {
+    justify-content: flex-start;
+  }
+  .pill-readonly {
+    background: var(--card);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 3px 9px;
+    font-size: 0.68rem;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .quirk-tag {
+    font-weight: normal;
+    font-style: italic;
+    opacity: 0.75;
+  }
+  .pill-readonly.inactive {
+    color: var(--muted);
+    border-color: var(--border);
+    font-weight: normal;
+  }
+  .pill-readonly:active {
+    opacity: 0.7;
+  }
+  .pill-empty {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
   .mood-item input {
     width: 16px;
     height: 16px;
@@ -158,6 +247,14 @@
     border-radius: 6px;
     padding: 4px 10px;
     cursor: pointer;
+  }
+  .sub-actions {
+    padding-top: 6px;
+    padding-bottom: 8px;
+  }
+  .sub-actions button {
+    font-size: 0.68rem;
+    padding: 2px 8px;
   }
   .progress {
     text-align: center;
@@ -365,7 +462,75 @@
 <body>
 <div id="app">
   <h1>Spanish Flashcards</h1>
-  <div class="controls" id="verbFilters"></div>
+  <details class="mood-panel" id="pillsPanelDetails" open>
+    <summary id="pillsSummary">Verbs</summary>
+    <div class="mood-actions">
+      <button id="selectAllPills">Select all</button>
+      <button id="clearAllPills">Clear all</button>
+    </div>
+    <div class="controls" id="verbPills"></div>
+  </details>
+
+  <details class="mood-panel" id="verbPanelDetails">
+    <summary>Select verbs</summary>
+    <div class="mood-actions">
+      <button id="selectAllVerbs">Select all</button>
+      <button id="clearAllVerbs">Clear all</button>
+    </div>
+
+    <details class="sub-panel" id="verbGroupIrregular">
+      <summary>Irregular</summary>
+      <div class="mood-actions sub-actions">
+        <button data-scope="irregular" class="scopeSelectAll">Select all</button>
+        <button data-scope="irregular" class="scopeClearAll">Clear all</button>
+      </div>
+      <div class="mood-grid" id="verbGridIrregular"></div>
+    </details>
+
+    <details class="sub-panel" id="verbGroupRegular">
+      <summary>Regular</summary>
+      <div class="mood-actions sub-actions">
+        <button data-scope="regular" class="scopeSelectAll">Select all</button>
+        <button data-scope="regular" class="scopeClearAll">Clear all</button>
+      </div>
+
+      <details class="sub-sub-panel" id="verbGroupAR">
+        <summary>-AR</summary>
+        <div class="mood-actions sub-actions">
+          <button data-scope="ar" class="scopeSelectAll">Select all</button>
+          <button data-scope="ar" class="scopeClearAll">Clear all</button>
+        </div>
+        <div class="mood-grid" id="verbGridAR"></div>
+      </details>
+
+      <details class="sub-sub-panel" id="verbGroupER">
+        <summary>-ER</summary>
+        <div class="mood-actions sub-actions">
+          <button data-scope="er" class="scopeSelectAll">Select all</button>
+          <button data-scope="er" class="scopeClearAll">Clear all</button>
+        </div>
+        <div class="mood-grid" id="verbGridER"></div>
+      </details>
+
+      <details class="sub-sub-panel" id="verbGroupIR">
+        <summary>-IR</summary>
+        <div class="mood-actions sub-actions">
+          <button data-scope="ir" class="scopeSelectAll">Select all</button>
+          <button data-scope="ir" class="scopeClearAll">Clear all</button>
+        </div>
+        <div class="mood-grid" id="verbGridIR"></div>
+      </details>
+
+      <details class="sub-sub-panel" id="verbGroupOther">
+        <summary>Other</summary>
+        <div class="mood-actions sub-actions">
+          <button data-scope="other" class="scopeSelectAll">Select all</button>
+          <button data-scope="other" class="scopeClearAll">Clear all</button>
+        </div>
+        <div class="mood-grid" id="verbGridOther"></div>
+      </details>
+    </details>
+  </details>
 
   <div class="progress" id="progressLabel"></div>
   <div class="card" id="card">
@@ -447,8 +612,8 @@ const NONPERSON_MOODS = [
 const ALL_MOODS = MOODS.concat(NONPERSON_MOODS);
 const DEFAULT_ON = new Set(ALL_MOODS.map(m => m[0]));
 
-const GERUNDIOS = { ser: "siendo", estar: "estando", ir: "yendo" };
-const PARTICIPIOS = { ser: "sido", estar: "estado", ir: "ido" };
+const GERUNDIOS = { ser: "siendo", estar: "estando", ir: "yendo", hablar: "hablando", trabajar: "trabajando", estudiar: "estudiando", comprar: "comprando", llegar: "llegando", tomar: "tomando", mirar: "mirando", necesitar: "necesitando", pasar: "pasando", quedar: "quedando", comer: "comiendo", beber: "bebiendo", aprender: "aprendiendo", correr: "corriendo", leer: "leyendo", vivir: "viviendo", escribir: "escribiendo", abrir: "abriendo", decidir: "decidiendo", recibir: "recibiendo", tener: "teniendo", hacer: "haciendo", poder: "pudiendo", decir: "diciendo", saber: "sabiendo", dar: "dando", querer: "queriendo", poner: "poniendo", venir: "viniendo", salir: "saliendo", haber: "habiendo", deber: "debiendo", creer: "creyendo", llevar: "llevando", dejar: "dejando", llamar: "llamando", ver: "viendo", seguir: "siguiendo", encontrar: "encontrando", pensar: "pensando", volver: "volviendo" };
+const PARTICIPIOS = { ser: "sido", estar: "estado", ir: "ido", hablar: "hablado", trabajar: "trabajado", estudiar: "estudiado", comprar: "comprado", llegar: "llegado", tomar: "tomado", mirar: "mirado", necesitar: "necesitado", pasar: "pasado", quedar: "quedado", comer: "comido", beber: "bebido", aprender: "aprendido", correr: "corrido", leer: "leído", vivir: "vivido", escribir: "escrito", abrir: "abierto", decidir: "decidido", recibir: "recibido", tener: "tenido", hacer: "hecho", poder: "podido", decir: "dicho", saber: "sabido", dar: "dado", querer: "querido", poner: "puesto", venir: "venido", salir: "salido", haber: "habido", deber: "debido", creer: "creído", llevar: "llevado", dejar: "dejado", llamar: "llamado", ver: "visto", seguir: "seguido", encontrar: "encontrado", pensar: "pensado", volver: "vuelto" };
 
 const NOTES = {
   ser: {
@@ -498,7 +663,438 @@ const NOTES = {
     impNeg: "Negative commands always use 'no' + subjunctive presente for every person, including nosotros (no vayamos) — this restores the regular vayamos form that the affirmative nosotros command (vamos) skips.",
     gerundio: "Yendo is grammatically valid but uncommon in speech — most speakers avoid pairing ir with its own gerundio and just use plain voy/iba instead.",
     participio: "Ido is invariable in compound tenses (he ido, había ido) and, unlike most participles, has no standalone adjective use at all.",
-  }
+  },
+  hablar: {
+    presente: "Fully regular -ar presente — stem + o/as/a/amos/an, no irregularities (hablo).",
+    preterito: "Fully regular -ar preterite — stem + é/aste/ó/amos/aron, no accent surprises beyond the standard yo form.",
+    imperfecto: "Regular imperfect — one of the most predictable tenses in Spanish; every -ar verb (regular or not) follows stem + aba/abas/aba/ábamos/aban.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, identical pattern for every regular verb regardless of -ar/-er/-ir.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same universal pattern as futuro.",
+    subjPres: "Regular subjunctive presente — drop the -o from yo presente, add the opposite vowel ending (e for -ar).",
+    subjImp: "Regular imperfect subjunctive — stem + ara family, matching the shortcut rule exactly since this verb has no irregular preterite stem to complicate things.",
+    indPerf: "he/has/ha + participio — straightforward indicative statement, no trigger needed.",
+    subjPerf: "haya + participio — only appears when a wish/doubt/emotion trigger governs the clause; otherwise this stays indicative (he/has/ha + participio).",
+    subjPlup: "hubiera + participio — the past-hypothetical counterpart to subjImp, used in 'si hubiera...' constructions about the unchangeable past.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  trabajar: {
+    presente: "Fully regular -ar presente — stem + o/as/a/amos/an, no irregularities (trabajo).",
+    preterito: "Fully regular -ar preterite — stem + é/aste/ó/amos/aron, no accent surprises beyond the standard yo form.",
+    imperfecto: "Regular imperfect — one of the most predictable tenses in Spanish; every -ar verb (regular or not) follows stem + aba/abas/aba/ábamos/aban.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, identical pattern for every regular verb regardless of -ar/-er/-ir.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same universal pattern as futuro.",
+    subjPres: "Regular subjunctive presente — drop the -o from yo presente, add the opposite vowel ending (e for -ar).",
+    subjImp: "Regular imperfect subjunctive — stem + ara family, matching the shortcut rule exactly since this verb has no irregular preterite stem to complicate things.",
+    indPerf: "he/has/ha + participio — straightforward indicative statement, no trigger needed.",
+    subjPerf: "haya + participio — only appears when a wish/doubt/emotion trigger governs the clause; otherwise this stays indicative (he/has/ha + participio).",
+    subjPlup: "hubiera + participio — the past-hypothetical counterpart to subjImp, used in 'si hubiera...' constructions about the unchangeable past.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  estudiar: {
+    presente: "Fully regular -ar presente. The stem ends in -i (estudi-), which can make forms like estudié look slightly unusual at a glance, but every ending is completely standard.",
+    preterito: "Fully regular -ar preterite — stem + é/aste/ó/amos/aron, no accent surprises beyond the standard yo form.",
+    imperfecto: "Regular imperfect — one of the most predictable tenses in Spanish; every -ar verb (regular or not) follows stem + aba/abas/aba/ábamos/aban.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, identical pattern for every regular verb regardless of -ar/-er/-ir.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same universal pattern as futuro.",
+    subjPres: "Regular subjunctive presente — drop the -o from yo presente, add the opposite vowel ending (e for -ar).",
+    subjImp: "Regular imperfect subjunctive — stem + ara family, matching the shortcut rule exactly since this verb has no irregular preterite stem to complicate things.",
+    indPerf: "he/has/ha + participio — straightforward indicative statement, no trigger needed.",
+    subjPerf: "haya + participio — only appears when a wish/doubt/emotion trigger governs the clause; otherwise this stays indicative (he/has/ha + participio).",
+    subjPlup: "hubiera + participio — the past-hypothetical counterpart to subjImp, used in 'si hubiera...' constructions about the unchangeable past.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  comprar: {
+    presente: "Fully regular -ar presente — stem + o/as/a/amos/an, no irregularities (compro).",
+    preterito: "Fully regular -ar preterite — stem + é/aste/ó/amos/aron, no accent surprises beyond the standard yo form.",
+    imperfecto: "Regular imperfect — one of the most predictable tenses in Spanish; every -ar verb (regular or not) follows stem + aba/abas/aba/ábamos/aban.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, identical pattern for every regular verb regardless of -ar/-er/-ir.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same universal pattern as futuro.",
+    subjPres: "Regular subjunctive presente — drop the -o from yo presente, add the opposite vowel ending (e for -ar).",
+    subjImp: "Regular imperfect subjunctive — stem + ara family, matching the shortcut rule exactly since this verb has no irregular preterite stem to complicate things.",
+    indPerf: "he/has/ha + participio — straightforward indicative statement, no trigger needed.",
+    subjPerf: "haya + participio — only appears when a wish/doubt/emotion trigger governs the clause; otherwise this stays indicative (he/has/ha + participio).",
+    subjPlup: "hubiera + participio — the past-hypothetical counterpart to subjImp, used in 'si hubiera...' constructions about the unchangeable past.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  llegar: {
+    presente: "Fully regular -ar presente — stem + o/as/a/amos/an, no irregularities (llego).",
+    preterito: "The g becomes gu before -é to keep the hard 'g' sound (llegué) — this is the ONLY irregular cell in the entire preterite; every other form is fully regular.",
+    imperfecto: "Regular imperfect — one of the most predictable tenses in Spanish; every -ar verb (regular or not) follows stem + aba/abas/aba/ábamos/aban.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, identical pattern for every regular verb regardless of -ar/-er/-ir.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same universal pattern as futuro.",
+    subjPres: "The g becomes gu throughout — llegue, llegues, llegue, lleguemos, lleguen — because every subjunctive presente ending starts with 'e', which would otherwise soften the g.",
+    subjImp: "Regular imperfect subjunctive — stem + ara family, matching the shortcut rule exactly since this verb has no irregular preterite stem to complicate things.",
+    indPerf: "he/has/ha + participio — straightforward indicative statement, no trigger needed.",
+    subjPerf: "haya + participio — only appears when a wish/doubt/emotion trigger governs the clause; otherwise this stays indicative (he/has/ha + participio).",
+    subjPlup: "hubiera + participio — the past-hypothetical counterpart to subjImp, used in 'si hubiera...' constructions about the unchangeable past.",
+    impAff: "Tú command (llega) is regular. Usted/nosotros/ustedes commands carry the same g→gu spelling change as the subjunctive (llegue, lleguemos, lleguen).",
+    impNeg: "Negative commands use 'no' + subjunctive presente, so they also carry the g→gu spelling change throughout (no llegues, no llegue...).",
+  },
+  tomar: {
+    presente: "Fully regular -ar presente — stem + o/as/a/amos/an, no irregularities (tomo).",
+    preterito: "Fully regular -ar preterite — stem + é/aste/ó/amos/aron, no accent surprises beyond the standard yo form.",
+    imperfecto: "Regular imperfect — one of the most predictable tenses in Spanish; every -ar verb (regular or not) follows stem + aba/abas/aba/ábamos/aban.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, identical pattern for every regular verb regardless of -ar/-er/-ir.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same universal pattern as futuro.",
+    subjPres: "Regular subjunctive presente — drop the -o from yo presente, add the opposite vowel ending (e for -ar).",
+    subjImp: "Regular imperfect subjunctive — stem + ara family, matching the shortcut rule exactly since this verb has no irregular preterite stem to complicate things.",
+    indPerf: "he/has/ha + participio — straightforward indicative statement, no trigger needed.",
+    subjPerf: "haya + participio — only appears when a wish/doubt/emotion trigger governs the clause; otherwise this stays indicative (he/has/ha + participio).",
+    subjPlup: "hubiera + participio — the past-hypothetical counterpart to subjImp, used in 'si hubiera...' constructions about the unchangeable past.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  mirar: {
+    presente: "Fully regular -ar presente — stem + o/as/a/amos/an, no irregularities (miro).",
+    preterito: "Fully regular -ar preterite — stem + é/aste/ó/amos/aron, no accent surprises beyond the standard yo form.",
+    imperfecto: "Regular imperfect — one of the most predictable tenses in Spanish; every -ar verb (regular or not) follows stem + aba/abas/aba/ábamos/aban.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, identical pattern for every regular verb regardless of -ar/-er/-ir.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same universal pattern as futuro.",
+    subjPres: "Regular subjunctive presente — drop the -o from yo presente, add the opposite vowel ending (e for -ar).",
+    subjImp: "Regular imperfect subjunctive — stem + ara family, matching the shortcut rule exactly since this verb has no irregular preterite stem to complicate things.",
+    indPerf: "he/has/ha + participio — straightforward indicative statement, no trigger needed.",
+    subjPerf: "haya + participio — only appears when a wish/doubt/emotion trigger governs the clause; otherwise this stays indicative (he/has/ha + participio).",
+    subjPlup: "hubiera + participio — the past-hypothetical counterpart to subjImp, used in 'si hubiera...' constructions about the unchangeable past.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  necesitar: {
+    presente: "Fully regular -ar presente — stem + o/as/a/amos/an, no irregularities (necesito).",
+    preterito: "Fully regular -ar preterite — stem + é/aste/ó/amos/aron, no accent surprises beyond the standard yo form.",
+    imperfecto: "Regular imperfect — one of the most predictable tenses in Spanish; every -ar verb (regular or not) follows stem + aba/abas/aba/ábamos/aban.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, identical pattern for every regular verb regardless of -ar/-er/-ir.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same universal pattern as futuro.",
+    subjPres: "Regular subjunctive presente — drop the -o from yo presente, add the opposite vowel ending (e for -ar).",
+    subjImp: "Regular imperfect subjunctive — stem + ara family, matching the shortcut rule exactly since this verb has no irregular preterite stem to complicate things.",
+    indPerf: "he/has/ha + participio — straightforward indicative statement, no trigger needed.",
+    subjPerf: "haya + participio — only appears when a wish/doubt/emotion trigger governs the clause; otherwise this stays indicative (he/has/ha + participio).",
+    subjPlup: "hubiera + participio — the past-hypothetical counterpart to subjImp, used in 'si hubiera...' constructions about the unchangeable past.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  pasar: {
+    presente: "Fully regular -ar presente — stem + o/as/a/amos/an, no irregularities (paso).",
+    preterito: "Fully regular -ar preterite — stem + é/aste/ó/amos/aron, no accent surprises beyond the standard yo form.",
+    imperfecto: "Regular imperfect — one of the most predictable tenses in Spanish; every -ar verb (regular or not) follows stem + aba/abas/aba/ábamos/aban.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, identical pattern for every regular verb regardless of -ar/-er/-ir.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same universal pattern as futuro.",
+    subjPres: "Regular subjunctive presente — drop the -o from yo presente, add the opposite vowel ending (e for -ar).",
+    subjImp: "Regular imperfect subjunctive — stem + ara family, matching the shortcut rule exactly since this verb has no irregular preterite stem to complicate things.",
+    indPerf: "he/has/ha + participio — straightforward indicative statement, no trigger needed.",
+    subjPerf: "haya + participio — only appears when a wish/doubt/emotion trigger governs the clause; otherwise this stays indicative (he/has/ha + participio).",
+    subjPlup: "hubiera + participio — the past-hypothetical counterpart to subjImp, used in 'si hubiera...' constructions about the unchangeable past.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  quedar: {
+    presente: "Fully regular -ar presente in form, but often used idiomatically with an indirect object pronoun (me queda, te queda) rather than a normal subject — patterns like gustar more than like a typical -ar verb.",
+    preterito: "Fully regular -ar preterite — stem + é/aste/ó/amos/aron, no accent surprises beyond the standard yo form.",
+    imperfecto: "Regular imperfect — one of the most predictable tenses in Spanish; every -ar verb (regular or not) follows stem + aba/abas/aba/ábamos/aban.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, identical pattern for every regular verb regardless of -ar/-er/-ir.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same universal pattern as futuro.",
+    subjPres: "Regular subjunctive presente — drop the -o from yo presente, add the opposite vowel ending (e for -ar).",
+    subjImp: "Regular imperfect subjunctive — stem + ara family, matching the shortcut rule exactly since this verb has no irregular preterite stem to complicate things.",
+    indPerf: "he/has/ha + participio — straightforward indicative statement, no trigger needed.",
+    subjPerf: "haya + participio — only appears when a wish/doubt/emotion trigger governs the clause; otherwise this stays indicative (he/has/ha + participio).",
+    subjPlup: "hubiera + participio — the past-hypothetical counterpart to subjImp, used in 'si hubiera...' constructions about the unchangeable past.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  comer: {
+    presente: "Fully regular -er presente — no irregularities anywhere in this form.",
+    preterito: "Fully regular -er preterite — stem + í/iste/ió/imos/ieron, no accent surprises.",
+    imperfecto: "Regular imperfect — stem + ía/ías/ía/íamos/ían, identical for -er and -ir verbs alike.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, same universal pattern for every regular verb.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same pattern as futuro.",
+    subjPres: "Regular subjunctive presente — drop the -o from yo presente, add the opposite vowel ending (a for -er/-ir).",
+    subjImp: "Regular imperfect subjunctive — stem + iera family, matching the shortcut rule exactly since this verb has no irregular preterite stem.",
+    indPerf: "he/has/ha + participio — straightforward indicative statement, no trigger needed.",
+    subjPerf: "haya + participio — only appears when a wish/doubt/emotion trigger governs the clause; otherwise this stays indicative.",
+    subjPlup: "hubiera + participio — the past-hypothetical counterpart to subjImp, used in 'si hubiera...' constructions.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  beber: {
+    presente: "Fully regular -er presente — no irregularities anywhere in this form.",
+    preterito: "Fully regular -er preterite — stem + í/iste/ió/imos/ieron, no accent surprises.",
+    imperfecto: "Regular imperfect — stem + ía/ías/ía/íamos/ían, identical for -er and -ir verbs alike.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, same universal pattern for every regular verb.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same pattern as futuro.",
+    subjPres: "Regular subjunctive presente — drop the -o from yo presente, add the opposite vowel ending (a for -er/-ir).",
+    subjImp: "Regular imperfect subjunctive — stem + iera family, matching the shortcut rule exactly since this verb has no irregular preterite stem.",
+    indPerf: "he/has/ha + participio — straightforward indicative statement, no trigger needed.",
+    subjPerf: "haya + participio — only appears when a wish/doubt/emotion trigger governs the clause; otherwise this stays indicative.",
+    subjPlup: "hubiera + participio — the past-hypothetical counterpart to subjImp, used in 'si hubiera...' constructions.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  aprender: {
+    presente: "Fully regular -er presente — no irregularities anywhere in this form.",
+    preterito: "Fully regular -er preterite — stem + í/iste/ió/imos/ieron, no accent surprises.",
+    imperfecto: "Regular imperfect — stem + ía/ías/ía/íamos/ían, identical for -er and -ir verbs alike.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, same universal pattern for every regular verb.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same pattern as futuro.",
+    subjPres: "Regular subjunctive presente — drop the -o from yo presente, add the opposite vowel ending (a for -er/-ir).",
+    subjImp: "Regular imperfect subjunctive — stem + iera family, matching the shortcut rule exactly since this verb has no irregular preterite stem.",
+    indPerf: "he/has/ha + participio — straightforward indicative statement, no trigger needed.",
+    subjPerf: "haya + participio — only appears when a wish/doubt/emotion trigger governs the clause; otherwise this stays indicative.",
+    subjPlup: "hubiera + participio — the past-hypothetical counterpart to subjImp, used in 'si hubiera...' constructions.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  correr: {
+    presente: "Fully regular -er presente — no irregularities anywhere in this form.",
+    preterito: "Fully regular -er preterite — stem + í/iste/ió/imos/ieron, no accent surprises.",
+    imperfecto: "Regular imperfect — stem + ía/ías/ía/íamos/ían, identical for -er and -ir verbs alike.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, same universal pattern for every regular verb.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same pattern as futuro.",
+    subjPres: "Regular subjunctive presente — drop the -o from yo presente, add the opposite vowel ending (a for -er/-ir).",
+    subjImp: "Regular imperfect subjunctive — stem + iera family, matching the shortcut rule exactly since this verb has no irregular preterite stem.",
+    indPerf: "he/has/ha + participio — straightforward indicative statement, no trigger needed.",
+    subjPerf: "haya + participio — only appears when a wish/doubt/emotion trigger governs the clause; otherwise this stays indicative.",
+    subjPlup: "hubiera + participio — the past-hypothetical counterpart to subjImp, used in 'si hubiera...' constructions.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  leer: {
+    presente: "Fully regular -er presente (leo, lees, lee...) — no y-insertion here, since that only happens where the ending would otherwise begin with an unstressed i.",
+    preterito: "The unstressed i between vowels becomes y in the ellos/ellas form (leyó → leyeron), and the tú/nosotros forms need a written accent (leíste, leímos) to force the hiatus reading instead of a diphthong.",
+    imperfecto: "Regular imperfect — stem + ía/ías/ía/íamos/ían, identical for -er and -ir verbs alike.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, same universal pattern for every regular verb.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same pattern as futuro.",
+    subjPres: "Fully regular — lea, leas, lea, leamos, lean. No y-insertion in the subjunctive presente, only in forms built off the preterite stem.",
+    subjImp: "Built from leyeron (not the subjunctive presente) — drop -ron, add -a family: leyera, leyeras, leyera, leyéramos, leyeran. The y replaces what would otherwise be an unstressed i between vowels.",
+    indPerf: "he leído, has leído... — the participio itself needs a written accent (leído, not leido) for the same hiatus reason as the preterite.",
+    subjPerf: "haya leído — same accented participio, only appearing under a wish/doubt/emotion trigger.",
+    subjPlup: "hubiera leído — same accented participio, used in past-hypothetical 'si hubiera leído...' constructions.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  vivir: {
+    presente: "Fully regular -ir presente — no irregularities anywhere in this form.",
+    preterito: "Fully regular -ir preterite — stem + í/iste/ió/imos/ieron, no accent surprises.",
+    imperfecto: "Regular imperfect — stem + ía/ías/ía/íamos/ían, identical for -er and -ir verbs alike.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, same universal pattern for every regular verb.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same pattern as futuro.",
+    subjPres: "Regular subjunctive presente — drop the -o from yo presente, add the opposite vowel ending (a for -er/-ir).",
+    subjImp: "Regular imperfect subjunctive — stem + iera family, matching the shortcut rule exactly since this verb has no irregular preterite stem.",
+    indPerf: "he/has/ha + participio — straightforward indicative statement, no trigger needed.",
+    subjPerf: "haya + participio — only appears when a wish/doubt/emotion trigger governs the clause; otherwise this stays indicative.",
+    subjPlup: "hubiera + participio — the past-hypothetical counterpart to subjImp, used in 'si hubiera...' constructions.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  escribir: {
+    presente: "Fully regular -ir presente — no irregularities anywhere in this form.",
+    preterito: "Fully regular -ir preterite — stem + í/iste/ió/imos/ieron, no accent surprises.",
+    imperfecto: "Regular imperfect — stem + ía/ías/ía/íamos/ían, identical for -er and -ir verbs alike.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, same universal pattern for every regular verb.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same pattern as futuro.",
+    subjPres: "Regular subjunctive presente — drop the -o from yo presente, add the opposite vowel ending (a for -er/-ir).",
+    subjImp: "Regular imperfect subjunctive — stem + iera family, matching the shortcut rule exactly since this verb has no irregular preterite stem.",
+    indPerf: "he escrito, not he escribido — escribir has one of Spanish's classic irregular participles (escrito). This affects every compound tense.",
+    subjPerf: "haya escrito — same irregular participle, only appearing under a wish/doubt/emotion trigger.",
+    subjPlup: "hubiera escrito — same irregular participle, used in past-hypothetical 'si hubiera escrito...' constructions.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  abrir: {
+    presente: "Fully regular -ir presente — no irregularities anywhere in this form.",
+    preterito: "Fully regular -ir preterite — stem + í/iste/ió/imos/ieron, no accent surprises.",
+    imperfecto: "Regular imperfect — stem + ía/ías/ía/íamos/ían, identical for -er and -ir verbs alike.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, same universal pattern for every regular verb.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same pattern as futuro.",
+    subjPres: "Regular subjunctive presente — drop the -o from yo presente, add the opposite vowel ending (a for -er/-ir).",
+    subjImp: "Regular imperfect subjunctive — stem + iera family, matching the shortcut rule exactly since this verb has no irregular preterite stem.",
+    indPerf: "he abierto, not he abrido — abrir has one of Spanish's classic irregular participles (abierto). This affects every compound tense.",
+    subjPerf: "haya abierto — same irregular participle, only appearing under a wish/doubt/emotion trigger.",
+    subjPlup: "hubiera abierto — same irregular participle, used in past-hypothetical 'si hubiera abierto...' constructions.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  decidir: {
+    presente: "Fully regular -ir presente — no irregularities anywhere in this form.",
+    preterito: "Fully regular -ir preterite — stem + í/iste/ió/imos/ieron, no accent surprises.",
+    imperfecto: "Regular imperfect — stem + ía/ías/ía/íamos/ían, identical for -er and -ir verbs alike.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, same universal pattern for every regular verb.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same pattern as futuro.",
+    subjPres: "Regular subjunctive presente — drop the -o from yo presente, add the opposite vowel ending (a for -er/-ir).",
+    subjImp: "Regular imperfect subjunctive — stem + iera family, matching the shortcut rule exactly since this verb has no irregular preterite stem.",
+    indPerf: "he/has/ha + participio — straightforward indicative statement, no trigger needed.",
+    subjPerf: "haya + participio — only appears when a wish/doubt/emotion trigger governs the clause; otherwise this stays indicative.",
+    subjPlup: "hubiera + participio — the past-hypothetical counterpart to subjImp, used in 'si hubiera...' constructions.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  recibir: {
+    presente: "Fully regular -ir presente — no irregularities anywhere in this form.",
+    preterito: "Fully regular -ir preterite — stem + í/iste/ió/imos/ieron, no accent surprises.",
+    imperfecto: "Regular imperfect — stem + ía/ías/ía/íamos/ían, identical for -er and -ir verbs alike.",
+    futuro: "Regular future — infinitive + é/ás/á/emos/án, same universal pattern for every regular verb.",
+    condicional: "Regular conditional — infinitive + ía/ías/ía/íamos/ían, same pattern as futuro.",
+    subjPres: "Regular subjunctive presente — drop the -o from yo presente, add the opposite vowel ending (a for -er/-ir).",
+    subjImp: "Regular imperfect subjunctive — stem + iera family, matching the shortcut rule exactly since this verb has no irregular preterite stem.",
+    indPerf: "he/has/ha + participio — straightforward indicative statement, no trigger needed.",
+    subjPerf: "haya + participio — only appears when a wish/doubt/emotion trigger governs the clause; otherwise this stays indicative.",
+    subjPlup: "hubiera + participio — the past-hypothetical counterpart to subjImp, used in 'si hubiera...' constructions.",
+    impAff: "Tú command matches the él/ella present indicative form (regular pattern); usted/nosotros/ustedes match the subjunctive presente form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, for every person including tú.",
+  },
+  tener: {
+    presente: "Irregular yo (tengo) and a stem change (e→ie) in tú/él/ellos — tienes, tiene, tienen — but nosotros stays tenemos, unaffected.",
+    preterito: "Irregular preterite stem (tuv-), not the regular tené-/tuvió pattern — tuve, tuviste, tuvo, tuvimos, tuvieron.",
+    imperfecto: "Fully regular — tenía, tenías, tenía, teníamos, tenían. The imperfect is one of only three verbs (ser, ir, ver) with real irregularity, and tener isn't one of them.",
+    futuro: "Irregular stem — an inserted -d- gives tendré, tendrás, tendrá, tendremos, tendrán, instead of the expected teneré.",
+    condicional: "Same irregular tendr- stem as the future — tendría, tendrías, tendría, tendríamos, tendrían.",
+    subjPres: "Derived correctly from the irregular yo form — tengo minus -o, plus -a, gives tenga (and tengas, tenga, tengamos, tengan).",
+    subjImp: "Built from the irregular preterite stem (tuvieron minus -ron, plus -a family) — tuviera, tuvieras, tuviera, tuviéramos, tuvieran.",
+    indPerf: "he tenido — the participle itself is regular, even though almost everything else about tener isn't.",
+    subjPerf: "haya tenido — regular participle, only appearing under a wish/doubt/emotion trigger.",
+    subjPlup: "hubiera tenido — regular participle, used in past-hypothetical 'si hubiera tenido...' constructions.",
+    impAff: "Tú command (ten) is irregular and must be memorized — it doesn't come from any regular rule. Usted/nosotros/ustedes commands (tenga, tengamos, tengan) do follow the regular subjunctive-presente pattern.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, so this one IS regular in formation (no tengas, no tenga...), even though the affirmative tú command isn't.",
+  },
+  hacer: {
+    presente: "Irregular yo (hago) — the rest of presente is regular (haces, hace, hacemos, hacen).",
+    preterito: "Genuinely irregular preterite stem (hic-/hiz-) — hice, hiciste, hizo, hicimos, hicieron. Note the c→z in the él form (hizo) to preserve the 's' sound before 'o'.",
+    imperfecto: "Fully regular — hacía, hacías, hacía, hacíamos, hacían.",
+    futuro: "Irregular — the -ce- drops entirely, giving haré, harás, hará, haremos, harán instead of the expected haceré.",
+    condicional: "Same dropped stem as the future — haría, harías, haría, haríamos, harían.",
+    subjPres: "Derived correctly from the irregular yo form — hago minus -o, plus -a, gives haga (and hagas, haga, hagamos, hagan).",
+    subjImp: "Built from the irregular preterite stem (hicieron minus -ron, plus -a family) — hiciera, hicieras, hiciera, hiciéramos, hicieran.",
+    indPerf: "he hecho — hacer has one of Spanish's classic irregular participles. This affects every compound tense.",
+    subjPerf: "haya hecho — same irregular participle, only appearing under a wish/doubt/emotion trigger.",
+    subjPlup: "hubiera hecho — same irregular participle, used in past-hypothetical 'si hubiera hecho...' constructions.",
+    impAff: "Tú command (haz) is irregular and must be memorized — easy to confuse with 'has' (from haber) since they're pronounced similarly. Usted/nosotros/ustedes commands follow the regular subjunctive-presente pattern.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, so this one is regular in formation (no hagas, no haga...).",
+  },
+  poder: {
+    presente: "Stem change (o→ue) in tú/él/ellos — puedo, puedes, puede, podemos, pueden. Nosotros keeps the plain o.",
+    preterito: "Genuinely irregular preterite stem (pud-) — pude, pudiste, pudo, pudimos, pudieron.",
+    imperfecto: "Fully regular — podía, podías, podía, podíamos, podían.",
+    futuro: "Irregular — the -e- drops, giving podré, podrás, podrá, podremos, podrán instead of poderé.",
+    condicional: "Same dropped stem as the future — podría, podrías, podría, podríamos, podrían.",
+    subjPres: "Derived correctly from the yo form — puedo minus -o, plus -a, gives pueda (and puedas, pueda, but nosotros drops back to podamos, matching the stress pattern).",
+    subjImp: "Built from the irregular preterite stem (pudieron minus -ron, plus -a family) — pudiera, pudieras, pudiera, pudiéramos, pudieran.",
+    indPerf: "he podido — the participle itself is regular.",
+    subjPerf: "haya podido — regular participle, only appearing under a wish/doubt/emotion trigger.",
+    subjPlup: "hubiera podido — regular participle, used in past-hypothetical 'si hubiera podido...' constructions.",
+    impAff: "Poder has no natural imperative forms in everyday use — you don't command someone to 'be able to.' Grammars list technically-derivable forms, but they're essentially never used.",
+    impNeg: "Same as affirmative — poder's negative commands are essentially never used in real speech for the same semantic reason.",
+  },
+  decir: {
+    presente: "Irregular yo (digo) plus a stem change (e→i) in tú/él/ellos — dices, dice, dicen. Nosotros stays decimos.",
+    preterito: "Genuinely irregular — dije, dijiste, dijo, dijimos, dijeron. Note there's no written accent on dije (unlike most -ir preterite yo forms), and the ellos form is dijeron, not dijieron.",
+    imperfecto: "Fully regular — decía, decías, decía, decíamos, decían.",
+    futuro: "Irregular — the whole -ec- drops, giving diré, dirás, dirá, diremos, dirán instead of deciré.",
+    condicional: "Same dropped stem as the future — diría, dirías, diría, diríamos, dirían.",
+    subjPres: "Derived correctly from the irregular yo form — digo minus -o, plus -a, gives diga (and digas, diga, digamos, digan).",
+    subjImp: "Built from the irregular preterite stem (dijeron minus -ron, plus -a family) — dijera, dijeras, dijera, dijéramos, dijeran (not dijiera — the preterite stem already lost the i).",
+    indPerf: "he dicho — decir has one of Spanish's classic irregular participles. This affects every compound tense.",
+    subjPerf: "haya dicho — same irregular participle, only appearing under a wish/doubt/emotion trigger.",
+    subjPlup: "hubiera dicho — same irregular participle, used in past-hypothetical 'si hubiera dicho...' constructions.",
+    impAff: "Tú command (di) is irregular and must be memorized — identical in spelling to 'di' from dar, distinguished only by context.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, so this one is regular in formation (no digas, no diga...).",
+  },
+  saber: {
+    presente: "Yo form (sé) doesn't end in -o at all — it's the only presente form in Spanish that looks like this. Everything else is regular (sabes, sabe, sabemos, saben).",
+    preterito: "Genuinely irregular preterite stem (sup-) — supe, supiste, supo, supimos, supieron.",
+    imperfecto: "Fully regular — sabía, sabías, sabía, sabíamos, sabían.",
+    futuro: "Irregular — the -e- drops, giving sabré, sabrás, sabrá, sabremos, sabrán instead of saberé.",
+    condicional: "Same dropped stem as the future — sabría, sabrías, sabría, sabríamos, sabrían.",
+    subjPres: "Can't be derived from the yo form (sé has no -o to drop) — sepa is genuinely irregular and must be memorized, same for sepas, sepa, sepamos, sepan.",
+    subjImp: "Built from the irregular preterite stem (supieron minus -ron, plus -a family) — supiera, supieras, supiera, supiéramos, supieran.",
+    indPerf: "he sabido — the participle itself is regular.",
+    subjPerf: "haya sabido — regular participle, only appearing under a wish/doubt/emotion trigger.",
+    subjPlup: "hubiera sabido — regular participle, used in past-hypothetical 'si hubiera sabido...' constructions.",
+    impAff: "Tú command (sabe) is actually regular — it matches the él/ella present indicative form, same as most regular tú commands.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, so this one carries the irregular sepa stem (no sepas, no sepa...).",
+  },
+  dar: {
+    presente: "Yo form (doy) doesn't follow the usual -o pattern — it ends in -oy, like soy/voy/estoy. Everything else is regular (das, da, damos, dan).",
+    preterito: "Irregular in a different way — dar takes -er/-ir style preterite endings despite being an -ar verb: di, diste, dio, dimos, dieron (no accents, unlike regular -ar preterites).",
+    imperfecto: "Fully regular — daba, dabas, daba, dábamos, daban.",
+    futuro: "Fully regular — daré, darás, dará, daremos, darán. Dar is one of the few irregular verbs with a completely regular future.",
+    condicional: "Fully regular — daría, darías, daría, daríamos, darían, same regular pattern as the future.",
+    subjPres: "Can't be cleanly derived from doy (the -oy ending doesn't fit the normal rule) — dé is irregular and carries a written accent specifically to distinguish it from the preposition 'de.'",
+    subjImp: "Built from the irregular preterite stem (dieron minus -ron, plus -a family) — diera, dieras, diera, diéramos, dieran.",
+    indPerf: "he dado — the participle itself is regular.",
+    subjPerf: "haya dado — regular participle, only appearing under a wish/doubt/emotion trigger.",
+    subjPlup: "hubiera dado — regular participle, used in past-hypothetical 'si hubiera dado...' constructions.",
+    impAff: "Tú command (da) is actually regular — it matches the él/ella present indicative form. Usted/nosotros/ustedes commands (dé, demos, den) carry the same accent as the subjunctive.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, so this one carries the accented dé stem (no des, no dé...).",
+  },
+  querer: {
+    presente: "Stem change (e→ie) in tú/él/ellos — quiero, quieres, quiere, quieren. Nosotros stays queremos.",
+    preterito: "Genuinely irregular preterite stem (quis-) — quise, quisiste, quiso, quisimos, quisieron.",
+    imperfecto: "Fully regular — quería, querías, quería, queríamos, querían.",
+    futuro: "Irregular — the -e- drops, giving querré, querrás, querrá, querremos, querrán instead of quereré.",
+    condicional: "Same dropped stem as the future — querría, querrías, querría, querríamos, querrían.",
+    subjPres: "Derived correctly from the yo form — quiero minus -o, plus -a, gives quiera (and quieras, quiera, but nosotros drops back to queramos, matching the stress pattern).",
+    subjImp: "Built from the irregular preterite stem (quisieron minus -ron, plus -a family) — quisiera, quisieras, quisiera, quisiéramos, quisieran.",
+    indPerf: "he querido — the participle itself is regular.",
+    subjPerf: "haya querido — regular participle, only appearing under a wish/doubt/emotion trigger.",
+    subjPlup: "hubiera querido — regular participle, used in past-hypothetical 'si hubiera querido...' constructions.",
+    impAff: "Tú command (quiere) is actually regular — it matches the él/ella present indicative form.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, so this one carries the irregular quiera stem (no quieras, no quiera...).",
+  },
+  poner: {
+    presente: "Irregular yo (pongo) — the rest of presente is regular (pones, pone, ponemos, ponen).",
+    preterito: "Genuinely irregular preterite stem (pus-) — puse, pusiste, puso, pusimos, pusieron.",
+    imperfecto: "Fully regular — ponía, ponías, ponía, poníamos, ponían.",
+    futuro: "Irregular — an inserted -d- gives pondré, pondrás, pondrá, pondremos, pondrán instead of poneré.",
+    condicional: "Same irregular pondr- stem as the future — pondría, pondrías, pondría, pondríamos, pondrían.",
+    subjPres: "Derived correctly from the irregular yo form — pongo minus -o, plus -a, gives ponga (and pongas, ponga, pongamos, pongan).",
+    subjImp: "Built from the irregular preterite stem (pusieron minus -ron, plus -a family) — pusiera, pusieras, pusiera, pusiéramos, pusieran.",
+    indPerf: "he puesto — poner has one of Spanish's classic irregular participles. This affects every compound tense.",
+    subjPerf: "haya puesto — same irregular participle, only appearing under a wish/doubt/emotion trigger.",
+    subjPlup: "hubiera puesto — same irregular participle, used in past-hypothetical 'si hubiera puesto...' constructions.",
+    impAff: "Tú command (pon) is irregular and must be memorized. Usted/nosotros/ustedes commands follow the regular subjunctive-presente pattern.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, so this one is regular in formation (no pongas, no ponga...).",
+  },
+  venir: {
+    presente: "Irregular yo (vengo) plus a stem change (e→ie) in tú/él/ellos — vienes, viene, vienen. Nosotros stays venimos.",
+    preterito: "Genuinely irregular preterite stem (vin-) — vine, viniste, vino, vinimos, vinieron.",
+    imperfecto: "Fully regular — venía, venías, venía, veníamos, venían.",
+    futuro: "Irregular — an inserted -d- gives vendré, vendrás, vendrá, vendremos, vendrán instead of veniré.",
+    condicional: "Same irregular vendr- stem as the future — vendría, vendrías, vendría, vendríamos, vendrían.",
+    subjPres: "Derived correctly from the irregular yo form — vengo minus -o, plus -a, gives venga (and vengas, venga, vengamos, vengan).",
+    subjImp: "Built from the irregular preterite stem (vinieron minus -ron, plus -a family) — viniera, vinieras, viniera, viniéramos, vinieran.",
+    indPerf: "he venido — the participle itself is regular.",
+    subjPerf: "haya venido — regular participle, only appearing under a wish/doubt/emotion trigger.",
+    subjPlup: "hubiera venido — regular participle, used in past-hypothetical 'si hubiera venido...' constructions.",
+    impAff: "Tú command (ven) is irregular and must be memorized — easy to confuse with 'ven' meaning 'they see' (from ver) in casual speech, though context almost always makes it clear.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, so this one is regular in formation (no vengas, no venga...).",
+  },
+  salir: {
+    presente: "Irregular yo (salgo) — the rest of presente is regular (sales, sale, salimos, salen).",
+    preterito: "Actually fully regular — salí, saliste, salió, salimos, salieron. Unlike most of these irregular verbs, salir's preterite doesn't deviate at all.",
+    imperfecto: "Fully regular — salía, salías, salía, salíamos, salían.",
+    futuro: "Irregular — an inserted -d- gives saldré, saldrás, saldrá, saldremos, saldrán instead of saliré.",
+    condicional: "Same irregular saldr- stem as the future — saldría, saldrías, saldría, saldríamos, saldrían.",
+    subjPres: "Derived correctly from the irregular yo form — salgo minus -o, plus -a, gives salga (and salgas, salga, salgamos, salgan).",
+    subjImp: "Built from the regular preterite stem (salieron minus -ron, plus -a family) — saliera, salieras, saliera, saliéramos, salieran. Since the preterite itself is regular, this comes out regular too.",
+    indPerf: "he salido — the participle itself is regular.",
+    subjPerf: "haya salido — regular participle, only appearing under a wish/doubt/emotion trigger.",
+    subjPlup: "hubiera salido — regular participle, used in past-hypothetical 'si hubiera salido...' constructions.",
+    impAff: "Tú command (sal) is irregular and must be memorized, even though most of salir's other forms follow predictable patterns.",
+    impNeg: "Negative commands always use 'no' + subjunctive presente, so this one is regular in formation (no salgas, no salga...).",
+  },
+  haber: { _general: "Almost always used as an auxiliary (he/has/ha + participle) rather than as a standalone main verb — the impersonal 'hay' (there is/are) is a completely different, invariable form not shown here. Imperative is essentially never used." },
+  ver: { _general: "Irregular yo (veo, not vo), and one of only three verbs (with ser and ir) whose imperfect is irregular — veía, not vía. Participle is also irregular (visto)." },
+  deber: { _general: "Fully regular -er verb. Means both 'should/ought to' (deber + infinitive) and 'to owe' (deber + noun) — same conjugation, different meaning depending on what follows." },
+  creer: { _general: "Follows the same y-insertion pattern as leer — creyó, creyera, creyendo — because creer's stem ends in a vowel, and Spanish spelling doesn't allow unstressed i directly between two vowels." },
+  llevar: { _general: "Fully regular -ar verb. Means 'to carry/wear/take' literally, but also used idiomatically for duration — 'llevo dos años aquí' (I've been here two years) — a very different sense than the literal meaning." },
+  dejar: { _general: "Fully regular -ar verb — no irregularities anywhere in the paradigm." },
+  llamar: { _general: "Fully regular -ar verb. The reflexive form llamarse ('to be called/named') uses identical conjugations with a reflexive pronoun added." },
+  seguir: { _general: "Stem-changing (e→i) in the present tense and its derived subjunctive — sigo, sigues, sigue, siguen — but nosotros stays seguimos, since the stress doesn't fall on the stem there." },
+  encontrar: { _general: "Stem-changing (o→ue) in the present tense and its derived subjunctive — encuentro, encuentras... — but nosotros stays encontramos, since the stress doesn't fall on the stem there." },
+  pensar: { _general: "Stem-changing (e→ie) in the present tense and its derived subjunctive — pienso, piensas... — but nosotros stays pensamos, since the stress doesn't fall on the stem there." },
+  volver: { _general: "Stem-changing (o→ue) in the present tense and its derived subjunctive — vuelvo, vuelves... — plus a genuinely irregular participle (vuelto, not volvido), which affects every compound tense." },
 };
 
 const CONJUGATIONS = {
@@ -543,12 +1139,648 @@ const CONJUGATIONS = {
     subjPlup: ["hubiera ido","hubieras ido","hubiera ido","hubiéramos ido","hubieran ido"],
     impAff: ["—","ve","vaya","vamos","vayan"],
     impNeg: ["—","no vayas","no vaya","no vayamos","no vayan"],
-  }
+  },
+  hablar: {
+    presente: ["hablo","hablas","habla","hablamos","hablan"],
+    preterito: ["hablé","hablaste","habló","hablamos","hablaron"],
+    imperfecto: ["hablaba","hablabas","hablaba","hablábamos","hablaban"],
+    futuro: ["hablaré","hablarás","hablará","hablaremos","hablarán"],
+    condicional: ["hablaría","hablarías","hablaría","hablaríamos","hablarían"],
+    subjPres: ["hable","hables","hable","hablemos","hablen"],
+    subjImp: ["hablara","hablaras","hablara","habláramos","hablaran"],
+    indPerf: ["he hablado","has hablado","ha hablado","hemos hablado","han hablado"],
+    subjPerf: ["haya hablado","hayas hablado","haya hablado","hayamos hablado","hayan hablado"],
+    subjPlup: ["hubiera hablado","hubieras hablado","hubiera hablado","hubiéramos hablado","hubieran hablado"],
+    impAff: ["—","habla","hable","hablemos","hablen"],
+    impNeg: ["—","no hables","no hable","no hablemos","no hablen"],
+  },
+  trabajar: {
+    presente: ["trabajo","trabajas","trabaja","trabajamos","trabajan"],
+    preterito: ["trabajé","trabajaste","trabajó","trabajamos","trabajaron"],
+    imperfecto: ["trabajaba","trabajabas","trabajaba","trabajábamos","trabajaban"],
+    futuro: ["trabajaré","trabajarás","trabajará","trabajaremos","trabajarán"],
+    condicional: ["trabajaría","trabajarías","trabajaría","trabajaríamos","trabajarían"],
+    subjPres: ["trabaje","trabajes","trabaje","trabajemos","trabajen"],
+    subjImp: ["trabajara","trabajaras","trabajara","trabajáramos","trabajaran"],
+    indPerf: ["he trabajado","has trabajado","ha trabajado","hemos trabajado","han trabajado"],
+    subjPerf: ["haya trabajado","hayas trabajado","haya trabajado","hayamos trabajado","hayan trabajado"],
+    subjPlup: ["hubiera trabajado","hubieras trabajado","hubiera trabajado","hubiéramos trabajado","hubieran trabajado"],
+    impAff: ["—","trabaja","trabaje","trabajemos","trabajen"],
+    impNeg: ["—","no trabajes","no trabaje","no trabajemos","no trabajen"],
+  },
+  estudiar: {
+    presente: ["estudio","estudias","estudia","estudiamos","estudian"],
+    preterito: ["estudié","estudiaste","estudió","estudiamos","estudiaron"],
+    imperfecto: ["estudiaba","estudiabas","estudiaba","estudiábamos","estudiaban"],
+    futuro: ["estudiaré","estudiarás","estudiará","estudiaremos","estudiarán"],
+    condicional: ["estudiaría","estudiarías","estudiaría","estudiaríamos","estudiarían"],
+    subjPres: ["estudie","estudies","estudie","estudiemos","estudien"],
+    subjImp: ["estudiara","estudiaras","estudiara","estudiáramos","estudiaran"],
+    indPerf: ["he estudiado","has estudiado","ha estudiado","hemos estudiado","han estudiado"],
+    subjPerf: ["haya estudiado","hayas estudiado","haya estudiado","hayamos estudiado","hayan estudiado"],
+    subjPlup: ["hubiera estudiado","hubieras estudiado","hubiera estudiado","hubiéramos estudiado","hubieran estudiado"],
+    impAff: ["—","estudia","estudie","estudiemos","estudien"],
+    impNeg: ["—","no estudies","no estudie","no estudiemos","no estudien"],
+  },
+  comprar: {
+    presente: ["compro","compras","compra","compramos","compran"],
+    preterito: ["compré","compraste","compró","compramos","compraron"],
+    imperfecto: ["compraba","comprabas","compraba","comprábamos","compraban"],
+    futuro: ["compraré","comprarás","comprará","compraremos","comprarán"],
+    condicional: ["compraría","comprarías","compraría","compraríamos","comprarían"],
+    subjPres: ["compre","compres","compre","compremos","compren"],
+    subjImp: ["comprara","compraras","comprara","compráramos","compraran"],
+    indPerf: ["he comprado","has comprado","ha comprado","hemos comprado","han comprado"],
+    subjPerf: ["haya comprado","hayas comprado","haya comprado","hayamos comprado","hayan comprado"],
+    subjPlup: ["hubiera comprado","hubieras comprado","hubiera comprado","hubiéramos comprado","hubieran comprado"],
+    impAff: ["—","compra","compre","compremos","compren"],
+    impNeg: ["—","no compres","no compre","no compremos","no compren"],
+  },
+  llegar: {
+    presente: ["llego","llegas","llega","llegamos","llegan"],
+    preterito: ["llegué","llegaste","llegó","llegamos","llegaron"],
+    imperfecto: ["llegaba","llegabas","llegaba","llegábamos","llegaban"],
+    futuro: ["llegaré","llegarás","llegará","llegaremos","llegarán"],
+    condicional: ["llegaría","llegarías","llegaría","llegaríamos","llegarían"],
+    subjPres: ["llegue","llegues","llegue","lleguemos","lleguen"],
+    subjImp: ["llegara","llegaras","llegara","llegáramos","llegaran"],
+    indPerf: ["he llegado","has llegado","ha llegado","hemos llegado","han llegado"],
+    subjPerf: ["haya llegado","hayas llegado","haya llegado","hayamos llegado","hayan llegado"],
+    subjPlup: ["hubiera llegado","hubieras llegado","hubiera llegado","hubiéramos llegado","hubieran llegado"],
+    impAff: ["—","llega","llegue","lleguemos","lleguen"],
+    impNeg: ["—","no llegues","no llegue","no lleguemos","no lleguen"],
+  },
+  tomar: {
+    presente: ["tomo","tomas","toma","tomamos","toman"],
+    preterito: ["tomé","tomaste","tomó","tomamos","tomaron"],
+    imperfecto: ["tomaba","tomabas","tomaba","tomábamos","tomaban"],
+    futuro: ["tomaré","tomarás","tomará","tomaremos","tomarán"],
+    condicional: ["tomaría","tomarías","tomaría","tomaríamos","tomarían"],
+    subjPres: ["tome","tomes","tome","tomemos","tomen"],
+    subjImp: ["tomara","tomaras","tomara","tomáramos","tomaran"],
+    indPerf: ["he tomado","has tomado","ha tomado","hemos tomado","han tomado"],
+    subjPerf: ["haya tomado","hayas tomado","haya tomado","hayamos tomado","hayan tomado"],
+    subjPlup: ["hubiera tomado","hubieras tomado","hubiera tomado","hubiéramos tomado","hubieran tomado"],
+    impAff: ["—","toma","tome","tomemos","tomen"],
+    impNeg: ["—","no tomes","no tome","no tomemos","no tomen"],
+  },
+  mirar: {
+    presente: ["miro","miras","mira","miramos","miran"],
+    preterito: ["miré","miraste","miró","miramos","miraron"],
+    imperfecto: ["miraba","mirabas","miraba","mirábamos","miraban"],
+    futuro: ["miraré","mirarás","mirará","miraremos","mirarán"],
+    condicional: ["miraría","mirarías","miraría","miraríamos","mirarían"],
+    subjPres: ["mire","mires","mire","miremos","miren"],
+    subjImp: ["mirara","miraras","mirara","miráramos","miraran"],
+    indPerf: ["he mirado","has mirado","ha mirado","hemos mirado","han mirado"],
+    subjPerf: ["haya mirado","hayas mirado","haya mirado","hayamos mirado","hayan mirado"],
+    subjPlup: ["hubiera mirado","hubieras mirado","hubiera mirado","hubiéramos mirado","hubieran mirado"],
+    impAff: ["—","mira","mire","miremos","miren"],
+    impNeg: ["—","no mires","no mire","no miremos","no miren"],
+  },
+  necesitar: {
+    presente: ["necesito","necesitas","necesita","necesitamos","necesitan"],
+    preterito: ["necesité","necesitaste","necesitó","necesitamos","necesitaron"],
+    imperfecto: ["necesitaba","necesitabas","necesitaba","necesitábamos","necesitaban"],
+    futuro: ["necesitaré","necesitarás","necesitará","necesitaremos","necesitarán"],
+    condicional: ["necesitaría","necesitarías","necesitaría","necesitaríamos","necesitarían"],
+    subjPres: ["necesite","necesites","necesite","necesitemos","necesiten"],
+    subjImp: ["necesitara","necesitaras","necesitara","necesitáramos","necesitaran"],
+    indPerf: ["he necesitado","has necesitado","ha necesitado","hemos necesitado","han necesitado"],
+    subjPerf: ["haya necesitado","hayas necesitado","haya necesitado","hayamos necesitado","hayan necesitado"],
+    subjPlup: ["hubiera necesitado","hubieras necesitado","hubiera necesitado","hubiéramos necesitado","hubieran necesitado"],
+    impAff: ["—","necesita","necesite","necesitemos","necesiten"],
+    impNeg: ["—","no necesites","no necesite","no necesitemos","no necesiten"],
+  },
+  pasar: {
+    presente: ["paso","pasas","pasa","pasamos","pasan"],
+    preterito: ["pasé","pasaste","pasó","pasamos","pasaron"],
+    imperfecto: ["pasaba","pasabas","pasaba","pasábamos","pasaban"],
+    futuro: ["pasaré","pasarás","pasará","pasaremos","pasarán"],
+    condicional: ["pasaría","pasarías","pasaría","pasaríamos","pasarían"],
+    subjPres: ["pase","pases","pase","pasemos","pasen"],
+    subjImp: ["pasara","pasaras","pasara","pasáramos","pasaran"],
+    indPerf: ["he pasado","has pasado","ha pasado","hemos pasado","han pasado"],
+    subjPerf: ["haya pasado","hayas pasado","haya pasado","hayamos pasado","hayan pasado"],
+    subjPlup: ["hubiera pasado","hubieras pasado","hubiera pasado","hubiéramos pasado","hubieran pasado"],
+    impAff: ["—","pasa","pase","pasemos","pasen"],
+    impNeg: ["—","no pases","no pase","no pasemos","no pasen"],
+  },
+  quedar: {
+    presente: ["quedo","quedas","queda","quedamos","quedan"],
+    preterito: ["quedé","quedaste","quedó","quedamos","quedaron"],
+    imperfecto: ["quedaba","quedabas","quedaba","quedábamos","quedaban"],
+    futuro: ["quedaré","quedarás","quedará","quedaremos","quedarán"],
+    condicional: ["quedaría","quedarías","quedaría","quedaríamos","quedarían"],
+    subjPres: ["quede","quedes","quede","quedemos","queden"],
+    subjImp: ["quedara","quedaras","quedara","quedáramos","quedaran"],
+    indPerf: ["he quedado","has quedado","ha quedado","hemos quedado","han quedado"],
+    subjPerf: ["haya quedado","hayas quedado","haya quedado","hayamos quedado","hayan quedado"],
+    subjPlup: ["hubiera quedado","hubieras quedado","hubiera quedado","hubiéramos quedado","hubieran quedado"],
+    impAff: ["—","queda","quede","quedemos","queden"],
+    impNeg: ["—","no quedes","no quede","no quedemos","no queden"],
+  },
+  comer: {
+    presente: ["como","comes","come","comemos","comen"],
+    preterito: ["comí","comiste","comió","comimos","comieron"],
+    imperfecto: ["comía","comías","comía","comíamos","comían"],
+    futuro: ["comeré","comerás","comerá","comeremos","comerán"],
+    condicional: ["comería","comerías","comería","comeríamos","comerían"],
+    subjPres: ["coma","comas","coma","comamos","coman"],
+    subjImp: ["comiera","comieras","comiera","comiéramos","comieran"],
+    indPerf: ["he comido","has comido","ha comido","hemos comido","han comido"],
+    subjPerf: ["haya comido","hayas comido","haya comido","hayamos comido","hayan comido"],
+    subjPlup: ["hubiera comido","hubieras comido","hubiera comido","hubiéramos comido","hubieran comido"],
+    impAff: ["—","come","coma","comamos","coman"],
+    impNeg: ["—","no comas","no coma","no comamos","no coman"],
+  },
+  beber: {
+    presente: ["bebo","bebes","bebe","bebemos","beben"],
+    preterito: ["bebí","bebiste","bebió","bebimos","bebieron"],
+    imperfecto: ["bebía","bebías","bebía","bebíamos","bebían"],
+    futuro: ["beberé","beberás","beberá","beberemos","beberán"],
+    condicional: ["bebería","beberías","bebería","beberíamos","beberían"],
+    subjPres: ["beba","bebas","beba","bebamos","beban"],
+    subjImp: ["bebiera","bebieras","bebiera","bebiéramos","bebieran"],
+    indPerf: ["he bebido","has bebido","ha bebido","hemos bebido","han bebido"],
+    subjPerf: ["haya bebido","hayas bebido","haya bebido","hayamos bebido","hayan bebido"],
+    subjPlup: ["hubiera bebido","hubieras bebido","hubiera bebido","hubiéramos bebido","hubieran bebido"],
+    impAff: ["—","bebe","beba","bebamos","beban"],
+    impNeg: ["—","no bebas","no beba","no bebamos","no beban"],
+  },
+  aprender: {
+    presente: ["aprendo","aprendes","aprende","aprendemos","aprenden"],
+    preterito: ["aprendí","aprendiste","aprendió","aprendimos","aprendieron"],
+    imperfecto: ["aprendía","aprendías","aprendía","aprendíamos","aprendían"],
+    futuro: ["aprenderé","aprenderás","aprenderá","aprenderemos","aprenderán"],
+    condicional: ["aprendería","aprenderías","aprendería","aprenderíamos","aprenderían"],
+    subjPres: ["aprenda","aprendas","aprenda","aprendamos","aprendan"],
+    subjImp: ["aprendiera","aprendieras","aprendiera","aprendiéramos","aprendieran"],
+    indPerf: ["he aprendido","has aprendido","ha aprendido","hemos aprendido","han aprendido"],
+    subjPerf: ["haya aprendido","hayas aprendido","haya aprendido","hayamos aprendido","hayan aprendido"],
+    subjPlup: ["hubiera aprendido","hubieras aprendido","hubiera aprendido","hubiéramos aprendido","hubieran aprendido"],
+    impAff: ["—","aprende","aprenda","aprendamos","aprendan"],
+    impNeg: ["—","no aprendas","no aprenda","no aprendamos","no aprendan"],
+  },
+  correr: {
+    presente: ["corro","corres","corre","corremos","corren"],
+    preterito: ["corrí","corriste","corrió","corrimos","corrieron"],
+    imperfecto: ["corría","corrías","corría","corríamos","corrían"],
+    futuro: ["correré","correrás","correrá","correremos","correrán"],
+    condicional: ["correría","correrías","correría","correríamos","correrían"],
+    subjPres: ["corra","corras","corra","corramos","corran"],
+    subjImp: ["corriera","corrieras","corriera","corriéramos","corrieran"],
+    indPerf: ["he corrido","has corrido","ha corrido","hemos corrido","han corrido"],
+    subjPerf: ["haya corrido","hayas corrido","haya corrido","hayamos corrido","hayan corrido"],
+    subjPlup: ["hubiera corrido","hubieras corrido","hubiera corrido","hubiéramos corrido","hubieran corrido"],
+    impAff: ["—","corre","corra","corramos","corran"],
+    impNeg: ["—","no corras","no corra","no corramos","no corran"],
+  },
+  leer: {
+    presente: ["leo","lees","lee","leemos","leen"],
+    preterito: ["leí","leíste","leyó","leímos","leyeron"],
+    imperfecto: ["leía","leías","leía","leíamos","leían"],
+    futuro: ["leeré","leerás","leerá","leeremos","leerán"],
+    condicional: ["leería","leerías","leería","leeríamos","leerían"],
+    subjPres: ["lea","leas","lea","leamos","lean"],
+    subjImp: ["leyera","leyeras","leyera","leyéramos","leyeran"],
+    indPerf: ["he leído","has leído","ha leído","hemos leído","han leído"],
+    subjPerf: ["haya leído","hayas leído","haya leído","hayamos leído","hayan leído"],
+    subjPlup: ["hubiera leído","hubieras leído","hubiera leído","hubiéramos leído","hubieran leído"],
+    impAff: ["—","lee","lea","leamos","lean"],
+    impNeg: ["—","no leas","no lea","no leamos","no lean"],
+  },
+  vivir: {
+    presente: ["vivo","vives","vive","vivimos","viven"],
+    preterito: ["viví","viviste","vivió","vivimos","vivieron"],
+    imperfecto: ["vivía","vivías","vivía","vivíamos","vivían"],
+    futuro: ["viviré","vivirás","vivirá","viviremos","vivirán"],
+    condicional: ["viviría","vivirías","viviría","viviríamos","vivirían"],
+    subjPres: ["viva","vivas","viva","vivamos","vivan"],
+    subjImp: ["viviera","vivieras","viviera","viviéramos","vivieran"],
+    indPerf: ["he vivido","has vivido","ha vivido","hemos vivido","han vivido"],
+    subjPerf: ["haya vivido","hayas vivido","haya vivido","hayamos vivido","hayan vivido"],
+    subjPlup: ["hubiera vivido","hubieras vivido","hubiera vivido","hubiéramos vivido","hubieran vivido"],
+    impAff: ["—","vive","viva","vivamos","vivan"],
+    impNeg: ["—","no vivas","no viva","no vivamos","no vivan"],
+  },
+  escribir: {
+    presente: ["escribo","escribes","escribe","escribimos","escriben"],
+    preterito: ["escribí","escribiste","escribió","escribimos","escribieron"],
+    imperfecto: ["escribía","escribías","escribía","escribíamos","escribían"],
+    futuro: ["escribiré","escribirás","escribirá","escribiremos","escribirán"],
+    condicional: ["escribiría","escribirías","escribiría","escribiríamos","escribirían"],
+    subjPres: ["escriba","escribas","escriba","escribamos","escriban"],
+    subjImp: ["escribiera","escribieras","escribiera","escribiéramos","escribieran"],
+    indPerf: ["he escrito","has escrito","ha escrito","hemos escrito","han escrito"],
+    subjPerf: ["haya escrito","hayas escrito","haya escrito","hayamos escrito","hayan escrito"],
+    subjPlup: ["hubiera escrito","hubieras escrito","hubiera escrito","hubiéramos escrito","hubieran escrito"],
+    impAff: ["—","escribe","escriba","escribamos","escriban"],
+    impNeg: ["—","no escribas","no escriba","no escribamos","no escriban"],
+  },
+  abrir: {
+    presente: ["abro","abres","abre","abrimos","abren"],
+    preterito: ["abrí","abriste","abrió","abrimos","abrieron"],
+    imperfecto: ["abría","abrías","abría","abríamos","abrían"],
+    futuro: ["abriré","abrirás","abrirá","abriremos","abrirán"],
+    condicional: ["abriría","abrirías","abriría","abriríamos","abrirían"],
+    subjPres: ["abra","abras","abra","abramos","abran"],
+    subjImp: ["abriera","abrieras","abriera","abriéramos","abrieran"],
+    indPerf: ["he abierto","has abierto","ha abierto","hemos abierto","han abierto"],
+    subjPerf: ["haya abierto","hayas abierto","haya abierto","hayamos abierto","hayan abierto"],
+    subjPlup: ["hubiera abierto","hubieras abierto","hubiera abierto","hubiéramos abierto","hubieran abierto"],
+    impAff: ["—","abre","abra","abramos","abran"],
+    impNeg: ["—","no abras","no abra","no abramos","no abran"],
+  },
+  decidir: {
+    presente: ["decido","decides","decide","decidimos","deciden"],
+    preterito: ["decidí","decidiste","decidió","decidimos","decidieron"],
+    imperfecto: ["decidía","decidías","decidía","decidíamos","decidían"],
+    futuro: ["decidiré","decidirás","decidirá","decidiremos","decidirán"],
+    condicional: ["decidiría","decidirías","decidiría","decidiríamos","decidirían"],
+    subjPres: ["decida","decidas","decida","decidamos","decidan"],
+    subjImp: ["decidiera","decidieras","decidiera","decidiéramos","decidieran"],
+    indPerf: ["he decidido","has decidido","ha decidido","hemos decidido","han decidido"],
+    subjPerf: ["haya decidido","hayas decidido","haya decidido","hayamos decidido","hayan decidido"],
+    subjPlup: ["hubiera decidido","hubieras decidido","hubiera decidido","hubiéramos decidido","hubieran decidido"],
+    impAff: ["—","decide","decida","decidamos","decidan"],
+    impNeg: ["—","no decidas","no decida","no decidamos","no decidan"],
+  },
+  recibir: {
+    presente: ["recibo","recibes","recibe","recibimos","reciben"],
+    preterito: ["recibí","recibiste","recibió","recibimos","recibieron"],
+    imperfecto: ["recibía","recibías","recibía","recibíamos","recibían"],
+    futuro: ["recibiré","recibirás","recibirá","recibiremos","recibirán"],
+    condicional: ["recibiría","recibirías","recibiría","recibiríamos","recibirían"],
+    subjPres: ["reciba","recibas","reciba","recibamos","reciban"],
+    subjImp: ["recibiera","recibieras","recibiera","recibiéramos","recibieran"],
+    indPerf: ["he recibido","has recibido","ha recibido","hemos recibido","han recibido"],
+    subjPerf: ["haya recibido","hayas recibido","haya recibido","hayamos recibido","hayan recibido"],
+    subjPlup: ["hubiera recibido","hubieras recibido","hubiera recibido","hubiéramos recibido","hubieran recibido"],
+    impAff: ["—","recibe","reciba","recibamos","reciban"],
+    impNeg: ["—","no recibas","no reciba","no recibamos","no reciban"],
+  },
+  tener: {
+    presente: ["tengo","tienes","tiene","tenemos","tienen"],
+    preterito: ["tuve","tuviste","tuvo","tuvimos","tuvieron"],
+    imperfecto: ["tenía","tenías","tenía","teníamos","tenían"],
+    futuro: ["tendré","tendrás","tendrá","tendremos","tendrán"],
+    condicional: ["tendría","tendrías","tendría","tendríamos","tendrían"],
+    subjPres: ["tenga","tengas","tenga","tengamos","tengan"],
+    subjImp: ["tuviera","tuvieras","tuviera","tuviéramos","tuvieran"],
+    indPerf: ["he tenido","has tenido","ha tenido","hemos tenido","han tenido"],
+    subjPerf: ["haya tenido","hayas tenido","haya tenido","hayamos tenido","hayan tenido"],
+    subjPlup: ["hubiera tenido","hubieras tenido","hubiera tenido","hubiéramos tenido","hubieran tenido"],
+    impAff: ["—","ten","tenga","tengamos","tengan"],
+    impNeg: ["—","no tengas","no tenga","no tengamos","no tengan"],
+  },
+  hacer: {
+    presente: ["hago","haces","hace","hacemos","hacen"],
+    preterito: ["hice","hiciste","hizo","hicimos","hicieron"],
+    imperfecto: ["hacía","hacías","hacía","hacíamos","hacían"],
+    futuro: ["haré","harás","hará","haremos","harán"],
+    condicional: ["haría","harías","haría","haríamos","harían"],
+    subjPres: ["haga","hagas","haga","hagamos","hagan"],
+    subjImp: ["hiciera","hicieras","hiciera","hiciéramos","hicieran"],
+    indPerf: ["he hecho","has hecho","ha hecho","hemos hecho","han hecho"],
+    subjPerf: ["haya hecho","hayas hecho","haya hecho","hayamos hecho","hayan hecho"],
+    subjPlup: ["hubiera hecho","hubieras hecho","hubiera hecho","hubiéramos hecho","hubieran hecho"],
+    impAff: ["—","haz","haga","hagamos","hagan"],
+    impNeg: ["—","no hagas","no haga","no hagamos","no hagan"],
+  },
+  poder: {
+    presente: ["puedo","puedes","puede","podemos","pueden"],
+    preterito: ["pude","pudiste","pudo","pudimos","pudieron"],
+    imperfecto: ["podía","podías","podía","podíamos","podían"],
+    futuro: ["podré","podrás","podrá","podremos","podrán"],
+    condicional: ["podría","podrías","podría","podríamos","podrían"],
+    subjPres: ["pueda","puedas","pueda","podamos","puedan"],
+    subjImp: ["pudiera","pudieras","pudiera","pudiéramos","pudieran"],
+    indPerf: ["he podido","has podido","ha podido","hemos podido","han podido"],
+    subjPerf: ["haya podido","hayas podido","haya podido","hayamos podido","hayan podido"],
+    subjPlup: ["hubiera podido","hubieras podido","hubiera podido","hubiéramos podido","hubieran podido"],
+    impAff: ["—","—","—","—","—"],
+    impNeg: ["—","—","—","—","—"],
+  },
+  decir: {
+    presente: ["digo","dices","dice","decimos","dicen"],
+    preterito: ["dije","dijiste","dijo","dijimos","dijeron"],
+    imperfecto: ["decía","decías","decía","decíamos","decían"],
+    futuro: ["diré","dirás","dirá","diremos","dirán"],
+    condicional: ["diría","dirías","diría","diríamos","dirían"],
+    subjPres: ["diga","digas","diga","digamos","digan"],
+    subjImp: ["dijera","dijeras","dijera","dijéramos","dijeran"],
+    indPerf: ["he dicho","has dicho","ha dicho","hemos dicho","han dicho"],
+    subjPerf: ["haya dicho","hayas dicho","haya dicho","hayamos dicho","hayan dicho"],
+    subjPlup: ["hubiera dicho","hubieras dicho","hubiera dicho","hubiéramos dicho","hubieran dicho"],
+    impAff: ["—","di","diga","digamos","digan"],
+    impNeg: ["—","no digas","no diga","no digamos","no digan"],
+  },
+  saber: {
+    presente: ["sé","sabes","sabe","sabemos","saben"],
+    preterito: ["supe","supiste","supo","supimos","supieron"],
+    imperfecto: ["sabía","sabías","sabía","sabíamos","sabían"],
+    futuro: ["sabré","sabrás","sabrá","sabremos","sabrán"],
+    condicional: ["sabría","sabrías","sabría","sabríamos","sabrían"],
+    subjPres: ["sepa","sepas","sepa","sepamos","sepan"],
+    subjImp: ["supiera","supieras","supiera","supiéramos","supieran"],
+    indPerf: ["he sabido","has sabido","ha sabido","hemos sabido","han sabido"],
+    subjPerf: ["haya sabido","hayas sabido","haya sabido","hayamos sabido","hayan sabido"],
+    subjPlup: ["hubiera sabido","hubieras sabido","hubiera sabido","hubiéramos sabido","hubieran sabido"],
+    impAff: ["—","sabe","sepa","sepamos","sepan"],
+    impNeg: ["—","no sepas","no sepa","no sepamos","no sepan"],
+  },
+  dar: {
+    presente: ["doy","das","da","damos","dan"],
+    preterito: ["di","diste","dio","dimos","dieron"],
+    imperfecto: ["daba","dabas","daba","dábamos","daban"],
+    futuro: ["daré","darás","dará","daremos","darán"],
+    condicional: ["daría","darías","daría","daríamos","darían"],
+    subjPres: ["dé","des","dé","demos","den"],
+    subjImp: ["diera","dieras","diera","diéramos","dieran"],
+    indPerf: ["he dado","has dado","ha dado","hemos dado","han dado"],
+    subjPerf: ["haya dado","hayas dado","haya dado","hayamos dado","hayan dado"],
+    subjPlup: ["hubiera dado","hubieras dado","hubiera dado","hubiéramos dado","hubieran dado"],
+    impAff: ["—","da","dé","demos","den"],
+    impNeg: ["—","no des","no dé","no demos","no den"],
+  },
+  querer: {
+    presente: ["quiero","quieres","quiere","queremos","quieren"],
+    preterito: ["quise","quisiste","quiso","quisimos","quisieron"],
+    imperfecto: ["quería","querías","quería","queríamos","querían"],
+    futuro: ["querré","querrás","querrá","querremos","querrán"],
+    condicional: ["querría","querrías","querría","querríamos","querrían"],
+    subjPres: ["quiera","quieras","quiera","queramos","quieran"],
+    subjImp: ["quisiera","quisieras","quisiera","quisiéramos","quisieran"],
+    indPerf: ["he querido","has querido","ha querido","hemos querido","han querido"],
+    subjPerf: ["haya querido","hayas querido","haya querido","hayamos querido","hayan querido"],
+    subjPlup: ["hubiera querido","hubieras querido","hubiera querido","hubiéramos querido","hubieran querido"],
+    impAff: ["—","quiere","quiera","queramos","quieran"],
+    impNeg: ["—","no quieras","no quiera","no queramos","no quieran"],
+  },
+  poner: {
+    presente: ["pongo","pones","pone","ponemos","ponen"],
+    preterito: ["puse","pusiste","puso","pusimos","pusieron"],
+    imperfecto: ["ponía","ponías","ponía","poníamos","ponían"],
+    futuro: ["pondré","pondrás","pondrá","pondremos","pondrán"],
+    condicional: ["pondría","pondrías","pondría","pondríamos","pondrían"],
+    subjPres: ["ponga","pongas","ponga","pongamos","pongan"],
+    subjImp: ["pusiera","pusieras","pusiera","pusiéramos","pusieran"],
+    indPerf: ["he puesto","has puesto","ha puesto","hemos puesto","han puesto"],
+    subjPerf: ["haya puesto","hayas puesto","haya puesto","hayamos puesto","hayan puesto"],
+    subjPlup: ["hubiera puesto","hubieras puesto","hubiera puesto","hubiéramos puesto","hubieran puesto"],
+    impAff: ["—","pon","ponga","pongamos","pongan"],
+    impNeg: ["—","no pongas","no ponga","no pongamos","no pongan"],
+  },
+  venir: {
+    presente: ["vengo","vienes","viene","venimos","vienen"],
+    preterito: ["vine","viniste","vino","vinimos","vinieron"],
+    imperfecto: ["venía","venías","venía","veníamos","venían"],
+    futuro: ["vendré","vendrás","vendrá","vendremos","vendrán"],
+    condicional: ["vendría","vendrías","vendría","vendríamos","vendrían"],
+    subjPres: ["venga","vengas","venga","vengamos","vengan"],
+    subjImp: ["viniera","vinieras","viniera","viniéramos","vinieran"],
+    indPerf: ["he venido","has venido","ha venido","hemos venido","han venido"],
+    subjPerf: ["haya venido","hayas venido","haya venido","hayamos venido","hayan venido"],
+    subjPlup: ["hubiera venido","hubieras venido","hubiera venido","hubiéramos venido","hubieran venido"],
+    impAff: ["—","ven","venga","vengamos","vengan"],
+    impNeg: ["—","no vengas","no venga","no vengamos","no vengan"],
+  },
+  salir: {
+    presente: ["salgo","sales","sale","salimos","salen"],
+    preterito: ["salí","saliste","salió","salimos","salieron"],
+    imperfecto: ["salía","salías","salía","salíamos","salían"],
+    futuro: ["saldré","saldrás","saldrá","saldremos","saldrán"],
+    condicional: ["saldría","saldrías","saldría","saldríamos","saldrían"],
+    subjPres: ["salga","salgas","salga","salgamos","salgan"],
+    subjImp: ["saliera","salieras","saliera","saliéramos","salieran"],
+    indPerf: ["he salido","has salido","ha salido","hemos salido","han salido"],
+    subjPerf: ["haya salido","hayas salido","haya salido","hayamos salido","hayan salido"],
+    subjPlup: ["hubiera salido","hubieras salido","hubiera salido","hubiéramos salido","hubieran salido"],
+    impAff: ["—","sal","salga","salgamos","salgan"],
+    impNeg: ["—","no salgas","no salga","no salgamos","no salgan"],
+  },  haber: {
+    presente: ["he","has","ha","hemos","han"],
+    preterito: ["hube","hubiste","hubo","hubimos","hubieron"],
+    imperfecto: ["había","habías","había","habíamos","habían"],
+    futuro: ["habré","habrás","habrá","habremos","habrán"],
+    condicional: ["habría","habrías","habría","habríamos","habrían"],
+    subjPres: ["haya","hayas","haya","hayamos","hayan"],
+    subjImp: ["hubiera","hubieras","hubiera","hubiéramos","hubieran"],
+    indPerf: ["he habido","has habido","ha habido","hemos habido","han habido"],
+    subjPerf: ["haya habido","hayas habido","haya habido","hayamos habido","hayan habido"],
+    subjPlup: ["hubiera habido","hubieras habido","hubiera habido","hubiéramos habido","hubieran habido"],
+    impAff: ["—","rarely used","rarely used","rarely used","rarely used"],
+    impNeg: ["—","rarely used","rarely used","rarely used","rarely used"],
+  },
+  deber: {
+    presente: ["debo","debes","debe","debemos","deben"],
+    preterito: ["debí","debiste","debió","debimos","debieron"],
+    imperfecto: ["debía","debías","debía","debíamos","debían"],
+    futuro: ["deberé","deberás","deberá","deberemos","deberán"],
+    condicional: ["debería","deberías","debería","deberíamos","deberían"],
+    subjPres: ["deba","debas","deba","debamos","deban"],
+    subjImp: ["debiera","debieras","debiera","debiéramos","debieran"],
+    indPerf: ["he debido","has debido","ha debido","hemos debido","han debido"],
+    subjPerf: ["haya debido","hayas debido","haya debido","hayamos debido","hayan debido"],
+    subjPlup: ["hubiera debido","hubieras debido","hubiera debido","hubiéramos debido","hubieran debido"],
+    impAff: ["—","debe","deba","debamos","deban"],
+    impNeg: ["—","no debas","no deba","no debamos","no deban"],
+  },
+  creer: {
+    presente: ["creo","crees","cree","creemos","creen"],
+    preterito: ["creí","creíste","creyó","creímos","creyeron"],
+    imperfecto: ["creía","creías","creía","creíamos","creían"],
+    futuro: ["creeré","creerás","creerá","creeremos","creerán"],
+    condicional: ["creería","creerías","creería","creeríamos","creerían"],
+    subjPres: ["crea","creas","crea","creamos","crean"],
+    subjImp: ["creyera","creyeras","creyera","creyéramos","creyeran"],
+    indPerf: ["he creído","has creído","ha creído","hemos creído","han creído"],
+    subjPerf: ["haya creído","hayas creído","haya creído","hayamos creído","hayan creído"],
+    subjPlup: ["hubiera creído","hubieras creído","hubiera creído","hubiéramos creído","hubieran creído"],
+    impAff: ["—","cree","crea","creamos","crean"],
+    impNeg: ["—","no creas","no crea","no creamos","no crean"],
+  },
+  llevar: {
+    presente: ["llevo","llevas","lleva","llevamos","llevan"],
+    preterito: ["llevé","llevaste","llevó","llevamos","llevaron"],
+    imperfecto: ["llevaba","llevabas","llevaba","llevábamos","llevaban"],
+    futuro: ["llevaré","llevarás","llevará","llevaremos","llevarán"],
+    condicional: ["llevaría","llevarías","llevaría","llevaríamos","llevarían"],
+    subjPres: ["lleve","lleves","lleve","llevemos","lleven"],
+    subjImp: ["llevara","llevaras","llevara","lleváramos","llevaran"],
+    indPerf: ["he llevado","has llevado","ha llevado","hemos llevado","han llevado"],
+    subjPerf: ["haya llevado","hayas llevado","haya llevado","hayamos llevado","hayan llevado"],
+    subjPlup: ["hubiera llevado","hubieras llevado","hubiera llevado","hubiéramos llevado","hubieran llevado"],
+    impAff: ["—","lleva","lleve","llevemos","lleven"],
+    impNeg: ["—","no lleves","no lleve","no llevemos","no lleven"],
+  },
+  dejar: {
+    presente: ["dejo","dejas","deja","dejamos","dejan"],
+    preterito: ["dejé","dejaste","dejó","dejamos","dejaron"],
+    imperfecto: ["dejaba","dejabas","dejaba","dejábamos","dejaban"],
+    futuro: ["dejaré","dejarás","dejará","dejaremos","dejarán"],
+    condicional: ["dejaría","dejarías","dejaría","dejaríamos","dejarían"],
+    subjPres: ["deje","dejes","deje","dejemos","dejen"],
+    subjImp: ["dejara","dejaras","dejara","dejáramos","dejaran"],
+    indPerf: ["he dejado","has dejado","ha dejado","hemos dejado","han dejado"],
+    subjPerf: ["haya dejado","hayas dejado","haya dejado","hayamos dejado","hayan dejado"],
+    subjPlup: ["hubiera dejado","hubieras dejado","hubiera dejado","hubiéramos dejado","hubieran dejado"],
+    impAff: ["—","deja","deje","dejemos","dejen"],
+    impNeg: ["—","no dejes","no deje","no dejemos","no dejen"],
+  },
+  llamar: {
+    presente: ["llamo","llamas","llama","llamamos","llaman"],
+    preterito: ["llamé","llamaste","llamó","llamamos","llamaron"],
+    imperfecto: ["llamaba","llamabas","llamaba","llamábamos","llamaban"],
+    futuro: ["llamaré","llamarás","llamará","llamaremos","llamarán"],
+    condicional: ["llamaría","llamarías","llamaría","llamaríamos","llamarían"],
+    subjPres: ["llame","llames","llame","llamemos","llamen"],
+    subjImp: ["llamara","llamaras","llamara","llamáramos","llamaran"],
+    indPerf: ["he llamado","has llamado","ha llamado","hemos llamado","han llamado"],
+    subjPerf: ["haya llamado","hayas llamado","haya llamado","hayamos llamado","hayan llamado"],
+    subjPlup: ["hubiera llamado","hubieras llamado","hubiera llamado","hubiéramos llamado","hubieran llamado"],
+    impAff: ["—","llama","llame","llamemos","llamen"],
+    impNeg: ["—","no llames","no llame","no llamemos","no llamen"],
+  },
+  ver: {
+    presente: ["veo","ves","ve","vemos","ven"],
+    preterito: ["vi","viste","vio","vimos","vieron"],
+    imperfecto: ["veía","veías","veía","veíamos","veían"],
+    futuro: ["veré","verás","verá","veremos","verán"],
+    condicional: ["vería","verías","vería","veríamos","verían"],
+    subjPres: ["vea","veas","vea","veamos","vean"],
+    subjImp: ["viera","vieras","viera","viéramos","vieran"],
+    indPerf: ["he visto","has visto","ha visto","hemos visto","han visto"],
+    subjPerf: ["haya visto","hayas visto","haya visto","hayamos visto","hayan visto"],
+    subjPlup: ["hubiera visto","hubieras visto","hubiera visto","hubiéramos visto","hubieran visto"],
+    impAff: ["—","ve","vea","veamos","vean"],
+    impNeg: ["—","no veas","no vea","no veamos","no vean"],
+  },
+  seguir: {
+    presente: ["sigo","sigues","sigue","seguimos","siguen"],
+    preterito: ["seguí","seguiste","siguió","seguimos","siguieron"],
+    imperfecto: ["seguía","seguías","seguía","seguíamos","seguían"],
+    futuro: ["seguiré","seguirás","seguirá","seguiremos","seguirán"],
+    condicional: ["seguiría","seguirías","seguiría","seguiríamos","seguirían"],
+    subjPres: ["siga","sigas","siga","sigamos","sigan"],
+    subjImp: ["siguiera","siguieras","siguiera","siguiéramos","siguieran"],
+    indPerf: ["he seguido","has seguido","ha seguido","hemos seguido","han seguido"],
+    subjPerf: ["haya seguido","hayas seguido","haya seguido","hayamos seguido","hayan seguido"],
+    subjPlup: ["hubiera seguido","hubieras seguido","hubiera seguido","hubiéramos seguido","hubieran seguido"],
+    impAff: ["—","sigue","siga","sigamos","sigan"],
+    impNeg: ["—","no sigas","no siga","no sigamos","no sigan"],
+  },
+  encontrar: {
+    presente: ["encuentro","encuentras","encuentra","encontramos","encuentran"],
+    preterito: ["encontré","encontraste","encontró","encontramos","encontraron"],
+    imperfecto: ["encontraba","encontrabas","encontraba","encontrábamos","encontraban"],
+    futuro: ["encontraré","encontrarás","encontrará","encontraremos","encontrarán"],
+    condicional: ["encontraría","encontrarías","encontraría","encontraríamos","encontrarían"],
+    subjPres: ["encuentre","encuentres","encuentre","encontremos","encuentren"],
+    subjImp: ["encontrara","encontraras","encontrara","encontráramos","encontraran"],
+    indPerf: ["he encontrado","has encontrado","ha encontrado","hemos encontrado","han encontrado"],
+    subjPerf: ["haya encontrado","hayas encontrado","haya encontrado","hayamos encontrado","hayan encontrado"],
+    subjPlup: ["hubiera encontrado","hubieras encontrado","hubiera encontrado","hubiéramos encontrado","hubieran encontrado"],
+    impAff: ["—","encuentra","encuentre","encontremos","encuentren"],
+    impNeg: ["—","no encuentres","no encuentre","no encontremos","no encuentren"],
+  },
+  pensar: {
+    presente: ["pienso","piensas","piensa","pensamos","piensan"],
+    preterito: ["pensé","pensaste","pensó","pensamos","pensaron"],
+    imperfecto: ["pensaba","pensabas","pensaba","pensábamos","pensaban"],
+    futuro: ["pensaré","pensarás","pensará","pensaremos","pensarán"],
+    condicional: ["pensaría","pensarías","pensaría","pensaríamos","pensarían"],
+    subjPres: ["piense","pienses","piense","pensemos","piensen"],
+    subjImp: ["pensara","pensaras","pensara","pensáramos","pensaran"],
+    indPerf: ["he pensado","has pensado","ha pensado","hemos pensado","han pensado"],
+    subjPerf: ["haya pensado","hayas pensado","haya pensado","hayamos pensado","hayan pensado"],
+    subjPlup: ["hubiera pensado","hubieras pensado","hubiera pensado","hubiéramos pensado","hubieran pensado"],
+    impAff: ["—","piensa","piense","pensemos","piensen"],
+    impNeg: ["—","no pienses","no piense","no pensemos","no piensen"],
+  },
+  volver: {
+    presente: ["vuelvo","vuelves","vuelve","volvemos","vuelven"],
+    preterito: ["volví","volviste","volvió","volvimos","volvieron"],
+    imperfecto: ["volvía","volvías","volvía","volvíamos","volvían"],
+    futuro: ["volveré","volverás","volverá","volveremos","volverán"],
+    condicional: ["volvería","volverías","volvería","volveríamos","volverían"],
+    subjPres: ["vuelva","vuelvas","vuelva","volvamos","vuelvan"],
+    subjImp: ["volviera","volvieras","volviera","volviéramos","volvieran"],
+    indPerf: ["he vuelto","has vuelto","ha vuelto","hemos vuelto","han vuelto"],
+    subjPerf: ["haya vuelto","hayas vuelto","haya vuelto","hayamos vuelto","hayan vuelto"],
+    subjPlup: ["hubiera vuelto","hubieras vuelto","hubiera vuelto","hubiéramos vuelto","hubieran vuelto"],
+    impAff: ["—","vuelve","vuelva","volvamos","vuelvan"],
+    impNeg: ["—","no vuelvas","no vuelva","no volvamos","no vuelvan"],
+  },
 };
 const PERSONS = ["Yo","Tú","Él/Ella/Usted","Nosotros","Ellos/Ellas/Ustedes"];
 const PERSONS_IMP = ["Tú","Usted","Nosotros","Ustedes"];
 
 // Spanish answers use **word** markup around the conjugated verb for highlighting.
+// Metadata for the verb-selection panel: label + regular/irregular grouping.
+// New verbs added to DECK without an entry here will still work — they'll
+// just default to "Regular" with an auto-capitalized label.
+// Verb ranking source: "200 Spanish Verbs Ranked by Frequency" (CREA-based corpus),
+// brainscape.com/flashcards/200-spanish-verbs-ranked-by-frequency-6594884
+// To rank a NEW verb: look up its position in that list and subtract 1
+// (the list's row 1 is a header, not a verb, so raw list position is off by one —
+// e.g. ser is listed at position 2 but is genuinely the #1 verb, so rank: 1).
+// If a verb isn't in that list at all (e.g. beber), give it a high placeholder
+// like 900+ so it sorts to the end of its group rather than guessing a real number.
+const VERB_META = {
+  ser: { label: "Ser", type: "irregular", rank: 1 },
+  estar: { label: "Estar", type: "irregular", rank: 3 },
+  tener: { label: "Tener", type: "irregular", rank: 4 },
+  hacer: { label: "Hacer", type: "irregular", rank: 5 },
+  poder: { label: "Poder", type: "irregular", rank: 6 },
+  decir: { label: "Decir", type: "irregular", rank: 7 },
+  ir: { label: "Ir", type: "irregular", rank: 8 },
+  dar: { label: "Dar", type: "irregular", rank: 10 },
+  saber: { label: "Saber", type: "irregular", rank: 11 },
+  querer: { label: "Querer", type: "irregular", rank: 12 },
+  poner: { label: "Poner", type: "irregular", rank: 16 },
+  venir: { label: "Venir", type: "irregular", rank: 26 },
+  salir: { label: "Salir", type: "irregular", rank: 28 },
+  llegar: { label: "Llegar", type: "regular", conj: "ar", rank: 13 },
+  pasar: { label: "Pasar", type: "regular", conj: "ar", rank: 14 },
+  quedar: { label: "Quedar", type: "regular", conj: "ar", rank: 18 },
+  hablar: { label: "Hablar", type: "regular", conj: "ar", rank: 20 },
+  tomar: { label: "Tomar", type: "regular", conj: "ar", rank: 30 },
+  mirar: { label: "Mirar", type: "regular", conj: "ar", rank: 35 },
+  trabajar: { label: "Trabajar", type: "regular", conj: "ar", rank: 42 },
+  necesitar: { label: "Necesitar", type: "regular", conj: "ar", rank: 58 },
+  estudiar: { label: "Estudiar", type: "regular", conj: "ar", rank: 85 },
+  comprar: { label: "Comprar", type: "regular", conj: "ar", rank: 117 },
+  leer: { label: "Leer", type: "regular", conj: "er", rank: 61 },
+  correr: { label: "Correr", type: "regular", conj: "er", rank: 89 },
+  comer: { label: "Comer", type: "regular", conj: "er", rank: 106 },
+  aprender: { label: "Aprender", type: "regular", conj: "er", rank: 116 },
+  beber: { label: "Beber", type: "regular", conj: "er", rank: 900 },
+  vivir: { label: "Vivir", type: "regular", conj: "ir", rank: 32 },
+  escribir: { label: "Escribir", type: "regular", conj: "ir", rank: 43 },
+  recibir: { label: "Recibir", type: "regular", conj: "ir", rank: 49 },
+  abrir: { label: "Abrir", type: "regular", conj: "ir", rank: 66 },
+  decidir: { label: "Decidir", type: "regular", conj: "ir", rank: 102 },
+  haber: { label: "Haber", type: "irregular", rank: 2 },
+  ver: { label: "Ver", type: "irregular", rank: 9 },
+  deber: { label: "Deber", type: "regular", conj: "er", rank: 15 },
+  creer: { label: "Creer", type: "regular", conj: "er", rank: 19 },
+  llevar: { label: "Llevar", type: "regular", conj: "ar", rank: 21 },
+  dejar: { label: "Dejar", type: "regular", conj: "ar", rank: 22 },
+  llamar: { label: "Llamar", type: "regular", conj: "ar", rank: 25 },
+  seguir: { label: "Seguir", type: "regular", conj: "ir", rank: 23, quirk: "e→i" },
+  encontrar: { label: "Encontrar", type: "regular", conj: "ar", rank: 24, quirk: "o→ue" },
+  pensar: { label: "Pensar", type: "regular", conj: "ar", rank: 27, quirk: "e→ie" },
+  volver: { label: "Volver", type: "regular", conj: "er", rank: 29, quirk: "o→ue" },
+};
+function verbMeta(key) {
+  return VERB_META[key] || { label: key.charAt(0).toUpperCase() + key.slice(1), type: "regular", rank: 9999 };
+}
+function rankLabel(meta) {
+  return meta.rank >= 900 ? "unranked" : String(meta.rank);
+}
+
 const DECK = {
   ser: {
     presente: [
@@ -819,12 +2051,381 @@ const DECK = {
     participio: [
       {person:"—", en:"Having gone there before, I knew the way.", es:"**Habiendo ido** allí antes, yo sabía el camino."},
     ],
-  }
+  },
+  hablar: {
+    presente: [
+      {person:"Yo", en:"I speak a little Spanish.", es:"**Hablo** un poco de español."},
+      {person:"Tú", en:"You speak very well.", es:"**Hablas** muy bien."},
+      {person:"Él/Ella/Usted", en:"She speaks three languages.", es:"Ella **habla** tres idiomas."},
+      {person:"Nosotros", en:"We speak on the phone every day.", es:"**Hablamos** por teléfono todos los días."},
+      {person:"Ellos/Ellas/Ustedes", en:"They speak too fast.", es:"**Hablan** demasiado rápido."},
+    ],
+  },
+  trabajar: {
+    presente: [
+      {person:"Yo", en:"I work from home.", es:"**Trabajo** desde casa."},
+      {person:"Tú", en:"You work too much.", es:"**Trabajas** demasiado."},
+      {person:"Él/Ella/Usted", en:"He works at the hospital.", es:"Él **trabaja** en el hospital."},
+      {person:"Nosotros", en:"We work together well.", es:"**Trabajamos** bien juntos."},
+      {person:"Ellos/Ellas/Ustedes", en:"They work on weekends.", es:"**Trabajan** los fines de semana."},
+    ],
+  },
+  estudiar: {
+    presente: [
+      {person:"Yo", en:"I study every night.", es:"**Estudio** todas las noches."},
+      {person:"Tú", en:"You study medicine.", es:"**Estudias** medicina."},
+      {person:"Él/Ella/Usted", en:"She studies a lot for her exams.", es:"Ella **estudia** mucho para sus exámenes."},
+      {person:"Nosotros", en:"We study together at the library.", es:"**Estudiamos** juntos en la biblioteca."},
+      {person:"Ellos/Ellas/Ustedes", en:"They study English.", es:"**Estudian** inglés."},
+    ],
+  },
+  comprar: {
+    presente: [
+      {person:"Yo", en:"I buy fresh bread every morning.", es:"**Compro** pan fresco cada mañana."},
+      {person:"Tú", en:"You buy too many shoes.", es:"**Compras** demasiados zapatos."},
+      {person:"Él/Ella/Usted", en:"He buys the newspaper daily.", es:"Él **compra** el periódico a diario."},
+      {person:"Nosotros", en:"We buy groceries on Sundays.", es:"**Compramos** víveres los domingos."},
+      {person:"Ellos/Ellas/Ustedes", en:"They buy gifts for everyone.", es:"**Compran** regalos para todos."},
+    ],
+  },
+  llegar: {
+    presente: [
+      {person:"Yo", en:"I arrive at eight.", es:"**Llego** a las ocho."},
+      {person:"Tú", en:"You always arrive late.", es:"Siempre **llegas** tarde."},
+      {person:"Él/Ella/Usted", en:"She arrives on time.", es:"Ella **llega** a tiempo."},
+      {person:"Nosotros", en:"We arrive together.", es:"**Llegamos** juntos."},
+      {person:"Ellos/Ellas/Ustedes", en:"They arrive tomorrow.", es:"**Llegan** mañana."},
+    ],
+  },
+  tomar: {
+    presente: [
+      {person:"Yo", en:"I take the bus to work.", es:"**Tomo** el autobús al trabajo."},
+      {person:"Tú", en:"You drink too much coffee.", es:"**Tomas** demasiado café."},
+      {person:"Él/Ella/Usted", en:"He takes his medicine every day.", es:"Él **toma** su medicina todos los días."},
+      {person:"Nosotros", en:"We take a break at noon.", es:"**Tomamos** un descanso al mediodía."},
+      {person:"Ellos/Ellas/Ustedes", en:"They take the train.", es:"**Toman** el tren."},
+    ],
+  },
+  mirar: {
+    presente: [
+      {person:"Yo", en:"I watch the news every night.", es:"**Miro** las noticias todas las noches."},
+      {person:"Tú", en:"You look very tired.", es:"**Miras** muy cansado/a."},
+      {person:"Él/Ella/Usted", en:"She watches movies on weekends.", es:"Ella **mira** películas los fines de semana."},
+      {person:"Nosotros", en:"We watch the sunset together.", es:"**Miramos** la puesta de sol juntos."},
+      {person:"Ellos/Ellas/Ustedes", en:"They watch too much television.", es:"**Miran** demasiada televisión."},
+    ],
+  },
+  necesitar: {
+    presente: [
+      {person:"Yo", en:"I need more time.", es:"**Necesito** más tiempo."},
+      {person:"Tú", en:"You need to rest.", es:"**Necesitas** descansar."},
+      {person:"Él/Ella/Usted", en:"She needs help with the project.", es:"Ella **necesita** ayuda con el proyecto."},
+      {person:"Nosotros", en:"We need a new plan.", es:"**Necesitamos** un nuevo plan."},
+      {person:"Ellos/Ellas/Ustedes", en:"They need more information.", es:"**Necesitan** más información."},
+    ],
+  },
+  pasar: {
+    presente: [
+      {person:"Yo", en:"I spend a lot of time here.", es:"**Paso** mucho tiempo aquí."},
+      {person:"Tú", en:"You pass by my house every day.", es:"**Pasas** por mi casa todos los días."},
+      {person:"Él/Ella/Usted", en:"She spends the summer in Spain.", es:"Ella **pasa** el verano en España."},
+      {person:"Nosotros", en:"We spend the holidays together.", es:"**Pasamos** las fiestas juntos."},
+      {person:"Ellos/Ellas/Ustedes", en:"They pass the exam easily.", es:"**Pasan** el examen fácilmente."},
+    ],
+  },
+  quedar: {
+    presente: [
+      {person:"Yo", en:"I have little time left.", es:"Me **queda** poco tiempo."},
+      {person:"Tú", en:"You have a lot of money left.", es:"Te **queda** mucho dinero."},
+      {person:"Él/Ella/Usted", en:"That shirt fits her well.", es:"Esa camisa le **queda** bien."},
+      {person:"Nosotros", en:"Where do we agree to meet?", es:"¿Dónde **quedamos**?"},
+      {person:"Ellos/Ellas/Ustedes", en:"They are located far from here.", es:"**Quedan** lejos de aquí."},
+    ],
+  },
+  comer: {
+    presente: [
+      {person:"Yo", en:"I eat breakfast at seven.", es:"**Como** el desayuno a las siete."},
+      {person:"Tú", en:"You eat too fast.", es:"**Comes** demasiado rápido."},
+      {person:"Él/Ella/Usted", en:"She eats vegetables every day.", es:"Ella **come** verduras todos los días."},
+      {person:"Nosotros", en:"We eat together on Sundays.", es:"**Comemos** juntos los domingos."},
+      {person:"Ellos/Ellas/Ustedes", en:"They eat at the new restaurant.", es:"**Comen** en el restaurante nuevo."},
+    ],
+  },
+  beber: {
+    presente: [
+      {person:"Yo", en:"I drink water every morning.", es:"**Bebo** agua cada mañana."},
+      {person:"Tú", en:"You drink too much coffee.", es:"**Bebes** demasiado café."},
+      {person:"Él/Ella/Usted", en:"He drinks tea at night.", es:"Él **bebe** té por la noche."},
+      {person:"Nosotros", en:"We drink juice with breakfast.", es:"**Bebemos** jugo con el desayuno."},
+      {person:"Ellos/Ellas/Ustedes", en:"They drink soda too often.", es:"**Beben** refresco muy seguido."},
+    ],
+  },
+  aprender: {
+    presente: [
+      {person:"Yo", en:"I learn something new every day.", es:"**Aprendo** algo nuevo cada día."},
+      {person:"Tú", en:"You learn quickly.", es:"**Aprendes** rápido."},
+      {person:"Él/Ella/Usted", en:"She learns Spanish online.", es:"Ella **aprende** español en línea."},
+      {person:"Nosotros", en:"We learn from our mistakes.", es:"**Aprendemos** de nuestros errores."},
+      {person:"Ellos/Ellas/Ustedes", en:"They learn together in class.", es:"**Aprenden** juntos en clase."},
+    ],
+  },
+  correr: {
+    presente: [
+      {person:"Yo", en:"I run every morning.", es:"**Corro** todas las mañanas."},
+      {person:"Tú", en:"You run very fast.", es:"**Corres** muy rápido."},
+      {person:"Él/Ella/Usted", en:"He runs five kilometers a day.", es:"Él **corre** cinco kilómetros al día."},
+      {person:"Nosotros", en:"We run in the park.", es:"**Corremos** en el parque."},
+      {person:"Ellos/Ellas/Ustedes", en:"They run every weekend.", es:"**Corren** cada fin de semana."},
+    ],
+  },
+  leer: {
+    presente: [
+      {person:"Yo", en:"I read before bed.", es:"**Leo** antes de dormir."},
+      {person:"Tú", en:"You read a lot of books.", es:"**Lees** muchos libros."},
+      {person:"Él/Ella/Usted", en:"She reads the newspaper every day.", es:"Ella **lee** el periódico todos los días."},
+      {person:"Nosotros", en:"We read together at night.", es:"**Leemos** juntos por la noche."},
+      {person:"Ellos/Ellas/Ustedes", en:"They read in silence.", es:"**Leen** en silencio."},
+    ],
+  },
+  vivir: {
+    presente: [
+      {person:"Yo", en:"I live in Mexico.", es:"**Vivo** en México."},
+      {person:"Tú", en:"You live very close to here.", es:"**Vives** muy cerca de aquí."},
+      {person:"Él/Ella/Usted", en:"She lives alone.", es:"Ella **vive** sola."},
+      {person:"Nosotros", en:"We live together.", es:"**Vivimos** juntos."},
+      {person:"Ellos/Ellas/Ustedes", en:"They live in the city.", es:"**Viven** en la ciudad."},
+    ],
+  },
+  escribir: {
+    presente: [
+      {person:"Yo", en:"I write in my journal every night.", es:"**Escribo** en mi diario cada noche."},
+      {person:"Tú", en:"You write very well.", es:"**Escribes** muy bien."},
+      {person:"Él/Ella/Usted", en:"He writes emails all day.", es:"Él **escribe** correos todo el día."},
+      {person:"Nosotros", en:"We write letters to our family.", es:"**Escribimos** cartas a nuestra familia."},
+      {person:"Ellos/Ellas/Ustedes", en:"They write songs together.", es:"**Escriben** canciones juntos."},
+    ],
+  },
+  abrir: {
+    presente: [
+      {person:"Yo", en:"I open the store at nine.", es:"**Abro** la tienda a las nueve."},
+      {person:"Tú", en:"You open the window every morning.", es:"**Abres** la ventana cada mañana."},
+      {person:"Él/Ella/Usted", en:"She opens the mail first.", es:"Ella **abre** el correo primero."},
+      {person:"Nosotros", en:"We open the restaurant on weekends.", es:"**Abrimos** el restaurante los fines de semana."},
+      {person:"Ellos/Ellas/Ustedes", en:"They open the doors at noon.", es:"**Abren** las puertas al mediodía."},
+    ],
+  },
+  decidir: {
+    presente: [
+      {person:"Yo", en:"I decide quickly.", es:"**Decido** rápido."},
+      {person:"Tú", en:"You decide for the whole group.", es:"**Decides** por todo el grupo."},
+      {person:"Él/Ella/Usted", en:"She decides what to cook.", es:"Ella **decide** qué cocinar."},
+      {person:"Nosotros", en:"We decide together.", es:"**Decidimos** juntos."},
+      {person:"Ellos/Ellas/Ustedes", en:"They decide the schedule.", es:"**Deciden** el horario."},
+    ],
+  },
+  recibir: {
+    presente: [
+      {person:"Yo", en:"I receive many emails every day.", es:"**Recibo** muchos correos todos los días."},
+      {person:"Tú", en:"You receive good news.", es:"**Recibes** buenas noticias."},
+      {person:"Él/Ella/Usted", en:"She receives guests warmly.", es:"Ella **recibe** a los invitados con calidez."},
+      {person:"Nosotros", en:"We receive a package today.", es:"**Recibimos** un paquete hoy."},
+      {person:"Ellos/Ellas/Ustedes", en:"They receive a prize.", es:"**Reciben** un premio."},
+    ],
+  },
+  tener: {
+    presente: [
+      {person:"Yo", en:"I have a lot of work today.", es:"**Tengo** mucho trabajo hoy."},
+      {person:"Tú", en:"You have my keys.", es:"**Tienes** mis llaves."},
+      {person:"Él/Ella/Usted", en:"She has two brothers.", es:"Ella **tiene** dos hermanos."},
+      {person:"Nosotros", en:"We have a meeting at noon.", es:"**Tenemos** una reunión al mediodía."},
+      {person:"Ellos/Ellas/Ustedes", en:"They have a new car.", es:"**Tienen** un carro nuevo."},
+    ],
+  },
+  hacer: {
+    presente: [
+      {person:"Yo", en:"I make dinner every night.", es:"**Hago** la cena todas las noches."},
+      {person:"Tú", en:"You do a great job.", es:"**Haces** un gran trabajo."},
+      {person:"Él/Ella/Usted", en:"He does his homework after school.", es:"Él **hace** su tarea después de la escuela."},
+      {person:"Nosotros", en:"We make plans for the weekend.", es:"**Hacemos** planes para el fin de semana."},
+      {person:"Ellos/Ellas/Ustedes", en:"They do exercise every morning.", es:"**Hacen** ejercicio cada mañana."},
+    ],
+  },
+  poder: {
+    presente: [
+      {person:"Yo", en:"I can help you tomorrow.", es:"**Puedo** ayudarte mañana."},
+      {person:"Tú", en:"You can call me anytime.", es:"**Puedes** llamarme cuando quieras."},
+      {person:"Él/Ella/Usted", en:"She can speak three languages.", es:"Ella **puede** hablar tres idiomas."},
+      {person:"Nosotros", en:"We can finish this today.", es:"**Podemos** terminar esto hoy."},
+      {person:"Ellos/Ellas/Ustedes", en:"They can come to the party.", es:"**Pueden** venir a la fiesta."},
+    ],
+  },
+  decir: {
+    presente: [
+      {person:"Yo", en:"I say what I think.", es:"**Digo** lo que pienso."},
+      {person:"Tú", en:"You always tell the truth.", es:"Siempre **dices** la verdad."},
+      {person:"Él/Ella/Usted", en:"She says she's coming tomorrow.", es:"Ella **dice** que viene mañana."},
+      {person:"Nosotros", en:"We say the same thing.", es:"**Decimos** lo mismo."},
+      {person:"Ellos/Ellas/Ustedes", en:"They say it's not true.", es:"**Dicen** que no es verdad."},
+    ],
+  },
+  saber: {
+    presente: [
+      {person:"Yo", en:"I don't know the answer.", es:"No **sé** la respuesta."},
+      {person:"Tú", en:"You know how to cook well.", es:"**Sabes** cocinar bien."},
+      {person:"Él/Ella/Usted", en:"She knows the whole city.", es:"Ella **sabe** toda la ciudad."},
+      {person:"Nosotros", en:"We know the way home.", es:"**Sabemos** el camino a casa."},
+      {person:"Ellos/Ellas/Ustedes", en:"They know the rules.", es:"**Saben** las reglas."},
+    ],
+  },
+  dar: {
+    presente: [
+      {person:"Yo", en:"I give my best every day.", es:"**Doy** lo mejor de mí cada día."},
+      {person:"Tú", en:"You give good advice.", es:"**Das** buenos consejos."},
+      {person:"Él/Ella/Usted", en:"He gives classes on Saturdays.", es:"Él **da** clases los sábados."},
+      {person:"Nosotros", en:"We give thanks for everything.", es:"**Damos** gracias por todo."},
+      {person:"Ellos/Ellas/Ustedes", en:"They give gifts every Christmas.", es:"**Dan** regalos cada Navidad."},
+    ],
+  },
+  querer: {
+    presente: [
+      {person:"Yo", en:"I want a coffee.", es:"**Quiero** un café."},
+      {person:"Tú", en:"You want too much.", es:"**Quieres** demasiado."},
+      {person:"Él/Ella/Usted", en:"She wants to travel more.", es:"Ella **quiere** viajar más."},
+      {person:"Nosotros", en:"We want to help.", es:"**Queremos** ayudar."},
+      {person:"Ellos/Ellas/Ustedes", en:"They want to leave early.", es:"**Quieren** salir temprano."},
+    ],
+  },
+  poner: {
+    presente: [
+      {person:"Yo", en:"I put the keys on the table.", es:"**Pongo** las llaves en la mesa."},
+      {person:"Tú", en:"You put too much salt on the food.", es:"**Pones** demasiada sal en la comida."},
+      {person:"Él/Ella/Usted", en:"She sets the table every night.", es:"Ella **pone** la mesa todas las noches."},
+      {person:"Nosotros", en:"We put music on for the party.", es:"**Ponemos** música para la fiesta."},
+      {person:"Ellos/Ellas/Ustedes", en:"They put everything in order.", es:"**Ponen** todo en orden."},
+    ],
+  },
+  venir: {
+    presente: [
+      {person:"Yo", en:"I come here every week.", es:"**Vengo** aquí cada semana."},
+      {person:"Tú", en:"You come late every day.", es:"**Vienes** tarde todos los días."},
+      {person:"Él/Ella/Usted", en:"She comes from a big family.", es:"Ella **viene** de una familia grande."},
+      {person:"Nosotros", en:"We come together on Sundays.", es:"**Venimos** juntos los domingos."},
+      {person:"Ellos/Ellas/Ustedes", en:"They come to visit often.", es:"**Vienen** a visitar seguido."},
+    ],
+  },
+  salir: {
+    presente: [
+      {person:"Yo", en:"I leave work at six.", es:"**Salgo** del trabajo a las seis."},
+      {person:"Tú", en:"You go out every Friday.", es:"**Sales** todos los viernes."},
+      {person:"Él/Ella/Usted", en:"She leaves early in the morning.", es:"Ella **sale** temprano por la mañana."},
+      {person:"Nosotros", en:"We go out to eat on weekends.", es:"**Salimos** a comer los fines de semana."},
+      {person:"Ellos/Ellas/Ustedes", en:"They leave together.", es:"**Salen** juntos."},
+    ],
+    },
+  haber: {
+    presente: [
+      {person:"Yo", en:"I have worked all day.", es:"**He** trabajado todo el día."},
+      {person:"Tú", en:"You have eaten already.", es:"**Has** comido ya."},
+      {person:"Él/Ella/Usted", en:"She has traveled a lot.", es:"Ella **ha** viajado mucho."},
+      {person:"Nosotros", en:"We have finished the project.", es:"**Hemos** terminado el proyecto."},
+      {person:"Ellos/Ellas/Ustedes", en:"They have arrived.", es:"**Han** llegado."},
+    ],
+  },
+  ver: {
+    presente: [
+      {person:"Yo", en:"I see the problem clearly.", es:"**Veo** el problema claramente."},
+      {person:"Tú", en:"You see things differently.", es:"**Ves** las cosas de otra manera."},
+      {person:"Él/Ella/Usted", en:"She sees her family every weekend.", es:"Ella **ve** a su familia cada fin de semana."},
+      {person:"Nosotros", en:"We see the mountains from here.", es:"**Vemos** las montañas desde aquí."},
+      {person:"Ellos/Ellas/Ustedes", en:"They see the same movie again.", es:"**Ven** la misma película otra vez."},
+    ],
+  },
+  deber: {
+    presente: [
+      {person:"Yo", en:"I should study more.", es:"**Debo** estudiar más."},
+      {person:"Tú", en:"You owe me money.", es:"Me **debes** dinero."},
+      {person:"Él/Ella/Usted", en:"He should rest today.", es:"Él **debe** descansar hoy."},
+      {person:"Nosotros", en:"We should leave now.", es:"**Debemos** irnos ahora."},
+      {person:"Ellos/Ellas/Ustedes", en:"They should arrive soon.", es:"**Deben** llegar pronto."},
+    ],
+  },
+  creer: {
+    presente: [
+      {person:"Yo", en:"I believe you.", es:"Te **creo**."},
+      {person:"Tú", en:"You believe everything.", es:"**Crees** todo."},
+      {person:"Él/Ella/Usted", en:"She believes in hard work.", es:"Ella **cree** en el trabajo duro."},
+      {person:"Nosotros", en:"We believe this is right.", es:"**Creemos** que esto es correcto."},
+      {person:"Ellos/Ellas/Ustedes", en:"They believe the story.", es:"**Creen** la historia."},
+    ],
+  },
+  llevar: {
+    presente: [
+      {person:"Yo", en:"I've been here for two years.", es:"**Llevo** dos años aquí."},
+      {person:"Tú", en:"You're wearing a new jacket.", es:"**Llevas** una chaqueta nueva."},
+      {person:"Él/Ella/Usted", en:"He carries his backpack everywhere.", es:"Él **lleva** su mochila a todas partes."},
+      {person:"Nosotros", en:"We take the kids to school.", es:"**Llevamos** a los niños a la escuela."},
+      {person:"Ellos/Ellas/Ustedes", en:"They carry heavy boxes.", es:"**Llevan** cajas pesadas."},
+    ],
+  },
+  dejar: {
+    presente: [
+      {person:"Yo", en:"I leave the keys on the table.", es:"**Dejo** las llaves en la mesa."},
+      {person:"Tú", en:"You leave everything for the last minute.", es:"**Dejas** todo para el último momento."},
+      {person:"Él/Ella/Usted", en:"She lets her kids play outside.", es:"Ella **deja** que sus hijos jueguen afuera."},
+      {person:"Nosotros", en:"We leave work early on Fridays.", es:"**Dejamos** el trabajo temprano los viernes."},
+      {person:"Ellos/Ellas/Ustedes", en:"They leave a good impression.", es:"**Dejan** una buena impresión."},
+    ],
+  },
+  llamar: {
+    presente: [
+      {person:"Yo", en:"I call my mom every Sunday.", es:"**Llamo** a mi mamá todos los domingos."},
+      {person:"Tú", en:"You call too late.", es:"**Llamas** demasiado tarde."},
+      {person:"Él/Ella/Usted", en:"She calls the doctor.", es:"Ella **llama** al médico."},
+      {person:"Nosotros", en:"We call a taxi.", es:"**Llamamos** un taxi."},
+      {person:"Ellos/Ellas/Ustedes", en:"They call every day.", es:"**Llaman** todos los días."},
+    ],
+  },
+  seguir: {
+    presente: [
+      {person:"Yo", en:"I follow the instructions.", es:"**Sigo** las instrucciones."},
+      {person:"Tú", en:"You keep working late.", es:"**Sigues** trabajando hasta tarde."},
+      {person:"Él/Ella/Usted", en:"She follows the news closely.", es:"Ella **sigue** las noticias de cerca."},
+      {person:"Nosotros", en:"We continue the project tomorrow.", es:"**Seguimos** el proyecto mañana."},
+      {person:"Ellos/Ellas/Ustedes", en:"They keep asking questions.", es:"**Siguen** haciendo preguntas."},
+    ],
+  },
+  encontrar: {
+    presente: [
+      {person:"Yo", en:"I find the keys under the table.", es:"**Encuentro** las llaves debajo de la mesa."},
+      {person:"Tú", en:"You find good deals online.", es:"**Encuentras** buenas ofertas en línea."},
+      {person:"Él/Ella/Usted", en:"She finds it difficult.", es:"Ella lo **encuentra** difícil."},
+      {person:"Nosotros", en:"We find a solution together.", es:"**Encontramos** una solución juntos."},
+      {person:"Ellos/Ellas/Ustedes", en:"They find a new apartment.", es:"**Encuentran** un apartamento nuevo."},
+    ],
+  },
+  pensar: {
+    presente: [
+      {person:"Yo", en:"I think about you often.", es:"**Pienso** en ti seguido."},
+      {person:"Tú", en:"You think too much.", es:"**Piensas** demasiado."},
+      {person:"Él/Ella/Usted", en:"She thinks it's a good idea.", es:"Ella **piensa** que es una buena idea."},
+      {person:"Nosotros", en:"We think the same way.", es:"**Pensamos** de la misma manera."},
+      {person:"Ellos/Ellas/Ustedes", en:"They think about the future.", es:"**Piensan** en el futuro."},
+    ],
+  },
+  volver: {
+    presente: [
+      {person:"Yo", en:"I come back home late.", es:"**Vuelvo** a casa tarde."},
+      {person:"Tú", en:"You return every summer.", es:"**Vuelves** cada verano."},
+      {person:"Él/Ella/Usted", en:"She comes back next week.", es:"Ella **vuelve** la próxima semana."},
+      {person:"Nosotros", en:"We return to the same place.", es:"**Volvemos** al mismo lugar."},
+      {person:"Ellos/Ellas/Ustedes", en:"They come back together.", es:"**Vuelven** juntos."},
+    ],
+  },
 };
 
 const MOOD_LABELS = Object.fromEntries(ALL_MOODS);
 
-let activeVerbs = ["ser","estar","ir"];
+let activeVerbs = new Set(Object.keys(DECK));
 let activeMoods = new Set(DEFAULT_ON);
 let showChart = false;
 let showNote = false;
@@ -903,7 +2504,7 @@ async function loadPreferences() {
   if (rawV) {
     try {
       const parsed = JSON.parse(rawV);
-      if (Array.isArray(parsed) && parsed.length > 0) activeVerbs = parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) activeVerbs = new Set(parsed);
     } catch (e) { /* keep defaults */ }
   }
   const rawM = await storageGet("spanish_flashcards_active_moods");
@@ -916,7 +2517,7 @@ async function loadPreferences() {
 }
 
 function saveActiveVerbs() {
-  storageSet("spanish_flashcards_active_verbs", JSON.stringify(activeVerbs));
+  storageSet("spanish_flashcards_active_verbs", JSON.stringify([...activeVerbs]));
 }
 
 function saveActiveMoods() {
@@ -951,7 +2552,7 @@ function mdToHtml(s) {
 function buildDeck() {
   deck = [];
   if (reviewMissedMode) {
-    ["ser","estar","ir"].forEach(v => {
+    Object.keys(DECK).forEach(v => {
       ALL_MOODS.forEach(([m]) => {
         (DECK[v][m] || []).forEach(card => {
           const id = cardId(v, m, card.en);
@@ -988,6 +2589,9 @@ function shuffleDeck() {
 
 function renderChart(verb, highlightPerson, isImperative) {
   const c = CONJUGATIONS[verb];
+  if (!c) {
+    return '<div class="note-box">Full conjugation chart isn\'t added for this verb yet.</div>';
+  }
   const persons = PERSONS;
   let rows = "";
   persons.forEach((p, i) => {
@@ -1077,7 +2681,9 @@ function updateNoteDisplay() {
   const c = deck[idx];
   const container = document.getElementById("noteContainer");
   if (showNote && c) {
-    const text = (NOTES[c.verb] && NOTES[c.verb][c.mood]) || "No specific note for this one — it's a straightforward case.";
+    const verbNotes = NOTES[c.verb];
+    const text = (verbNotes && verbNotes[c.mood]) || (verbNotes && verbNotes._general) ||
+      "No specific note for this one — it's a straightforward case.";
     container.innerHTML = '<div class="note-box"><span class="note-label">Why / Common Errors</span>' + text + '</div>';
   } else {
     container.innerHTML = "";
@@ -1115,23 +2721,109 @@ function grade(isGood) {
   renderReviewControls();
 }
 
-function renderVerbFilters() {
-  const el = document.getElementById("verbFilters");
-  el.innerHTML = "";
-  const options = [["all","All"],["ser","Ser"],["estar","Estar"],["ir","Ir"]];
-  options.forEach(([key,label]) => {
-    const btn = document.createElement("button");
-    btn.className = "verb-btn";
-    btn.textContent = label;
-    const isActive = key === "all" ? activeVerbs.length === 3 : (activeVerbs.length === 1 && activeVerbs[0] === key);
-    if (isActive) btn.classList.add("active");
-    btn.onclick = () => {
-      activeVerbs = key === "all" ? ["ser","estar","ir"] : [key];
+function getVerbsByScope(scope) {
+  const bucketOf = key => {
+    const meta = verbMeta(key);
+    if (meta.type === "irregular") return "irregular";
+    if (meta.conj === "ar") return "ar";
+    if (meta.conj === "er") return "er";
+    if (meta.conj === "ir") return "ir";
+    return "other";
+  };
+  if (scope === "regular") {
+    return Object.keys(DECK).filter(k => bucketOf(k) !== "irregular");
+  }
+  return Object.keys(DECK).filter(k => bucketOf(k) === scope);
+}
+
+function getOrderedVerbKeys() {
+  const buckets = { irregular: [], ar: [], er: [], ir: [], other: [] };
+  Object.keys(DECK).forEach(key => {
+    const meta = verbMeta(key);
+    let bucket = "other";
+    if (meta.type === "irregular") bucket = "irregular";
+    else if (meta.conj === "ar") bucket = "ar";
+    else if (meta.conj === "er") bucket = "er";
+    else if (meta.conj === "ir") bucket = "ir";
+    buckets[bucket].push(key);
+  });
+  Object.values(buckets).forEach(arr => arr.sort((a, b) => verbMeta(a).rank - verbMeta(b).rank));
+  return [...buckets.irregular, ...buckets.ar, ...buckets.er, ...buckets.ir, ...buckets.other];
+}
+
+// Pure global frequency order (ignores grammar bucket) — used for the pill row,
+// since pills are meant to be a plain "most-used-first" glance, unlike the
+// checkbox panel which is deliberately grouped by Irregular/AR/ER/IR.
+function getGlobalRankOrder() {
+  return Object.keys(DECK).sort((a, b) => verbMeta(a).rank - verbMeta(b).rank);
+}
+
+function renderVerbPanel() {
+  const grids = {
+    irregular: document.getElementById("verbGridIrregular"),
+    ar: document.getElementById("verbGridAR"),
+    er: document.getElementById("verbGridER"),
+    ir: document.getElementById("verbGridIR"),
+    other: document.getElementById("verbGridOther"),
+  };
+  Object.values(grids).forEach(g => g.innerHTML = "");
+  const counts = { irregular: 0, ar: 0, er: 0, ir: 0, other: 0 };
+
+  getOrderedVerbKeys().forEach(key => {
+    const meta = verbMeta(key);
+    const wrap = document.createElement("div");
+    wrap.className = "mood-item";
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.id = "verb-" + key;
+    cb.checked = activeVerbs.has(key);
+    cb.onchange = () => {
+      if (cb.checked) activeVerbs.add(key); else activeVerbs.delete(key);
       saveActiveVerbs();
-      renderVerbFilters();
+      renderVerbPills();
       buildDeck();
     };
-    el.appendChild(btn);
+    const lbl = document.createElement("label");
+    lbl.htmlFor = "verb-" + key;
+    lbl.innerHTML = meta.label + " (" + rankLabel(meta) + ")" + (meta.quirk ? ' <span class="quirk-tag">' + meta.quirk + '</span>' : "");
+    wrap.appendChild(cb);
+    wrap.appendChild(lbl);
+
+    let bucket = "other";
+    if (meta.type === "irregular") bucket = "irregular";
+    else if (meta.conj === "ar") bucket = "ar";
+    else if (meta.conj === "er") bucket = "er";
+    else if (meta.conj === "ir") bucket = "ir";
+    grids[bucket].appendChild(wrap);
+    counts[bucket]++;
+  });
+
+  document.getElementById("verbGroupIrregular").style.display = counts.irregular ? "block" : "none";
+  document.getElementById("verbGroupRegular").style.display = (counts.ar + counts.er + counts.ir + counts.other) ? "block" : "none";
+  document.getElementById("verbGroupAR").style.display = counts.ar ? "block" : "none";
+  document.getElementById("verbGroupER").style.display = counts.er ? "block" : "none";
+  document.getElementById("verbGroupIR").style.display = counts.ir ? "block" : "none";
+  document.getElementById("verbGroupOther").style.display = counts.other ? "block" : "none";
+}
+
+function renderVerbPills() {
+  const el = document.getElementById("verbPills");
+  el.innerHTML = "";
+  document.getElementById("pillsSummary").textContent =
+    "Verbs (" + activeVerbs.size + " of " + Object.keys(DECK).length + " selected)";
+  getGlobalRankOrder().forEach(key => {
+    const isActive = activeVerbs.has(key);
+    const pill = document.createElement("button");
+    pill.className = "pill-readonly" + (isActive ? "" : " inactive");
+    pill.innerHTML = verbMeta(key).label + " (" + rankLabel(verbMeta(key)) + ")" + (verbMeta(key).quirk ? ' <span class="quirk-tag">' + verbMeta(key).quirk + '</span>' : "");
+    pill.onclick = () => {
+      if (activeVerbs.has(key)) activeVerbs.delete(key); else activeVerbs.add(key);
+      saveActiveVerbs();
+      renderVerbPanel();
+      renderVerbPills();
+      buildDeck();
+    };
+    el.appendChild(pill);
   });
 }
 
@@ -1215,11 +2907,58 @@ document.getElementById("clearAllMoods").onclick = () => {
   renderMoodGrid();
   buildDeck();
 };
+document.getElementById("selectAllVerbs").onclick = () => {
+  activeVerbs = new Set(Object.keys(DECK));
+  saveActiveVerbs();
+  renderVerbPanel();
+  renderVerbPills();
+  buildDeck();
+};
+document.getElementById("clearAllVerbs").onclick = () => {
+  activeVerbs = new Set();
+  saveActiveVerbs();
+  renderVerbPanel();
+  renderVerbPills();
+  buildDeck();
+};
+document.querySelectorAll(".scopeSelectAll").forEach(btn => {
+  btn.onclick = () => {
+    getVerbsByScope(btn.dataset.scope).forEach(k => activeVerbs.add(k));
+    saveActiveVerbs();
+    renderVerbPanel();
+    renderVerbPills();
+    buildDeck();
+  };
+});
+document.querySelectorAll(".scopeClearAll").forEach(btn => {
+  btn.onclick = () => {
+    getVerbsByScope(btn.dataset.scope).forEach(k => activeVerbs.delete(k));
+    saveActiveVerbs();
+    renderVerbPanel();
+    renderVerbPills();
+    buildDeck();
+  };
+});
+document.getElementById("selectAllPills").onclick = () => {
+  activeVerbs = new Set(Object.keys(DECK));
+  saveActiveVerbs();
+  renderVerbPanel();
+  renderVerbPills();
+  buildDeck();
+};
+document.getElementById("clearAllPills").onclick = () => {
+  activeVerbs = new Set();
+  saveActiveVerbs();
+  renderVerbPanel();
+  renderVerbPills();
+  buildDeck();
+};
 
 (async function init() {
   await loadPreferences();
   await loadMissed();
-  renderVerbFilters();
+  renderVerbPanel();
+  renderVerbPills();
   renderMoodGrid();
   buildDeck();
 })();
