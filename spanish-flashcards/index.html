@@ -169,21 +169,42 @@
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 14px;
-    padding: 56px 20px 32px;
-    flex: 1;
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  .card-divider {
+    border-top: 2px solid #666;
+    width: 100%;
+  }
+  .divider-top {
+    margin-top: 18px;
+  }
+  .divider-bottom {
+    margin-bottom: 18px;
+  }
+  .phrase-zone {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    min-height: 220px;
-    position: relative;
+    width: 100%;
+    padding: 26px 0;
+    min-height: 64px;
+  }
+  .card-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+  #btnRowReveal {
+    margin-top: 0;
   }
   .tag {
-    position: absolute;
-    top: 14px;
-    left: 18px;
-    right: 18px;
+    text-align: center;
     font-size: 0.95rem;
     font-weight: bold;
     text-transform: uppercase;
@@ -194,9 +215,9 @@
   .tag .t-mood { color: var(--bad); }
   .tag .t-sep { color: var(--muted); font-weight: normal; }
   .prompt-label {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     color: var(--accent);
-    margin-bottom: 10px;
+    margin-bottom: 14px;
     text-transform: uppercase;
     letter-spacing: 0.03em;
   }
@@ -204,13 +225,15 @@
     font-size: 1.35rem;
     line-height: 1.4;
     font-weight: bold;
+    text-align: left;
   }
   .spanish {
     font-size: 1.35rem;
     line-height: 1.4;
     font-weight: bold;
     color: var(--accent);
-    margin-top: 18px;
+    margin-top: 20px;
+    text-align: left;
   }
   .spanish .hl {
     text-decoration: underline;
@@ -273,7 +296,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-top: 16px;
+    margin-top: 20px;
     font-size: 0.85rem;
     color: var(--muted);
   }
@@ -304,11 +327,11 @@
   }
   .chart-scroll {
     overflow-x: auto;
-    margin-top: 12px;
     -webkit-overflow-scrolling: touch;
   }
   .conj-chart {
     border-collapse: collapse;
+    margin-top: 12px;
     font-size: 0.88rem;
     min-width: 780px;
   }
@@ -347,27 +370,32 @@
   <div class="progress" id="progressLabel"></div>
   <div class="card" id="card">
     <div class="tag" id="cardTag"></div>
-    <div class="prompt-label">Translate to Spanish</div>
-    <div class="english" id="englishText"></div>
-    <div class="spanish" id="spanishText" style="display:none;"></div>
-    <div class="hint" id="hintText">Tap "Show Answer" when ready</div>
-    <div class="btn-row" id="btnRowReveal">
-      <button class="action btn-reveal" id="revealBtn">Show Answer</button>
+    <div class="card-divider divider-top"></div>
+    <div class="phrase-zone">
+      <div class="english" id="englishText"></div>
+      <div class="spanish" id="spanishText" style="display:none;"></div>
     </div>
-    <div id="answerExtras" style="display:none; width:100%;">
-      <div class="chart-toggle-row">
-        <input type="checkbox" id="toggleChart">
-        <label for="toggleChart">Show full conjugation chart</label>
+    <div class="card-divider divider-bottom"></div>
+    <div class="card-bottom">
+      <div class="hint" id="hintText" style="display:none;"></div>
+      <div class="btn-row" id="btnRowReveal">
+        <button class="action btn-reveal" id="revealBtn">Show Answer</button>
       </div>
-      <div class="chart-scroll" id="chartContainer"></div>
-      <div class="chart-toggle-row">
-        <input type="checkbox" id="toggleNote">
-        <label for="toggleNote">Show why / common errors</label>
-      </div>
-      <div id="noteContainer"></div>
-      <div class="btn-row" id="btnRowGrade">
-        <button class="action btn-bad" id="missBtn">Missed It</button>
-        <button class="action btn-good" id="gotBtn">Got It</button>
+      <div id="answerExtras" style="display:none; width:100%;">
+        <div class="chart-toggle-row" style="margin-top:0;">
+          <input type="checkbox" id="toggleChart">
+          <label for="toggleChart">Show full conjugation chart</label>
+        </div>
+        <div class="chart-scroll" id="chartContainer"></div>
+        <div class="chart-toggle-row" style="margin-top:4px;">
+          <input type="checkbox" id="toggleNote">
+          <label for="toggleNote">Show why / common errors</label>
+        </div>
+        <div id="noteContainer"></div>
+        <div class="btn-row" id="btnRowGrade">
+          <button class="action btn-bad" id="missBtn">Missed It</button>
+          <button class="action btn-good" id="gotBtn">Got It</button>
+        </div>
       </div>
     </div>
   </div>
@@ -386,7 +414,7 @@
     <button class="action btn-next" id="nextBtn">Skip →</button>
   </div>
 
-  <div class="controls" id="reviewControls"></div>
+  <div class="controls" id="reviewControls" style="margin-top:28px; margin-bottom:28px; row-gap:16px; column-gap:14px;"></div>
   <div class="mood-row" id="hideMasteredRow" style="justify-content:center; margin-bottom:14px;">
     <input type="checkbox" id="toggleHideMastered">
     <label for="toggleHideMastered">Don't repeat cards I've gotten correct</label>
@@ -999,16 +1027,16 @@ function showCard() {
   const c = deck[idx];
   const moodLabel = MOOD_LABELS[c.mood];
   document.getElementById("cardTag").innerHTML =
+    '<div>' +
     '<span class="t-verb">' + c.verb.toUpperCase() + '</span>' +
     '<span class="t-sep"> · </span>' +
     '<span class="t-person">' + c.person + '</span>' +
-    '<span class="t-sep"> · </span>' +
-    '<span class="t-mood">' + moodLabel.toUpperCase() + '</span>';
+    '</div>' +
+    '<div style="margin-top:5px;"><span class="t-mood">' + moodLabel.toUpperCase() + '</span></div>';
   document.getElementById("englishText").textContent = c.en;
   document.getElementById("spanishText").style.display = "none";
   document.getElementById("spanishText").innerHTML = mdToHtml(c.es);
-  document.getElementById("hintText").textContent = "Tap \"Show Answer\" when ready";
-  document.getElementById("hintText").style.display = "block";
+  document.getElementById("hintText").style.display = "none";
   document.getElementById("btnRowReveal").style.display = "flex";
   document.getElementById("answerExtras").style.display = "none";
   document.getElementById("toggleChart").checked = showChart;
@@ -1147,22 +1175,24 @@ function renderReviewControls() {
   masteredLabel.textContent = "Mastered: " + masteredIds.size;
   el.appendChild(masteredLabel);
 
-  if (missedIds.size > 0 || masteredIds.size > 0) {
-    const resetBtn = document.createElement("button");
-    resetBtn.className = "btn-reset";
-    resetBtn.textContent = "Reset Progress";
-    resetBtn.onclick = () => {
-      if (confirm("Clear all missed and mastered tracking? This can't be undone.")) {
-        missedIds = new Set();
-        masteredIds = new Set();
-        saveMissed();
-        saveMastered();
-        reviewMissedMode = false;
-        buildDeck();
-      }
-    };
-    el.appendChild(resetBtn);
-  }
+  const resetBtn = document.createElement("button");
+  resetBtn.className = "btn-reset";
+  resetBtn.textContent = "Reset Progress";
+  resetBtn.onclick = () => {
+    if (missedIds.size === 0 && masteredIds.size === 0) {
+      alert("Nothing to reset yet — no missed or mastered cards tracked.");
+      return;
+    }
+    if (confirm("Clear all missed and mastered tracking? This can't be undone.")) {
+      missedIds = new Set();
+      masteredIds = new Set();
+      saveMissed();
+      saveMastered();
+      reviewMissedMode = false;
+      buildDeck();
+    }
+  };
+  el.appendChild(resetBtn);
 }
 
 document.getElementById("revealBtn").onclick = reveal;
