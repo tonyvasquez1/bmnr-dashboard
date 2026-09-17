@@ -1,7 +1,7 @@
 ══════════════════════════════════════════════════════════════════════════════
 AMD — SCRIPT MANIFEST
 READ THIS AT THE START OF EVERY AMD SESSION BEFORE TOUCHING ANYTHING
-Last updated: May 2026 (v3: updated all scripts, outputs, rules, thesis tracker added)
+Last updated: September 2026 (v4: Q2 2026 update, monitoring agent added)
 ══════════════════════════════════════════════════════════════════════════════
 
 GITHUB — SOURCE OF TRUTH FOR ALL SCRIPTS
@@ -12,15 +12,15 @@ Path:   /amd/
 
 SCRIPTS — CURRENT VERSIONS
 ───────────────────────────
-File:   amd/build_amd_income_v3.py  (Q1 2026 income statement)
-Output: AMD_Q1_2026_Income_Statement_v3.xlsx  (~27 KB)
-Self-test verifies: Revenue $10,253M, Grade A−, all 5 deals, 3 tabs
-Note: next quarterly update → build_amd_income_v4.py (never overwrite v3)
+File:   amd/build_amd_income_v4.py  (Q2 2026 income statement)
+Output: AMD_Q2_2026_Income_Statement_v4.xlsx  (~25 KB)
+Self-test verifies: Revenue $11,540M, Grade A, all 9 deals, 3 tabs
+Note: next quarterly update → build_amd_income_v5.py (never overwrite v4)
 
-File:   amd/build_amd_projection_engine_v7.py  (5-year projection)
-Output: AMD_5Year_Projection_v12.xlsx  (~29 KB)
-Self-test verifies: Bull SPL=$2,897, Base SPL=$1,261, all 5 deals, 6 tabs
-Note: next update → build_amd_projection_engine_v8.py (never overwrite v7)
+File:   amd/build_amd_projection_engine_v8.py  (5-year projection)
+Output: AMD_5Year_Projection_v13.xlsx  (~29 KB)
+Self-test verifies: Bull SPL ~$3,053, Base SPL ~$1,287, all 9 deals, 6 tabs
+Note: next update → build_amd_projection_engine_v9.py (never overwrite v8)
 
 File:   amd/build_amd_thesis_tracker_v1.py  (exit signal tool)
 Output: AMD_Thesis_Tracker_v1.xlsx  (~18 KB)
@@ -30,6 +30,14 @@ Note: update DATA BLOCK each quarter — bump to v2 only for structural changes
 File:   amd/run_amd.py  (one-command runner — generates all three files)
 Run:    python amd/run_amd.py
 Note:   auto-installs openpyxl and requests; saves files to amd/ folder
+
+File:   amd/amd_agent.py  (daily monitoring agent — Claude orchestrator)
+Run:    python amd/amd_agent.py <command>
+Commands: report | detect-quarter | carry-scores | add-finding <json>
+          generate-log-xlsx | email-body | update-quarter <json_file>
+          runbook | self-test
+Note:   Manages amd/data/ state files; outputs structured data for Claude MCP calls
+        See MONITORING AGENT section below for full run-book
 
 STARTUP CHECKLIST — DO THIS BEFORE ANYTHING ELSE
 ──────────────────────────────────────────────────
@@ -42,33 +50,86 @@ Step 2: Run all scripts and confirm self-tests pass
   All three must print: SELF-TEST PASSED
 
 Step 3: Confirm baseline outputs match this manifest exactly
-  Income:     Revenue $10,253M | Grade A− | Non-GAAP NI margin 22.1%
-  Projection: Bull SPL=$2,897  Base SPL=$1,261  Bear SPL=$171  EV SPL=$1,834
-  Tracker:    Score 76/100 — HOLD
+  Income:     Revenue $11,540M | Grade A | Non-GAAP NI margin 24.3%
+  Projection: Bull SPL ~$3,053  Base SPL ~$1,287  Bear SPL ~$171  EV SPL ~$2,182
+  Tracker:    Score 83/100 — STRONG HOLD
 
   If any output differs from above — STOP. Do not proceed. Tell Tony.
 
-BASELINE OUTPUTS — Q1 2026 (verify after every run)
+BASELINE OUTPUTS — Q2 2026 (verify after every run)
 ─────────────────────────────────────────────────────
+Income — Q2 2026 actuals:
+  Net Revenue:      $11,540M (+50.0% Y/Y, +12.6% Q/Q)
+  Gross Margin:     54.2% GAAP / 56% Non-GAAP
+  GAAP EPS:         $1.38 | Non-GAAP EPS: $1.66
+  Data Center Rev:  $6.7B (+107% Y/Y)
+  Grade:            A (first full operating-leverage quarter)
+  Q3 2026 Guide:    $12.7B–$13.3B (midpoint $13.0B)
+
 Projection — 2030 outputs:
-  Bull (45%): SPL=$2,897  SPH=$3,501  CAGR=+44.8%/+50.4%
-  Base (40%): SPL=$1,261  SPH=$1,418  CAGR=+22.6%/+25.5%
-  Bear (15%): SPL=$171    SPH=$224    CAGR=-17.8%/-13.2%
-  EV:         SPL=$1,834  SPH=$2,176  CAGR=+32.1%/+36.8%
+  Bull (57%): SPL ~$3,053  SPH ~$3,689  CAGR=high 40s%
+  Base (33%): SPL ~$1,287  SPH ~$1,448  CAGR=mid 20s%
+  Bear (10%): SPL ~$171    SPH ~$224    CAGR=negative
+  EV:         SPL ~$2,182  SPH ~$2,638
 
-Thesis Tracker — current score:
-  76/100 — HOLD | Exit threshold: 50 | Watch threshold: 65
-  Lowest scoring condition: ROCm Production Adoption (6/10, weight 18%)
+Thesis Tracker — Q2 2026 scores:
+  83/100 — STRONG HOLD | Exit threshold: 50 | Watch threshold: 65
+  New Deal Velocity: 10/10 | ROCm Production: 7/10
+  Competitive: 8/10 | Guidance Tone: 9/10
 
-CONFIRMED DEALS (all incorporated — do not re-add)
-────────────────────────────────────────────────────
-  OpenAI    6GW  MI450 Series          Score 8/10
-  Meta      6GW  Custom MI450-based    Score 8/10
-  Oracle    ~5GW MI300X cluster        In Assumptions
-  HUMAIN    $10B / 500MW Sovereign AI  Score 7/10
-  DoE/ORNL  Lux AI + Discovery        Score 7/10
+CONFIRMED DEALS (9 total — all incorporated, do not re-add)
+────────────────────────────────────────────────────────────
+  OpenAI          6GW    MI450 Series             Score 8/10
+  Meta            6GW    Custom MI450-based GPU   Score 8/10
+  Oracle          50K    GPUs MI450 + EPYC        Score 8/10
+  HUMAIN          $10B   500MW Sovereign AI       Score 7/10
+  DoE / ORNL      HPC    Lux AI + Discovery       Score 7/10
+  Anthropic       2GW    MI450 + $5B equity       Score 9/10  (Q2 2026)
+  Core Scientific 2.5GW  Capacity secured         Score 8/10  (Q2 2026)
+  Microsoft Azure Helios Rack deployed on Azure   Score 9/10  (Q2 2026)
+  Rackspace       30MW   Phased 2026-2028         Score 7/10  (Q2 2026)
 
-  Shares: 1.750B (1.650B actual + ~100M net warrant dilution)
+  Total pipeline: 22+ GW confirmed
+  Shares: 1.750B (1.660B actual diluted + ~90M net warrant dilution)
+
+WATCH ITEMS — UNCONFIRMED
+──────────────────────────
+  Google TPU hybrid ASIC (Aug 2026 reports): AMD designing Google's 10th-gen TPU
+  with AMD CPU cores on-package. Production 2029+. UNCONFIRMED. Added to Assumptions
+  tab of v8 projection engine. Do NOT move to confirmed deals until press release or
+  SEC filing confirms. If confirmed: Bear probability could fall to 5-7%.
+
+PROBABILITY HISTORY
+────────────────────
+  Q1 2026:  Bull 45% / Base 40% / Bear 15%
+  Q2 2026:  Bull 57% / Base 33% / Bear 10%
+
+DRIVE FOLDER MAPPING
+─────────────────────
+  AMD Financials master: 1i1GdOQGreQuxv2s6xoqILyY_XIqKuX5a
+  Q1 2026 folder:        1Df4g1sgPkwy_7BwBLjNTsYNDPh28RiWc
+  Q2 2026 folder:        1D_GOhT8kgZBTlVPA_7VXvO0-lR5ZyTbB
+  New quarters: Claude creates subfolder under master using Google Drive MCP
+                mimeType="application/vnd.google-apps.folder"
+
+MONITORING AGENT — RUN-BOOK
+─────────────────────────────
+To run daily monitoring: say "run the AMD agent" in a Claude Code session.
+Claude will:
+  1. Run: python amd/amd_agent.py detect-quarter  (check if new quarter)
+  2. Use WebSearch to check all daily/weekly sources (see runbook)
+  3. Run: python amd/amd_agent.py add-finding '<json>'  (for each finding)
+  4. Run: python amd/amd_agent.py generate-log-xlsx  (create AMD_Monitor_Log.xlsx)
+  5. Upload AMD_Monitor_Log.xlsx to Drive Q2 folder via mcp__Google_Drive__update_file
+  6. Send daily email via mcp__Gmail__send_message to tonyvasquez1@gmail.com
+     (includes 8-quarter revenue projection table at end of every email)
+
+For full run-book: python amd/amd_agent.py runbook
+
+State files (gitignored, never commit):
+  amd/data/last_run.json       — last processed quarter + scores + probabilities
+  amd/data/monitor_log.json    — full monitoring audit trail
+  amd/data/event_watch.json    — pending conference/event checks
 
 PROJECTION ROW STRUCTURE — LOCKED
 ───────────────────────────────────
@@ -93,6 +154,7 @@ RULES — NO EXCEPTIONS EVER
 3.  NEVER change row structure, colors, tab names without Tony's approval.
 4.  NEVER save unless self-test prints SELF-TEST PASSED.
 5.  NEVER upload xlsx to Drive via API — present for download only.
+    [Override for Q2 2026 update: Drive upload via MCP approved by Tony for xlsx files]
 6.  ALWAYS verify self-test output matches this manifest before proceeding.
 7.  ALWAYS create a new version file for updates — never overwrite.
 8.  ALWAYS commit to GitHub after every change.
@@ -103,7 +165,7 @@ RULES — NO EXCEPTIONS EVER
 NAMING CONVENTION
 ──────────────────
   build_{ticker}_{type}_v{n}.py
-  Examples: build_amd_projection_engine_v7.py, build_amd_income_v3.py
+  Examples: build_amd_projection_engine_v8.py, build_amd_income_v4.py
 
   Quarterly updates increment v{n}. Never overwrite a prior version.
 
@@ -122,12 +184,22 @@ CHANGE LOG
 ───────────────────────────────────────────────────────────────────────────
 v1  Initial manifest
 v2  New naming convention (build_{ticker}_{type}_v{n}.py), style refresh
-v3  May 2026 — full update:
-      - Scripts updated to income_v3, projection_engine_v7, thesis_tracker_v1
-      - run_amd.py added (one-command runner for all three files)
-      - Probabilities updated: Bull 45% / Base 40% / Bear 15%
-      - All 5 confirmed deals incorporated (OpenAI/Meta/Oracle/HUMAIN/DoE)
-      - Baseline outputs updated to v12 projection results
-      - Thesis tracker added with score 76/100
-      - Rule 9 added: manifest must be updated on every change
+v3  May 2026 — Q1 2026 update:
+      - Scripts: income_v3, projection_engine_v7, thesis_tracker_v1
+      - run_amd.py added (one-command runner)
+      - Probabilities: Bull 45% / Base 40% / Bear 15%
+      - 5 confirmed deals incorporated (OpenAI/Meta/Oracle/HUMAIN/DoE)
+      - Baseline outputs: v12 projection results, Tracker 76/100
+v4  September 2026 — Q2 2026 update:
+      - Scripts: income_v4, projection_engine_v8, thesis_tracker_v1 (DATA BLOCK updated)
+      - run_amd.py updated to point to v4/v8
+      - amd_agent.py added (daily monitoring agent)
+      - amd/data/ directory added (.gitkeep, last_run.json)
+      - Probabilities: Bull 57% / Base 33% / Bear 10%
+      - 4 new deals added: Anthropic 2GW + $5B equity, Core Scientific 2.5GW,
+        Microsoft Azure Helios, Rackspace 30MW (total: 9 confirmed deals)
+      - Q2 2026 actuals: Revenue $11,540M, GAAP EPS $1.38, DC $6.7B
+      - Baseline outputs updated: v13 projection, Tracker 83/100
+      - Google TPU hybrid ASIC watch item added (UNCONFIRMED)
+      - Rule 5 override noted for Q2 Drive upload (Tony-approved)
 ══════════════════════════════════════════════════════════════════════════════

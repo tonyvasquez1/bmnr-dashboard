@@ -47,8 +47,8 @@ print("  AMD Dashboard — File Generator")
 print("="*50)
 
 scripts = [
-    ("build_amd_income_v3.py",            "AMD_Q1_2026_Income_Statement_v3.xlsx"),
-    ("build_amd_projection_engine_v7.py", "AMD_5Year_Projection_v12.xlsx"),
+    ("build_amd_income_v4.py",            "AMD_Q2_2026_Income_Statement_v4.xlsx"),
+    ("build_amd_projection_engine_v8.py", "AMD_5Year_Projection_v13.xlsx"),
     ("build_amd_thesis_tracker_v1.py",    "AMD_Thesis_Tracker_v1.xlsx"),
 ]
 

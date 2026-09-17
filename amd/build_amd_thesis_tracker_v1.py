@@ -13,24 +13,24 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment
 
 # ── DATA BLOCK — update these values each quarter after earnings ───────────────
-QUARTER    = "Q1 2026"
-GENERATED  = "May 2026"
-REPORT_DATE = "May 5, 2026"       # AMD earnings release date
+QUARTER    = "Q2 2026"
+GENERATED  = "September 2026"
+REPORT_DATE = "July 29, 2026"     # AMD earnings release date
 
 # ── Financial actuals (from AMD earnings release) ─────────────────────────────
-DC_REVENUE      = 5.8             # Data Center segment revenue ($B) this quarter
-DC_GROWTH_YY    = 0.57            # Data Center Y/Y revenue growth (57%)
-TOTAL_REVENUE   = 10.253          # Total AMD revenue ($B) this quarter
-NI_MARGIN       = 0.221           # Non-GAAP net income margin (22.1%)
-EPYC_SHARE      = 0.462           # Server CPU revenue share (46.2%)
-GROSS_MARGIN    = 0.53            # Non-GAAP gross margin (53%)
+DC_REVENUE      = 6.7             # Data Center segment revenue ($B) this quarter
+DC_GROWTH_YY    = 1.07            # Data Center Y/Y revenue growth (107%)
+TOTAL_REVENUE   = 11.54           # Total AMD revenue ($B) this quarter
+NI_MARGIN       = 0.243           # Non-GAAP net income margin (24.3%)
+EPYC_SHARE      = 0.462           # Server CPU revenue share (46.2% — Q1 2026 data, latest available)
+GROSS_MARGIN    = 0.56            # Non-GAAP gross margin (56%)
 AMD_PRICE       = 455.00          # AMD stock price at analysis date
 
-# ── Base case targets (from build_amd_projection_engine_v7.py) ────────────────
+# ── Base case targets (from build_amd_projection_engine_v8.py) ────────────────
 # These are what the Base case implies for the FULL YEAR containing this quarter.
-BASE_DC_REV_RUN_RATE = 5.5        # Base case quarterly DC revenue implied ($B)
+BASE_DC_REV_RUN_RATE = 6.0        # Base case quarterly DC revenue implied ($B)
 BASE_NI_MARGIN_TARGET = 0.25      # Base case NI margin for FY2026
-BASE_TOTAL_REV_FY     = 47.1      # Base case FY2026 total revenue ($B)
+BASE_TOTAL_REV_FY     = 52.0      # Base case FY2026 total revenue ($B; H1 ~$21.8B + H2 ~$26.5B)
 
 # ── Manual condition scores (1–10) — updated each quarter ─────────────────────
 # 9–10: Exceeding expectations  7–8: On track  5–6: Slight concern
@@ -38,26 +38,40 @@ BASE_TOTAL_REV_FY     = 47.1      # Base case FY2026 total revenue ($B)
 SCORE_OPENAI_DELIVERY   = 8   # 1GW H2 2026 MI450 deployment on track?
 SCORE_META_DELIVERY     = 8   # 1GW H2 2026 MI450-based GPU on track?
 SCORE_HUMAIN_DELIVERY   = 7   # 500MW sovereign AI — multi-exaflop by early 2026?
-SCORE_NEW_DEAL_VELOCITY = 7   # New GW-scale deals announced this quarter?
-SCORE_ROCM_PRODUCTION   = 6   # ROCm running actual production workloads at hyperscalers?
-SCORE_COMPETITIVE       = 7   # AMD holding vs Nvidia? (10=gaining share, 5=holding, 1=losing)
-SCORE_GUIDANCE_TONE     = 8   # Earnings call tone: 10=extremely bullish, 5=neutral, 1=negative
+SCORE_NEW_DEAL_VELOCITY = 10  # Q2: Anthropic 2GW + $5B equity, Core Scientific 2.5GW, Rackspace, MSFT Helios
+SCORE_ROCM_PRODUCTION   = 7   # ROCm 6.x in production at Helios scale; MI350/MI450 workloads expanding
+SCORE_COMPETITIVE       = 8   # Helios rack deployed on Azure; NVDA supply constraints benefit AMD share
+SCORE_GUIDANCE_TONE     = 9   # Q3 guided $12.7–13.3B; Lisa Su: 'exceptional demand across every customer'
 
 # ── Status narrative strings — updated each quarter ───────────────────────────
-STATUS_OPENAI   = "1GW H2 2026 MI450 Series — on track per AMD Q1 2026 earnings call. Full 6GW ramp multi-year."
-STATUS_META     = "1GW H2 2026 custom MI450-based GPU + EPYC Venice — on track. Full 6GW multi-year commitment."
-STATUS_ORACLE   = "50K GPUs Q3 2026 (MI450 + EPYC Venice + Pensando Vulcano, Helios rack) — commitment confirmed Oct 14 2025."
-STATUS_HUMAIN   = "500MW / $10B sovereign AI — multi-exaflop by early 2026. 5-year deployment. Full AMD stack confirmed."
-STATUS_DOE      = "Lux AI (MI355X + EPYC, early 2026) + Discovery (MI430X MI400 Series + EPYC Venice, 2028). $1B combined."
-STATUS_NEW_DEALS = "No new GW-scale deals announced Q1 2026. AMD investor day July 2026 — next catalyst window."
-GUIDANCE_NOTE   = ("Q2 2026 guided $11.2B (+9.2% Q/Q). Non-GAAP op margin ~27%. Non-GAAP EPS ~$0.96. "
-                   "Lisa Su: 'incredibly strong AI demand,' confident in H2 MI450 ramp. Language: bullish.")
-ROCM_NOTE       = ("ROCm 6.x — PyTorch 2.x full support. ONNX Runtime AMD EP improving. "
-                   "OpenAI/Meta production workloads not yet independently confirmed — watching. "
-                   "MLCommons inference results improving Q/Q but CUDA gap remains ~15–20%.")
-COMPETITIVE_NOTE = ("NVDA Q4 FY2026: DC $62.3B (+75% Y/Y). Blackwell ramp dominant. "
-                    "AMD DC $5.8B vs Intel DC $5.1B — AMD now #2 in Data Center. "
-                    "Dual-vendor GPU policies forming at hyperscalers — AMD beneficiary long term.")
+STATUS_OPENAI   = "1GW H2 2026 MI450 deployment — on track. MI450 in production ramp. Full 6GW multi-year."
+STATUS_META     = "1GW H2 2026 custom MI450-based GPU + EPYC Venice — on track. Full 6GW multi-year."
+STATUS_ORACLE   = "50K GPUs Q3 2026 (MI450 + EPYC Venice + Pensando Vulcano, Helios rack) — delivering."
+STATUS_HUMAIN   = "500MW / $10B sovereign AI — multi-exaflop underway. 5-year deployment. Full AMD stack."
+STATUS_DOE      = "Lux AI (MI355X + EPYC, 2026 production) + Discovery (MI430X MI400 Series, 2028). $1B combined."
+STATUS_ANTHROPIC = ("Anthropic: 2GW MI450, $5B AMD equity stake. 1GW starts H1 2027. "
+                    "Signed Q2 2026. Largest single equity investment by a hyperscaler in AMD.")
+STATUS_CORE_SCI  = ("Core Scientific: 2.5GW capacity secured. Deployments begin 2027. "
+                    "Signed Q2 2026. First large-scale AMD HPC/AI colocation partnership.")
+STATUS_MICROSOFT = ("Microsoft/Azure: Helios rack-scale system deployed on Azure. "
+                    "First public cloud deployment of AMD Helios architecture.")
+STATUS_RACKSPACE = ("Rackspace: 30MW phased deployment late 2026–2028. Managed services model.")
+STATUS_NEW_DEALS = ("Q2 2026 new deals: Anthropic 2GW + $5B equity stake, Core Scientific 2.5GW, "
+                    "Microsoft Azure Helios deployment, Rackspace 30MW. Total confirmed pipeline "
+                    "now exceeds 22GW. Also: Helios in production, 6th Gen EPYC (Venice) shipping, "
+                    "MI400 series launched. Google TPU collaboration reported Aug 2026 — unconfirmed; "
+                    "if confirmed would flip Google custom silicon from Bear risk to upside.")
+GUIDANCE_NOTE   = ("Q3 2026 guided $12.7B–$13.3B (midpoint $13.0B, +12.6% Q/Q). Non-GAAP op margin ~27%. "
+                   "Lisa Su: 'exceptional demand across every customer segment. MI450 ramp ahead of schedule.' "
+                   "Language: most bullish guidance language in AMD history.")
+ROCM_NOTE       = ("ROCm 6.x — PyTorch 2.x full support. ONNX Runtime AMD EP production-grade. "
+                   "Helios rack deployed at Azure scale validates ROCm in public cloud production. "
+                   "ORNL Lux AI (MI355X) running science workloads. CUDA gap narrowing — est ~10–15%.")
+COMPETITIVE_NOTE = ("NVDA supply constraints creating near-term AMD opportunity — hyperscalers need MI450 now. "
+                    "AMD DC $6.7B vs Intel DC est ~$5.3B — AMD extending Data Center lead. "
+                    "Helios rack on Azure = first AMD architecture deployed at Microsoft cloud scale. "
+                    "Google TPU hybrid ASIC rumor (Aug 2026): AMD CPU cores on-package. Unconfirmed. "
+                    "If confirmed, flips Google from Bear risk to potential upside. Watch closely.")
 
 # ── Exit / watch thresholds ───────────────────────────────────────────────────
 EXIT_THRESHOLD  = 50    # Score below this for 2 consecutive quarters = review exit
@@ -400,6 +414,10 @@ def build_deal_execution(wb):
         ("Meta 6GW — custom MI450-based GPU",      SCORE_META_DELIVERY,     STATUS_META),
         ("Oracle 50K GPUs — MI450 + EPYC Venice",  8,                       STATUS_ORACLE),
         ("DoE/ORNL — Lux AI + Discovery",          SCORE_HUMAIN_DELIVERY,   STATUS_DOE),
+        ("Anthropic 2GW + $5B equity (Q2 2026)",   9,                       STATUS_ANTHROPIC),
+        ("Core Scientific 2.5GW (Q2 2026)",        8,                       STATUS_CORE_SCI),
+        ("Microsoft Azure Helios Deploy (Q2 2026)", 9,                      STATUS_MICROSOFT),
+        ("Rackspace 30MW (Q2 2026)",               7,                       STATUS_RACKSPACE),
         ("New Deals This Quarter",                 SCORE_NEW_DEAL_VELOCITY, STATUS_NEW_DEALS),
     ]
 
