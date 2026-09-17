@@ -14,7 +14,8 @@ Usage:
     python amd_agent.py carry-scores        # Output current scores as JSON
     python amd_agent.py add-finding <json>  # Add a monitoring finding to log
     python amd_agent.py generate-log-xlsx   # Create AMD_Monitor_Log.xlsx
-    python amd_agent.py email-body          # Full formatted email body (Claude sends via MCP)
+    python amd_agent.py email-body          # Full formatted email body (stdout)
+    python amd_agent.py send-email          # Build + send email via SMTP (needs GMAIL_APP_PASSWORD)
     python amd_agent.py update-quarter <json_file>  # Update last_run.json with new quarter
     python amd_agent.py self-test           # Verify all modes run cleanly
 
@@ -577,6 +578,42 @@ def build_report_text():
     return "\n".join(lines)
 
 
+def send_email_smtp(subject, html_body, to_addr=GMAIL_TO):
+    """
+    Send HTML email via Gmail SMTP using App Password.
+    Requires env var GMAIL_APP_PASSWORD (16-char password from myaccount.google.com/apppasswords).
+    Optional env var GMAIL_FROM (defaults to same as GMAIL_TO).
+    """
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+
+    from_addr = os.environ.get("GMAIL_FROM", GMAIL_TO)
+    password  = os.environ.get("GMAIL_APP_PASSWORD")
+
+    if not password:
+        raise RuntimeError(
+            "GMAIL_APP_PASSWORD not set. "
+            "Go to myaccount.google.com/apppasswords, create an App Password (requires 2-step verification), "
+            "then set GMAIL_APP_PASSWORD=<16-char-password> in your environment or Claude Code env vars."
+        )
+
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"]    = from_addr
+    msg["To"]      = to_addr
+    msg.attach(MIMEText(html_body, "html", "utf-8"))
+
+    with smtplib.SMTP("smtp.gmail.com", 587) as smtp:
+        smtp.ehlo()
+        smtp.starttls()
+        smtp.login(from_addr, password)
+        smtp.sendmail(from_addr, [to_addr], msg.as_string())
+
+    print(f"Email sent → {to_addr}")
+    print(f"Subject:    {subject}")
+
+
 def build_email_subject(high_count=0, medium_count=0, low_count=0):
     today = datetime.date.today().strftime("%Y-%m-%d")
     return f"AMD Monitor — {today} | {high_count} HIGH · {medium_count} MEDIUM · {low_count} LOW"
@@ -978,8 +1015,9 @@ AMD MONITORING AGENT — CLAUDE RUN-BOOK
 
 This run-book tells Claude what to check at each cadence.
 Claude uses the WebSearch tool for all web lookups.
-Claude uses mcp__Gmail__send_message for email.
-Claude uses mcp__Google_Drive__ for Drive uploads.
+Email is sent via Python SMTP: python amd_agent.py send-email
+  Requires GMAIL_APP_PASSWORD env var (myaccount.google.com/apppasswords).
+Claude uses mcp__Google_Drive__ for Drive uploads (when MCP available).
 
 DAILY CHECKS (every run):
   1. AMD IR press releases: search "AMD press release site:ir.amd.com"
@@ -1024,10 +1062,10 @@ CONFERENCE EVENT TRACKING (special rule):
 AFTER EACH RUN:
   1. Run: python amd_agent.py add-finding '<json>'  (for each finding)
   2. Run: python amd_agent.py generate-log-xlsx     (creates AMD_Monitor_Log.xlsx)
-  3. Upload AMD_Monitor_Log.xlsx to Drive Q2 2026 folder via mcp__Google_Drive__update_file
-  4. Build email: python amd_agent.py email-body    (generates subject + HTML)
-  5. Send email via mcp__Gmail__send_message to tonyvasquez1@gmail.com
-  6. Update Drive summary doc via mcp__Google_Drive__update_file
+  3. Upload AMD_Monitor_Log.xlsx to Drive Q2 2026 folder via mcp__Google_Drive__update_file (if MCP available)
+  4. Run: python amd_agent.py send-email            (builds email from today's findings + sends via SMTP)
+     — Requires GMAIL_APP_PASSWORD env var. Generate at myaccount.google.com/apppasswords.
+  5. Update Drive summary doc via mcp__Google_Drive__update_file (if MCP available)
 
 GRACEFUL FALLBACK:
   If WebSearch returns no results or errors:
@@ -1089,6 +1127,14 @@ def main():
         print(f"SUBJECT: {subj}")
         print("─" * 60)
         print(html)
+
+    elif cmd == "send-email":
+        # Build email from today's findings in monitor_log.json, then send via SMTP
+        today_str = datetime.date.today().isoformat()
+        log = load_monitor_log()
+        findings_today = [e for e in log if e.get("date", "").startswith(today_str)]
+        subj, html = build_email_body(findings_today)
+        send_email_smtp(subj, html)
 
     elif cmd == "update-quarter":
         if len(sys.argv) < 3:
